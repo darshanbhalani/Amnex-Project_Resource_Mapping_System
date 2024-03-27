@@ -1,7 +1,83 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Dashboard";
 }
 
-<h1>Dashboard</h1>
+
+<head>
+    <style>
+        .flex-center{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            flex-direction:column;
+        }
+        .box:nth-child(1) {
+             background-color: #B4D4FF;
+                }
+
+        .box:nth-child(2) {
+            background-color: #FEC7B4;
+        }
+
+        .box:nth-child(3) {
+            background-color: #C1F2B0;
+        }
+
+            .box {
+            height: 25vh;
+        }
+
+        .card {
+            background-color: transparent;
+            margin: 1%;
+            border:none;
+            border-radius: 10px; /* Adjust the border radius as needed */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .box .col .fa{
+            font-size: 50px;
+        }
+    </style>
+</head>
+<div>
+    @* section-1 *@
+    <div class="container">
+        <div class="row">
+            <div class="col box card flex-center">
+                <div class="row d-flex align-items-center flex-row text-align-center">
+                    <div class="col">
+                        <h5 class="title">Total Categories</h5>
+                        <h3 class="number">12</h3>
+                    </div>
+                    <div class="col">
+                        <i class="fa fa-cube"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col box card flex-center">
+                <div class="row d-flex align-items-center flex-row text-align-center">
+                    <div class="col">
+                        <h5 class="title">Total Categories</h5>
+                        <h3 class="number">12</h3>
+                    </div>
+                    <div class="col">
+                        <i class="fa fa-cube"></i>
+                    </div>
+                </div>
+            </div><div class="col box card flex-center">
+                <div class="row d-flex align-items-center flex-row text-align-center">
+                    <div class="col">
+                        <h5 class="title">Total Categories</h5>
+                        <h3 class="number">12</h3>
+                    </div>
+                    <div class="col">
+                        <i class="fa fa-cube"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 

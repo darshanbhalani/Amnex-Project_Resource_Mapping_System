@@ -50,6 +50,9 @@
             margin:0 15px 0 15px;
         }
 
+        #slider, .navbar {
+            background-color: #2c2556;
+        }
     </style>
 </head>
 <body>
@@ -57,7 +60,7 @@
     <div class="container-fluid main-container">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-2 bg-dark text-white  m-0 p-0 d-flex flex-column justify-content-between text-align-center" id="slider">
+            <div class="col-md-2 text-white  m-0 p-0 d-flex flex-column justify-content-between text-align-center" id="slider">
                 <div class="py-4">
                     <div class="profileBox">
                         <h1>PRMS</h1>
@@ -67,7 +70,6 @@
                         <li>
                             <div class="btn-section">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard" id="Dashboard"><i class="fa fa-tachometer"></i>&ensp; Dashboard</a>
-
                             </div>
                         </li>
                         <li>
@@ -112,7 +114,7 @@
 
             <!-- Main Content -->
             <div class="col p-0 m-0">
-                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
+                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
                     <div class="container-fluid">
                         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@ViewData["Title"]</a>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -142,6 +144,10 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+
+    </script>
 </body>
 </html>
 
