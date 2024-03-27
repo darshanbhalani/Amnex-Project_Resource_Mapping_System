@@ -13,20 +13,34 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+        public IActionResult Projects()
+        {
+            return View();
+        }
+        public IActionResult Employees()
+        {
+            return View();
+        }
+        public IActionResult ProjectEmployeeMapping()
+        {
+            return View();
+        }
+        public IActionResult Department()
+        {
+            return View();
+        }
+        public IActionResult Skills()
+        {
+            return View();
+        }
+        public IActionResult Actions()
         {
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }
