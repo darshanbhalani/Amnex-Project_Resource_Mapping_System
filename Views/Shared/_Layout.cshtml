@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -53,94 +53,7 @@
     </style>
 </head>
 <body>
-
-
-
-    <div class="container-fluid main-container">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 bg-dark text-white  m-0 p-0 d-flex flex-column justify-content-between text-align-center" id="slider">
-                <div class="py-4">
-                    <div class="profileBox">
-                        <h1>PRMS</h1>
-                    </div>
-                    <hr/>  
-                    <ul class="list-unstyled">
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard" id="Dashboard"><i class="fa fa-tachometer"></i>&ensp; Dashboard</a>
-
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Projects" id="Projects"><i class="fa fa-cube"></i>&ensp; Projects</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Employees" id="Employees"><i class="fa fa-folder"></i>&ensp; Employees</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ProjectEmployeeMapping" id="ProjectEmployeeMapping"><i class="fa fa-folder-open"></i>&ensp; ProjectEmployeeMapping</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Departments" id="Departments"><i class="fa fa-cog"></i>&ensp; Departments</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Skills" id="Skills"><i class="fa fa-list-alt"></i>&ensp; Skills</a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Actions" id="Actions"><i class="fa fa-cog"></i>&ensp; Actions</a>
-                            </div>
-                        </li>
-                    </ul>
-
-                </div>
-                @* <div class="pb-4">
-                    <div class="btn-section">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Login"><i class="fa fa-sign-out"></i>  Log out</a>
-                    </div>
-                </div> *@
-            </div>
-
-            <!-- Main Content -->
-            <div class="col p-0 m-0">
-                <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
-                    <div class="container-fluid">
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@ViewData["Title"]</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                            <ul class="navbar-nav ms-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Account">MR. DARSHAN BHALANI&ensp; <i class="fa fa-user"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-                <main role="main" class="container-fluid p-3 m-0" id="main-window">
-                    @RenderBody()
-                </main>
-            </div>
-
-        </div>
-    </div>
-
-
-
-  @*   <header>
+    <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Amnex_Project_Resource_Mapping_System</a>
