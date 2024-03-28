@@ -1,7 +1,269 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "ProjectEmployeeMapping";
 }
 
-<h1>ProjectEmployeeMapping</h1>
+    @* search section *@
+    <div class="row justify-content-center my-4">
+        <!-- Adjusted for center alignment and added vertical margin -->
+        <div class="col col-12 p-0">
+            <!-- Simplified column classes for better responsiveness -->
+            <form class="d-flex" role="search">
+                <!-- Added a role attribute for accessibility -->
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search query"> <!-- Enhanced ARIA label for clarity -->
+                <button class="btn btn-outline-primary me-2" type="submit" aria-label="Submit search">
+                    <!-- Added spacing and ARIA label -->
+                    Search
+                </button>
+
+                <button class="btn btn-danger" type="button" aria-label="Open filter options">
+                    <!-- Specified type and added ARIA label -->
+                    Filter
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @* grid to display data *@
+    <div class="container my-4 pt-3 p-0">
+        <!-- Headers Row -->
+        <div class="row justify-content-center text-center bg-dark p-2 border-bottom">
+            <div class="col-2 col-md-1 py-2 border-end text-white">Sr. No</div> <!-- Made narrower -->
+            <div class="col-10 col-md-4 py-2 border-end text-white">Project Name</div>
+            <div class="col-6 col-md-2 py-2 border-end text-white">Employees</div>
+            <div class="col-6 col-md-3 py-2 border-end text-white">Department</div>
+            <div class="col-6 col-md-2 py-2 text-white">Status</div>
+        </div>
+        <!-- Data Rows Container -->
+        <div id="dataRows">
+            <!-- Example Row 1 -->
+            <div class="row justify-content-center text-center bg-light p-2 border-bottom" data-toggle="modal" data-target="#projectModal" data-projectname="GIS Mapping" data-employees="8" data-department="Integrated" data-status="Active">
+                <div class="col-2 col-md-1 py-2 border-end">1</div> <!-- Sr. No -->
+                <div class="col-10 col-md-4 py-2 border-end">GIS Mapping</div>
+                <div class="col-6 col-md-2 py-2 border-end">8</div>
+                <div class="col-6 col-md-3 py-2 border-end">Integrated</div>
+                <div class="col-6 col-md-2 py-2">Active</div>
+            </div>
+            <!-- Example Row 2 -->
+            <div class="row justify-content-center text-center bg-light p-2 border-bottom" data-toggle="modal" data-target="#projectModal" data-projectname="Asset Management" data-employees="11" data-department="Mobility" data-status="Active">
+                <div class="col-2 col-md-1 py-2 border-end">2</div> <!-- Sr. No -->
+                <div class="col-10 col-md-4 py-2 border-end">Asset Management</div>
+                <div class="col-6 col-md-2 py-2 border-end">11</div>
+                <div class="col-6 col-md-3 py-2 border-end">Mobility</div>
+                <div class="col-6 col-md-2 py-2">Active</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    @* ----------------------------------------------------------------------------------------------------------------------- *@
+
+    <!-- Extra large modal -->
+    <div class="modal fade bd-example-modal-xl" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+                    @* <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button> *@
+                </div>
+                <div class="modal-body">
+                    <!-- Grid layout -->
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- 1st row: Project -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="projectName">Project Name:</label>
+                                    <input type="text" class="form-control" id="projectName" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="employees">Number of Employees:</label>
+                                    <input type="text" class="form-control" id="employees" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- 2nd row: Start Date and End Date -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="startDate">Start Date:</label>
+                                    <input type="date" class="form-control" id="startDate" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="endDate">End Date:</label>
+                                    <input type="date" class="form-control" id="endDate" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- 3rd row: Department -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="department">Department:</label>
+                                    <input type="text" class="form-control" id="department" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="status">Project Status:</label>
+                                    <input type="text" class="form-control" id="status" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- 4th row: Skills -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="skills">Project Skills:</label>
+                                    <input type="text" class="form-control" id="skills" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- 5th row: Employees data -->
+                            <div class="col-md-12">
+                                <h5>Employees Data</h5>
+                                <!-- Grid to show employees data -->
+                                <div class="table-responsive" style="height:200px ; overflow-y:auto">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Sr. No</th>
+                                                <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Name</th>
+                                                <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Skills</th>
+                                                <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Role</th>
+                                                <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Start Date</th>
+                                                <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">End Date</th>
+                                                <!-- Add more columns as needed -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Populate data dynamically here -->
+                                            <tr>
+                                                <td>1</td>
+                                                <td>John Doe</td>
+                                                <td>C#,React,Javascript</td>
+                                                <td>Developer</td>
+                                                <td>19-03-21</td>
+                                                <td>31-05-25</td>
+                                                <!-- Add more rows as needed -->
+                                            </tr>
+                                            <!-- Populate data dynamically here -->
+                                            <tr>
+                                                <td>2</td>
+                                                <td>John Doe</td>
+                                                <td>C#,React,Javascript</td>
+                                                <td>Developer</td>
+                                                <td>19-03-21</td>
+                                                <td>31-05-25</td>
+                                                <!-- Add more rows as needed -->
+                                            </tr>
+                                            <!-- Populate data dynamically here -->
+                                            <tr>
+                                                <td>3</td>
+                                                <td>John Doe</td>
+                                                <td>C#,React,Javascript</td>
+                                                <td>Developer</td>
+                                                <td>19-03-21</td>
+                                                <td>31-05-25</td>
+                                                <!-- Add more rows as needed -->
+                                            </tr>
+                                            <!-- Populate data dynamically here -->
+                                            <tr>
+                                                <td>4</td>
+                                                <td>John Doe</td>
+                                                <td>C#,React,Javascript</td>
+                                                <td>Developer</td>
+                                                <td>19-03-21</td>
+                                                <td>31-05-25</td>
+                                                <!-- Add more rows as needed -->
+                                            </tr>
+                                            <!-- Populate data dynamically here -->
+                                            <tr>
+                                                <td>5</td>
+                                                <td>John Doe</td>
+                                                <td>C#,React,Javascript</td>
+                                                <td>Developer</td>
+                                                <td>19-03-21</td>
+                                                <td>31-05-25</td>
+                                                <!-- Add more rows as needed -->
+                                            </tr>
+                                            <!-- Populate data dynamically here -->
+                                            <tr>
+                                                <td>6</td>
+                                                <td>John Doe</td>
+                                                <td>C#,React,Javascript</td>
+                                                <td>Developer</td>
+                                                <td>19-03-21</td>
+                                                <td>31-05-25</td>
+                                                <!-- Add more rows as needed -->
+                                            </tr>
+                                            <!-- Populate data dynamically here -->
+                                            <tr>
+                                                <td>7</td>
+                                                <td>John Doe</td>
+                                                <td>C#,React,Javascript</td>
+                                                <td>Developer</td>
+                                                <td>19-03-21</td>
+                                                <td>31-05-25</td>
+                                                <!-- Add more rows as needed -->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="mainModalClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ---------------------------------------------------------------------------------------------------------------------------- *@
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            // Event listener for row click to open modal
+
+
+            $('#dataRows .row').click(function () {
+                // Trigger the modal to show
+                $('#exampleModal').modal('show');
+
+                // Fetch data attributes from the clicked row
+                var projectName = $(this).data('projectname');
+                var employees = $(this).data('employees');
+                var department = $(this).data('department');
+                var status = $(this).data('status');
+                // Assuming you might have other data attributes like status to fetch in future
+
+                // Set the fetched data into modal's input fields using .val() instead of .text()
+                $('#projectName').val(projectName);
+                $('#employees').val(employees);
+                $('#department').val(department);
+                $('#status').val(status);
+                // For setting text in non-input elements (e.g., div, span), use .text()
+                // For example, if you had a <span id="modalStatus"></span>, you would use
+                // $('#modalStatus').text('Status: ' + status);
+            });
+
+
+            $("#mainModalClose").click(() => {
+                $('#exampleModal').modal('hide');
+
+            })
+        });
+    </script>
+
+}
+    
 
