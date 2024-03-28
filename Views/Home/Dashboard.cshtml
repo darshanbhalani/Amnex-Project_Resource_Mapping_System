@@ -1,7 +1,103 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Dashboard";
 }
 
-<h1>Dashboard</h1>
+
+<head>
+    <style>
+
+        /* section-2 */
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        .box:nth-child(1) {
+            background-color: #B4D4FF;
+        }
+
+        .box:nth-child(2) {
+            background-color: #FEC7B4;
+        }
+
+        .box:nth-child(3) {
+            background-color: #C1F2B0;
+        }
+
+        .box {
+            max-height: 160px;
+            height: 25vw;
+            min-height: 50px;
+            width: 20vw;
+        }
+
+        .card {
+            background-color: transparent;
+            margin: 1%;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .box .col .fa {
+            font-size: 1rem;
+        }
+
+        .col h3 {
+            font-weight: bolder;
+        }
+
+        .box-icon {
+            height: 5vw;
+        }
+
+    </style>
+</head>
+@* section-1 *@
+
+<div class="container">
+    <h1>Welcome,DARSHAN</h1>
+</div>
+
+@* section-2 *@
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-lg-3 d-flex justify-content-evenly align-items-center">
+        <div class="col box card flex-center">
+            <div class="row d-flex align-items-center flex-row text-align-center">
+                <div class="col">
+                    <h5 class="title">Total Projects</h5>
+                    <h3 class="number">12</h3>
+                </div>
+                <div class="col">
+                    <img class="box-icon" src="~/assets/icons/projects.png" />
+                </div>
+            </div>
+        </div>
+        <div class="col box card flex-center">
+            <div class="row d-flex align-items-center flex-row text-align-center">
+                <div class="col">
+                    <h5 class="title">Total Employees</h5>
+                    <h3 class="number">12</h3>
+                </div>
+                <div class="col">
+                    <img class="box-icon" src="~/assets/icons/employees.png" />
+                </div>
+            </div>
+        </div>
+        <div class="col box card flex-center">
+            <div class="row d-flex align-items-center flex-row text-align-center">
+                <div class="col">
+                    <h5>Total Departments</h5>
+                    <h3 class="number">12</h3>
+                </div>
+                <div class="col">
+                    <img class="box-icon" src="~/assets/icons/departments.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 

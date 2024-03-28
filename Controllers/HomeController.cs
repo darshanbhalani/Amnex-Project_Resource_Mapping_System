@@ -29,7 +29,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         {
             return View();
         }
-        public IActionResult Department()
+        public IActionResult Departments()
         {
             return View();
         }
