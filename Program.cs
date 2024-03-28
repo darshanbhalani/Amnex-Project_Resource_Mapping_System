@@ -15,7 +15,6 @@ namespace Amnex_Project_Resource_Mapping_System
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -28,7 +27,17 @@ namespace Amnex_Project_Resource_Mapping_System
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Dashboard}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Response.Redirect("/Home/Error");
+                }
+            });
 
             app.Run();
         }

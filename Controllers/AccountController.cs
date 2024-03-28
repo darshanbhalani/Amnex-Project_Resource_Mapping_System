@@ -4,7 +4,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Login()
         {
             return View();
         }

@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Amnex_Project_Resource_Mapping_System.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Your Website Title</title>
+    <link rel="stylesheet" href="~/custom-css/Login.css" />
+</head>
+<body>
+    <img class="fixed-image" src="~/assets/images/bg.jpg" alt="Fixed Image">
+
+    <div class="content d-flex justify-content-center align-items-center flex-column">
+        <div class="websiteheading">
+            <h1>Welcome to PRMS</h1>
+        </div>
+        <div class="websitedesc">
+            <p>Efficiently manage and allocate company resources <br />with our Project Resource Mapping System.<br /> Track current allocations and easily adjust as per project requirements.</p>
+        </div>
+        <div class="btndiv">
+            <button id="loginBtnClick" class="btn btn-primary">Get Started</button>
+        </div>
+
+        @* login-modal *@
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style=" display:block; justify-content: center; align-content:center; height: 180px; width: 498px;">
+                        <div>
+                            <img src="~/assets/images/logo.jpg" style="height:40px;" />
+                        </div>
+                        <h5 class="modal-title" id="exampleModalLabel" style="color: black; font-size: 40px; font-family: sans-serif; padding-top:10px;"><b>Login</b></h5>
+                    </div>
+                    <div class="modal-body px-5">
+                        <form>
+                            <div class="form-group" >
+                                <label for="recipient-name" class="col-form-label" style="color: black; font-size: medium; font-family: sans-serif; margin-right:80%;">Username:</label>
+                                <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label" style="color: black; font-size: medium; font-family: sans-serif; margin-right:80%;">Password:</label>
+                                <input type="text" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="form-group" style="padding-top:10px; text-align:right;">
+                                <a style="color:red;">Forgot password?</a>
+                            </div>
+                            <div class="modalbutton" style="padding-top:20px;">
+                                <button type="button" class="btn btn-primary" id="Loginbtn">login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#loginBtnClick").click(function () {
+                $("#loginModal").modal('show');
+            });
+
+            $('#Loginbtn').click(function () {
+                $("#loginModal").modal('hide');
+                window.location.href = '@Url.Action("Dashboard", "Home")';
+            });
+        });
+    </script>
+</body>
+</html>

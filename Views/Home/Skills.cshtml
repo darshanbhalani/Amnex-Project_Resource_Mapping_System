@@ -1,7 +1,146 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Skills";
 }
 
-<h1>Skills</h1>
+@* search-section *@
+<div class="row justify-content-center my-2 pt-3">
+    <div class="col-md-12 px-0">
+        <form class="d-flex">
+            <button type="button" id="addSkillButton" class="btn btn-dark me-2 px-4" data-toggle="modal" data-target="#addSkillModal">
+                Add
+            </button>
+            <input class="form-control flex-grow-1 me-2 px-4" type="search" placeholder="Search" aria-label="Search query">
+            <button class="btn btn-outline-primary me-2 px-4" type="submit">
+                Search
+            </button>
+        </form>
+    </div>
+</div>
+
+@* grid *@
+<div class="row justify-content-center my-4 pt-3 px-0">
+    <div class="row justify-content-center text-center bg-dark text-white p-2 border-bottom">
+        <div class="col-12 col-md-3 py-2 border-end">Skill Id</div>
+        <div class="col-12 col-md-3 py-2 border-end">Skill Name</div>
+        <div class="col-12 col-md-3 py-2 border-end">Status</div>
+        <div class="col-12 col-md-3 py-2">Update</div>
+    </div>
+    <div class="row justify-content-center text-center p-2 skill-row">
+        <div class="col-12 col-md-3 py-2 border-end">1</div>
+        <div class="col-12 col-md-3 py-2 border-end">HTML</div>
+        <div class="col-12 col-md-3 py-2 border-end">Active</div>
+        <div class="col-12 col-md-3 py-2">
+            <i class="fas fa-edit fa-2x edit-icon" style="cursor:pointer"></i>
+        </div>
+    </div>
+    <div class="row justify-content-center text-center p-2 skill-row">
+        <div class="col-12 col-md-3 py-2 border-end">2</div>
+        <div class="col-12 col-md-3 py-2 border-end">CSS</div>
+        <div class="col-12 col-md-3 py-2 border-end">Inactive</div>
+        <div class="col-12 col-md-3 py-2">
+            <i class="fas fa-edit fa-2x edit-icon" style="cursor:pointer"></i>
+        </div>
+    </div>
+</div>
+
+
+@* add-skill-modal *@
+<div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSkillsModalLabel">Add Skill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="addCloseModelBtn">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to add skills -->
+                <form id="addSkillForm">
+                    <div class="form-group">
+                        <label for="skillName">Skill Name</label>
+                        <input type="text" class="form-control" id="skillName" placeholder="Enter skill name">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="addCloseBtn">Close</button>
+                <button type="button" class="btn btn-success" id="saveSkillButton">Save Skill</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* edit-skill-modal *@
+<div class="modal fade" id="editSkillModal" tabindex="-1" role="dialog" aria-labelledby="editSkillsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSkillsModalLabel">Update Skill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="editCloseModelBtn">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to edit skills -->
+                <form id="editSkillForm">
+                    <div class="form-group">
+                        <label for="editSkillName">Edit Skill Name</label>
+                        <input type="text" class="form-control" id="editSkillName" placeholder="Edit skill name">
+                    </div>
+                    <div class="form-group">
+                        <label for="editSkillStatus">Edit Skill Status</label>
+                        <select class="form-select" id="editSkillStatus">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="editCloseBtn">Close</button>
+                <button type="button" class="btn btn-success" id="saveSkillButton">Save Skill</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#addSkillButton').click(function () {
+                $('#addSkillModal').modal('show');
+            });
+            $('#addCloseModelBtn').click(function () {
+                $('#addSkillModal').modal('hide');
+            });
+            $('#addCloseBtn').click(function () {
+                $('#addSkillModal').modal('hide');
+            });
+
+            $(".edit-icon").click(function () {
+                var skillName = $(this).closest(".skill-row").find(".col-md-3:nth-child(2)").text().trim();
+                var skillStatus = $(this).closest(".skill-row").find(".col-md-3:nth-child(3)").text().trim();
+                $("#editSkillName").val(skillName);
+                $("#editSkillStatus").val(skillStatus);
+                $("#editSkillModal").modal('show');
+            });
+
+            $("#saveSkillButton").click(function () {
+                var editedSkillName = $("#editSkillName").val();
+                var editedSkillStatus = $("#editSkillStatus").val();
+            });
+            $('#editCloseModelBtn').click(function () {
+                $('#editSkillModal').modal('hide');
+            });
+
+            $('#editCloseBtn').click(function () {
+                $('#editSkillModal').modal('hide');
+
+            });
+    </script>
+}
 
