@@ -28,7 +28,7 @@ namespace Amnex_Project_Resource_Mapping_System
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Project}/{action=Project}/{id?}");
 
             app.Run();
         }

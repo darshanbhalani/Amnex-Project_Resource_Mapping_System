@@ -41,13 +41,13 @@
             text-align: center;
         }
 
-        .main-container{
-            height:100vh;
-            width:100vw;
+        .main-container {
+            height: 100vh;
+            width: 100vw;
         }
 
         .hr-btn-section {
-            margin:0 15px 0 15px;
+            margin: 0 15px 0 15px;
         }
 
     </style>
@@ -64,7 +64,7 @@
                     <div class="profileBox">
                         <h1>PRMS</h1>
                     </div>
-                    <hr/>  
+                    <hr />
                     <ul class="list-unstyled">
                         <li>
                             <div class="btn-section">
@@ -74,7 +74,7 @@
                         </li>
                         <li>
                             <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Projects" id="Projects"><i class="fa fa-cube"></i>&ensp; Projects</a>
+                                <a class="nav-link" asp-area="" asp-controller="Project" asp-action="Project" id="Projects"><i class="fa fa-cube"></i>&ensp; Projects</a>
                             </div>
                         </li>
                         <li>
@@ -106,9 +106,9 @@
 
                 </div>
                 @* <div class="pb-4">
-                    <div class="btn-section">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Login"><i class="fa fa-sign-out"></i>  Log out</a>
-                    </div>
+                <div class="btn-section">
+                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Login"><i class="fa fa-sign-out"></i>  Log out</a>
+                </div>
                 </div> *@
             </div>
 
@@ -116,7 +116,7 @@
             <div class="col p-0 m-0">
                 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3">
                     <div class="container-fluid">
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@ViewData["Title"]</a>
+                        <a class="navbar-brand" asp-area="" asp-controller="Project" asp-action="Project">@ViewData["Title"]</a>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                                 aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
@@ -139,35 +139,35 @@
     </div>
 
 
-@* 
+    @*
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Amnex_Project_Resource_Mapping_System</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Amnex_Project_Resource_Mapping_System</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+    <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </li>
+    </ul>
+    </div>
+    </div>
+    </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <main role="main" class="pb-3">
+    @RenderBody()
+    </main>
     </div>
 
-     </header>  *@
+    </header>  *@
 
 
 
