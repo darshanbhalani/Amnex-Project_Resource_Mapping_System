@@ -1,0 +1,40 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.fixed-image {
+    position: fixed; /* Fix the image in place */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 120vh; /* Ensure the image covers the entire viewport width */
+    z-index: -1; /* Place the image behind other content */
+}
+
+.content {
+    color: aliceblue;
+    justify-content: center;
+    text-align: center;
+    color: aliceblue;
+}
+
+.websiteheading {
+    padding-top: 150px; /* Add some padding for better appearance */
+}
+
+.btndiv {
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px; /* Add some padding for better appearance */
+}
+
+.modal-content {
+    height: 500px;
+}
+
+.modal-body {
+    justify-content: center;
+    align-content: center;
+}

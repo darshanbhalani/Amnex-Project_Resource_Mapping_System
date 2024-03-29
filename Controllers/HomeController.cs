@@ -42,5 +42,10 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             return View();
         }
 
+        public IActionResult Error()
+        {
+            return View();
+        }
+
     }
 }
