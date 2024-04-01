@@ -15,65 +15,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Your Website Title</title>
     <link rel="stylesheet" href="~/custom-css/Login.css" />
+    <style>
+
+        .container-fluid{
+            height: 100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+    </style>
 </head>
 <body>
-    <img class="fixed-image" src="~/assets/images/bg.jpg" alt="Fixed Image">
-
-    <div class="content d-flex justify-content-center align-items-center flex-column">
-        <div class="websiteheading">
-            <h1>Welcome to PRMS</h1>
-        </div>
-        <div class="websitedesc">
-            <p>Efficiently manage and allocate company resources <br />with our Project Resource Mapping System.<br /> Track current allocations and easily adjust as per project requirements.</p>
-        </div>
-        <div class="btndiv">
-            <button id="loginBtnClick" class="btn btn-primary">Get Started</button>
-        </div>
-
-        @* login-modal *@
-        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header" style=" display:block; justify-content: center; align-content:center; height: 180px; width: 498px;">
-                        <div>
-                            <img src="~/assets/images/logo.jpg" style="height:40px;" />
-                        </div>
-                        <h5 class="modal-title" id="exampleModalLabel" style="color: black; font-size: 40px; font-family: sans-serif; padding-top:10px;"><b>Login</b></h5>
+    <div class="container-fluid">
+        <div class="col-sm-10 col-xl-4 col-md-6">
+            <div class="bg-light rounded h-100 p-4">
+                <h3 class="text-center">Admin Login</h3>
+                <p class="mb-4 text-center">We need to verify you before getting started!</p>
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label for="user-name" class="form-label">User Name</label>
+                        <input type="text" class="form-control" id="user-name" />
                     </div>
-                    <div class="modal-body px-5">
-                        <form>
-                            <div class="form-group" >
-                                <label for="recipient-name" class="col-form-label" style="color: black; font-size: medium; font-family: sans-serif; margin-right:80%;">Username:</label>
-                                <input type="text" class="form-control" id="recipient-name">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label" style="color: black; font-size: medium; font-family: sans-serif; margin-right:80%;">Password:</label>
-                                <input type="text" class="form-control" id="recipient-name">
-                            </div>
-                            <div class="form-group" style="padding-top:10px; text-align:right;">
-                                <a style="color:red;">Forgot password?</a>
-                            </div>
-                            <div class="modalbutton" style="padding-top:20px;">
-                                <button type="button" class="btn btn-primary" id="Loginbtn">login</button>
-                            </div>
-                        </form>
+                    <div class="mb-1">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password">
                     </div>
-                </div>
+                    <div class="text-end mb-3">Forgot Password ?</div>
+                    <button type="submit" class="btn btn-primary px-5 text-center w-100 mt-3">Sign in</button>
+                </form>
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function () {
-            $("#loginBtnClick").click(function () {
-                $("#loginModal").modal('show');
-            });
-
-            $('#Loginbtn').click(function () {
-                $("#loginModal").modal('hide');
-                window.location.href = '@Url.Action("Dashboard", "Home")';
-            });
-        });
-    </script>
 </body>
 </html>

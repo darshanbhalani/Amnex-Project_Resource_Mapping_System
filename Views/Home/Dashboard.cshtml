@@ -1,9 +1,10 @@
-﻿@{
+﻿ @{
     ViewData["Title"] = "Dashboard";
 }
 
 
-<head>
+
+@* <head>
     <style>
 
         /* section-2 */
@@ -60,16 +61,16 @@
             width:100vw;
         }
     </style>
-</head>
+</head> *@
 
 
 @* section-1 *@
-<div class="container">
+@* <div class="container">
     <h1>Welcome,DARSHAN</h1>
-</div>
+</div> *@
 
 @* section-2 *@
-<div class="container">
+@* <div class="container">
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-lg-3 d-flex justify-content-evenly align-items-center">
         <div class="col box card flex-center">
             <div class="row d-flex align-items-center flex-row text-align-center">
@@ -105,11 +106,72 @@
             </div>
         </div>
     </div>
-</div>
+</div>  *@
 
 
 @* graph *@
-<div class="container graph-container">
+@* <div class="container graph-container">
     <img src="~/assets/images/graph.png" />
-</div>
+</div> *@
+<style>
+    .box{
+        min-height:140px;
+        height:20vh;
+        max-height:200px;
+        max-width: 320px;
+        width:20vw;
+        min-width:250px;
+    }
 
+    .box {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .box i{
+            color: #009cff;
+    }
+
+    .box:hover, .box:hover h4, .box:hover i{
+            background-color: #009cff !important;
+        color:aliceblue !important;
+    }
+
+    .flex-center{
+        display:flex;
+        justify-content:space-evenly;
+        align-items:center;
+        text-align:center;
+    }
+</style>
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 flex-center">
+        <div class="col-sm-6 col-xl-3 px-4">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 box">
+                <i class="fa fa-chart-line fa-3x"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Projects</p>
+                    <h4 class="mb-0">350</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3 px-4">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 box">
+                <i class="fa fa-chart-bar fa-3x"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Total Employees</p>
+                    <h4 class="mb-0">750</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3 px-4">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 box">
+                <i class="fa fa-chart-area fa-3x"></i>
+                <div class="ms-3">
+                    <p class="mb-2">Today Departments</p>
+                    <h4 class="mb-0">8</h4>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>

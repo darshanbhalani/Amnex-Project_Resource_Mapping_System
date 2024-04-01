@@ -1,242 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Amnex_Project_Resource_Mapping_System</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8">
+    <title>PRMS - Project Resource Mapping System</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="~/custom-css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Template Stylesheet -->
+    <link href="~/custom-css/style.css" rel="stylesheet" />
     <style>
-        
-        body::-webkit-scrollbar {
-            display: none;
+        .brand-logo{
+            height:50px;
         }
-
-        a {
-            text-decoration: none;
-            color: white !important;
-        }
-
-        /* side menu */
-        #slider{
-            height:100vh;
-        }
-        
-
-        .btn-section:hover {
-            background-color: rebeccapurple;
-        }
-
-        .menu-icon {
-            height: 30px;
-        }
-
-        .main-container{
-            height:90vh;
-            width:100vw;
-        }
-
-
-        #slider, .navbar {
-            background-color: #2c2556;
-        }
-
-        .activeSection{
-            background-color: #5f5982;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            flex-direction: row;
-        }
-
-        
     </style>
 </head>
+
 <body>
+    <div class="container-fluid position-relative bg-white d-flex p-0 m-0">
 
-    <div class="container-fluid main-container">
-        <div class="row">
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-light navbar-light">
+                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary">
+                        <img class="brand-logo" src="~/assets/images/prms-logo.png" />
+                        PRMS</h3>
+                </a>
 
-            @* side menu *@
-            <div class="col-auto text-white m-0 p-0 d-flex flex-column justify-content-between text-align-center" id="slider" >
-                <div class="py-4">
-                    <ul class="menu-list list-unstyled d-flex flex-column justify-content-between text-align-center">
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link d-flex justify-content-center align-items-center" asp-area="" asp-controller="Home" asp-action="Dashboard">
-                                    <img class="menu-icon" src="~/assets/images/prms-logo.png" style="height:60px;"/>
-                                    <h6 style="font-weight:bolder; font-size:40px;">&ensp;PRMS</h6>
-                                </a>
-                            </div>
-                        </li>
-                        <hr />
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard" id="Dashboard">
-                                    <img class="menu-icon " src="~/assets/icons/menu-dashboard.png" />
-                                    <h6>&ensp; Dashboard</h6>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Projects" id="Projects">
-                                    <img class="menu-icon" src="~/assets/icons/menu-projects.png" />
-                                    <h6 class="menu-names">&ensp; Projects</h6>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Employees" id="Employees">
-                                    <img class="menu-icon" src="~/assets/icons/menu-employees.png" />
-                                    <h6>&ensp; Employees</h6>
-                                    </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ProjectEmployeeMapping" id="ProjectEmployeeMapping">
-                                    <img class="menu-icon" src="~/assets/icons/menu-mapping.png" />
-                                    <h6>&ensp; Mapping</h6>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Departments" id="Departments">
-                                    <img class="menu-icon" src="~/assets/icons/menu-departments.png" />
-                                    <h6>&ensp; Departments</h6>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Skills" id="Skills">
-                                    <img class="menu-icon" src="~/assets/icons/menu-skills.png" />
-                                    <h6>&ensp; Skills</h6>
-                                </a>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="btn-section">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Actions" id="Actions">
-                                    <img class="menu-icon" src="~/assets/icons/menu-activity.png" />
-                                    <h6>&ensp; Actions</h6>
-                                    </a>
-                            </div>
-                        </li>
-                        <li class="d-flex justify-content-end align-items-center">
-                            <div id="toggle-btn" class="p-2">
-                                <img class="menu-icon" src="~/assets/icons/chevron-left.png"/>
-                                <img class="menu-icon d-none" src="~/assets/icons/chevron-right.png" />
-                            </div>
-                        </li>
+                <div class="navbar-nav w-100 ">
 
-                    </ul>
-                    
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Dashboard" id="Dashboard"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Projects" id="Projects"><i class="fa fa-th me-2"></i>Projects</a>
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Employees" id="Employees"><i class="fa fa-keyboard me-2"></i>Employees</a>
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="ProjectEmployeeMapping" id="ProjectEmployeeMapping"><i class="fa fa-table me-2"></i>Mapping</a>
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Departments" id="Departments"><i class="fa fa-chart-bar me-2"></i>Departments</a>
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Skills" id="Skills"><i class="fa fa-chart-bar me-2"></i>Skills</a>
+                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Actions" id="Actions"><i class="fa fa-chart-bar me-2"></i>Actions</a>
                 </div>
-            </div>
-
-            @* navbar *@
-            <div class="col p-0 m-0 overflow-hidden">
-                   <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
-                    <div class="container-fluid">
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@ViewData["Title"]</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                            <ul class="navbar-nav ms-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Account">MR. DARSHAN BHALANI&ensp; <i class="fa fa-user"></i></a>
-                                </li>
-                            </ul>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+                <a href="#" class="sidebar-toggler flex-shrink-0" id="sidebar-toggler">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" placeholder="Search">
+                </form>
+                <div class="navbar-nav align-items-center ms-auto">
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex">MR. DARSHAN BHALANI</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">My Profile</a>
+                            <a href="#" class="dropdown-item">Settings</a>
+                            <a href="#" class="dropdown-item">Log Out</a>
                         </div>
                     </div>
-                </nav>
-                <main role="main" class="container-fluid px-5 m-0" id="main-window" >
-                    @RenderBody()
-                </main> 
-            </div>
+                </div>
+            </nav>
+            <main role="main" class="container-fluid px-5 m-0 p-0" id="main-window">
+                @RenderBody()
+            </main>
+            <!-- Navbar End -->
+            <!-- Content End -->
+            <!-- Back to Top -->
+            <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
         </div>
     </div>
-
-    <div class="dropdown-menu dropdown-menu-end position-absolute" id="profileDropdown" aria-labelledby="profileDropdownToggle">
-        <a class="dropdown-item" href="#">Profile</a>
-        <a class="dropdown-item" href="#">Logout</a>
-    </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
     <script>
-        $(document).ready(function () {
-            var activeController = "@ViewContext.RouteData.Values["action"]";
-
-            $('#' + activeController).parent().addClass('activeSection');
-
-            if ($(window).width() < 1000) {
-                console.log("ok");
-                var elements = document.querySelectorAll('.menu-list li div a h6');
-                elements.forEach(function (element) {
-                    element.classList.add('d-none');
-                });
-                $('#slider').removeClass('col-auto');
-                $('#slider').addClass('col-auto');
-                $('#toggle-btn i').addClass('fa-chevron-right');
-                $('#toggle-btn i').removeClass('fa-chevron-left');
-                $('#toggle-btn').parent().removeClass('justify-content-end');
-                $('#toggle-btn').parent().addClass('justify-content-center');
-                $('.nav-link').addClass('justify-content-center');
-                $('.nav-link').addClass('px-4');
-            }
-        });
-        function toggleNames() {
-            var navLinks = document.querySelectorAll('.menu-list li div a h6');
-            navLinks.forEach(function (navLink) {
-                navLink.classList.toggle('d-none');
-            });
-            $('#toggle-btn img').toggleClass('d-none');
-            $('#toggle-btn').parent().toggleClass('justify-content-end');
-            $('#toggle-btn').parent().toggleClass('justify-content-center');
-            
-            $('.nav-link').toggleClass('justify-content-center');
-            $('.nav-link').toggleClass('px-4');
-
-        }
-
-        $('#toggle-btn').click(function () {
-            toggleNames();
-        });
-        $(document).ready(function () {
-            // Toggle dropdown on button click
-            $('#profileDropdownToggle').click(function () {
-                $('#profileDropdown').toggleClass('show');
-            });
-
-            // Close dropdown on click outside
-            $(document).click(function (e) {
-                if (!$(e.target).closest('#profileDropdownToggle').length &&
-                    !$(e.target).closest('#profileDropdown').length) {
-                    $('#profileDropdown').removeClass('show');
-                }
-            });
-        });
+        
     </script>
 </body>
 </html>
-
-
-
-
 

@@ -27,7 +27,7 @@ namespace Amnex_Project_Resource_Mapping_System
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Account}/{action=Login}/{id?}");
+                pattern: "{controller=Home}/{action=Dashboard}/{id?}");
 
             app.Use(async (context, next) =>
             {

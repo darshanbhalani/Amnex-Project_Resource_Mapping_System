@@ -1,7 +1,206 @@
-﻿
-@{
-    ViewData["Title"] = "Actions";
-}
-
-<h1>Actions</h1>
-
+﻿<style>
+    
+</style>
+<div class="mt-5 col-12">
+    <div class="bg-light rounded h-100 p-4">
+        <h6 class="mb-4">Responsive Table</h6>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="bg-dark text-light">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">ZIP</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr >
+                        <th scope="row">1</th>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>john@email.com</td>
+                        <td>USA</td>
+                        <td>123</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Jane</td>
+                        <td>Smith</td>
+                        <td>jane@email.com</td>
+                        <td>Canada</td>
+                        <td>456</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Alice</td>
+                        <td>Johnson</td>
+                        <td>alice@email.com</td>
+                        <td>UK</td>
+                        <td>789</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td>Michael</td>
+                        <td>Williams</td>
+                        <td>michael@email.com</td>
+                        <td>Australia</td>
+                        <td>101</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">5</th>
+                        <td>Sarah</td>
+                        <td>Brown</td>
+                        <td>sarah@email.com</td>
+                        <td>Germany</td>
+                        <td>112</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">6</th>
+                        <td>David</td>
+                        <td>Miller</td>
+                        <td>david@email.com</td>
+                        <td>France</td>
+                        <td>134</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">7</th>
+                        <td>Emily</td>
+                        <td>Wilson</td>
+                        <td>emily@email.com</td>
+                        <td>Spain</td>
+                        <td>155</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">8</th>
+                        <td>James</td>
+                        <td>Anderson</td>
+                        <td>james@email.com</td>
+                        <td>Italy</td>
+                        <td>167</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">9</th>
+                        <td>Olivia</td>
+                        <td>Moore</td>
+                        <td>olivia@email.com</td>
+                        <td>Japan</td>
+                        <td>188</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">10</th>
+                        <td>William</td>
+                        <td>Clark</td>
+                        <td>william@email.com</td>
+                        <td>China</td>
+                        <td>190</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">11</th>
+                        <td>Emma</td>
+                        <td>Young</td>
+                        <td>emma@email.com</td>
+                        <td>Russia</td>
+                        <td>211</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">12</th>
+                        <td>Matthew</td>
+                        <td>Lewis</td>
+                        <td>matthew@email.com</td>
+                        <td>Brazil</td>
+                        <td>223</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">13</th>
+                        <td>Isabella</td>
+                        <td>Walker</td>
+                        <td>isabella@email.com</td>
+                        <td>Mexico</td>
+                        <td>234</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">14</th>
+                        <td>Ethan</td>
+                        <td>Green</td>
+                        <td>ethan@email.com</td>
+                        <td>South Africa</td>
+                        <td>246</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">15</th>
+                        <td>Chloe</td>
+                        <td>Roberts</td>
+                        <td>chloe@email.com</td>
+                        <td>Argentina</td>
+                        <td>257</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">16</th>
+                        <td>Daniel</td>
+                        <td>Hill</td>
+                        <td>daniel@email.com</td>
+                        <td>India</td>
+                        <td>269</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">17</th>
+                        <td>Madison</td>
+                        <td>Adams</td>
+                        <td>madison@email.com</td>
+                        <td>Sweden</td>
+                        <td>271</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">18</th>
+                        <td>Joseph</td>
+                        <td>Rogers</td>
+                        <td>joseph@email.com</td>
+                        <td>Netherlands</td>
+                        <td>282</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">19</th>
+                        <td>Grace</td>
+                        <td>Cooper</td>
+                        <td>grace@email.com</td>
+                        <td>Belgium</td>
+                        <td>293</td>
+                        <td>Member</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">20</th>
+                        <td>Samuel</td>
+                        <td>Ross</td>
+                        <td>samuel@email.com</td>
+                        <td>Switzerland</td>
+                        <td>304</td>
+                        <td>Admin</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
