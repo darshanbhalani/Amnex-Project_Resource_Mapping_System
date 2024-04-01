@@ -1,7 +1,8 @@
 ﻿@{
     Layout = null;
 }
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <style>
         body {
@@ -28,7 +29,10 @@
             }
     </style>
 </head>
-<div class="container-fluid error-container">
-    <img src="~/assets/images/error.png" />
-    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard" id="Index">Click to visit Home Page</a>
-</div>
+    <body>
+    <div class="container-fluid error-container">
+        <img src="~/assets/images/error.png" />
+        <a class="nav-link" asp-controller="Home" asp-action="Dashboard" id="Index">Click to visit Home Page</a>
+    </div>
+</body>
+</html>
