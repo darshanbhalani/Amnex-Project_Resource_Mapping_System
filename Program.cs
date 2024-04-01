@@ -1,3 +1,6 @@
+using Amnex_Project_Resource_Mapping_System.Models;
+using Npgsql;
+
 namespace Amnex_Project_Resource_Mapping_System
 {
     public class Program
@@ -8,6 +11,11 @@ namespace Amnex_Project_Resource_Mapping_System
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            var configuration = builder.Configuration;
+            var dbConfiguration = configuration.GetSection("DBConfiguration").Get<DBConfiguration>();
+            var connectionString = $"Host={dbConfiguration.Host};Port={dbConfiguration.Port};Username={dbConfiguration.Username};Password={dbConfiguration.Password};Database={dbConfiguration.Database}";
+            builder.Services.AddScoped<NpgsqlConnection>(_ => new NpgsqlConnection(connectionString));
 
             var app = builder.Build();
 
