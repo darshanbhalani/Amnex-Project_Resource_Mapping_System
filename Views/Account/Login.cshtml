@@ -1,75 +1,127 @@
-﻿@{
+﻿@model Amnex_Project_Resource_Mapping_System.Models.Login
+@{
     Layout = null;
 }
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <title>Your Website Title</title>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Your Website Title</title>
+
     <style>
-        .main-container{
-            height:100vh;
-            width:100vw;
+        .main-container {
+            height: 100vh;
+            width: 100vw;
             background: url('../assets/images/bg.jpg');
-            color:white;
-            background-repeat:no-repeat;
-            background-size:cover;
+            color: white;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
+
         .login-modal {
-            color:black !important;
+            color: black !important;
         }
     </style>
 </head>
-<body>
+<div class="container-fluid d-flex justify-content-center align-items-center flex-column main-container text-center">
+    <img style="height:10rem;" src="~/assets/images/prms-logo.png" />
+    <h1>Welcome to PRMS</h1>
+    @*     <p>Efficiently manage and allocate company resources <br />with our Project Resource Mapping System.<br /> Track current allocations and easily adjust as per project requirements.</p>
+    *@
+    <p>
+        Efficiently map, track and allocate resource to the required project.
+    </p>
+    <button id="loginBtnClick" class="btn btn-primary" data-bs-toggle="modal" data-target="#loginModal">Get Started</button>
 
-    <div class="container-fluid d-flex justify-content-center align-items-center flex-column main-container text-center">
-            <h1>Welcome to PRMS</h1>
-            <p>Efficiently manage and allocate company resources <br />with our Project Resource Mapping System.<br /> Track current allocations and easily adjust as per project requirements.</p>
-            <button id="loginBtnClick" class="btn btn-primary">Get Started</button>
-    </div>
-    @* login-modal *@
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="container-fluid">
-                    <div class="bg-light rounded h-100 p-4 login-modal">
-                        <h3 class="text-center">Admin Login</h3>
-                        <p class="mb-4 text-center">We need to verify you before getting started!</p>
-                        <form id="login-form">
-                            <div class="mb-3">
-                                <label for="user-name" class="form-label">User Name</label>
-                                <input type="text" class="form-control" id="user-name" />
-                            </div>
-                            <div class="mb-1">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password">
-                            </div>
-                            <div class="text-end mb-3">Forgot Password ?</div>
-                            <button type="submit" class="btn btn-primary px-5 text-center w-100 mt-3">Sign in</button>
-                        </form>
-                    </div>
+</div>
+@* login-modal *@
+
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="container-fluid">
+                <div class="bg-light rounded h-100 p-4 login-modal">
+                    <h3 class="text-center">Admin Login</h3>
+                    <p class="mb-4 text-center">We need to verify you before getting started!</p>
+                    <form id="login-form" asp-controller="Account" asp-action="Login" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="mb-3 form-group">
+                            <label asp-for="Username" class="control-label">User Name</label>
+                            <input asp-for="Username" class="form-control" id="Username" />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="mb-1 form-group">
+                            <label asp-for="Password" class="control-label">Password</label>
+                            <input asp-for="Password" class="form-control" id="Password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div id="error-message" class="text-danger"></div> <!-- Display error messages here -->
+                        <div class="text-end mb-3 form-group">Forgot Password ?</div>
+                        <div class="form-group">
+                            <input type="button" id="loginbtn" value="submit" class="btn btn-primary px-5 text-center w-100 mt-3" />
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#loginBtnClick").click(function () {
-                $("#loginModal").modal('show');
-            });
+</div>
 
-            $('#Loginbtn').click(function () {
-                $("#loginModal").modal('hide');
-                window.location.href = '@Url.Action("Dashboard", "Home")';
+<script src="~/lib/jquery/dist/jquery.min.js"></script> <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $("#loginBtnClick").click(function () {
+            $("#loginModal").modal('show');
+        });
+
+        $('#loginbtn').click(function (e) {
+            e.preventDefault();
+
+            var username = $('#Username').val();
+            var password = $('#Password').val();
+
+            // Perform basic client-side validation
+            if (!username.trim() || !password.trim()) {
+                $('#Username').next('.text-danger').text('Please enter a username.');
+                $('#Password').next('.text-danger').text('Please enter a Password.'); return;
+            }
+
+            // Send AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/Account/Login',
+                data: {
+                    username: username,
+                    password: password
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Redirect to dashboard
+                        // window.location.href = 'Home/Departments';
+                        window.location.replace('/Home/Dashboard');
+
+                    } else {
+                        $('#Password').next('.text-danger').text('Invalid username or Password.');
+                        return;
+                    }
+                },
+                error: function () {
+                    alert('An error occurred. Please try again.');
+                }
             });
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptspartial");
+    }
+}

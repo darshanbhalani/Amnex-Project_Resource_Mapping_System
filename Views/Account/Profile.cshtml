@@ -1,0 +1,50 @@
+﻿@model Employee;
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<style>
+    .profile-container{
+        min-height:80vh;
+    }
+</style>
+
+<div class="container-fluid p-0 m-0 profile-container pt-3">
+    <h4>Profile</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Employeeid">Employee Id :</label>
+                <input type="text" class="form-control" id="Employeeid" asp-for="Employeeid">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Employeeid">Role :</label>
+                <input type="text" class="form-control" id="Role">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Employeeid">Department :</label>
+                <input type="text" class="form-control" id="Employeeid" asp-for="Employeeid">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Employeename">Name:</label>
+                <input type="text" class="form-control" id="Employeename" asp-for="Employeename">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Employeename">Rating:</label>
+                <input type="text" class="form-control" id="Employeename" asp-for="Employeename">
+            </div>
+        </div>
+    </div>
+</div>
