@@ -69,47 +69,70 @@
         .box-icon {
             height: 5vw;
         }
-    </style>
-</head>
+    
+        .box {
+            min-height: 140px;
+            height: 20vh;
+            max-height: 200px;
+            max-width: 320px;
+            width: 20vw;
+            min-width: 250px;
+        }
 
-<div class="container">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-lg-3 d-flex justify-content-evenly align-items-center">
-        <div class="col box card flex-center">
-            <div class="row d-flex align-items-center flex-row text-align-center">
-                <div class="col">
-                    <h5 class="title">Total Employees</h5>
-                    <h3 class="number">87</h3>
-                </div>
-                <div class="col">
-                    <img class="box-icon" src="~/assets/icons/projects.png" />
+        .box {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+            .box i {
+                color: #009cff;
+            }
+
+            .box:hover, .box:hover h4, .box:hover i {
+                background-color: #009cff !important;
+                color: aliceblue !important;
+            }
+
+        .flex-center {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            text-align: center;
+        }
+        </style>
+</head>
+<h3>Employees</h3>
+<div class="container-fluid pt-2">
+    <div class="row g-4 d-flex align-items-center justify-content-evenly">
+        <div class="col-sm-6 col-xl-3 px-0">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-5 box">
+                <i class="fa fa-chart-line fa-3x"></i>
+                <div>
+                    <p class="mb-2">Total Employees</p>
+                    <h4 class="mb-0">422</h4>
                 </div>
             </div>
         </div>
-        <div class="col box card flex-center">
-            <div class="row d-flex align-items-center flex-row text-align-center">
-                <div class="col">
-                    <h5 class="title">Allocated Employees</h5>
-                    <h3 class="number">65</h3>
-                </div>
-                <div class="col">
-                    <img class="box-icon" src="~/assets/icons/employees.png" />
+        
+        <div class="col-sm-6 col-xl-3  px-0">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-5 box">
+                <i class="fa fa-chart-bar fa-3x"></i>
+                <div>
+                    <p class="mb-2">Assigned Employees</p>
+                    <h4 class="mb-0">385</h4>
                 </div>
             </div>
         </div>
-        <div class="col box card flex-center">
-            <div class="row d-flex align-items-center flex-row text-align-center">
-                <div class="col">
-                    <h5>Ideal Employees</h5>
-                    <h3 class="number">22</h3>
-                </div>
-                <div class="col">
-                    <img class="box-icon" src="~/assets/icons/departments.png" />
+        <div class="col-sm-6 col-xl-3  px-0">
+            <div class="bg-light rounded d-flex align-items-center justify-content-between p-5 box">
+                <i class="fa fa-chart-area fa-3x"></i>
+                <div>
+                    <p class="mb-2">Ideal Employees</p>
+                    <h4 class="mb-0">37</h4>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 @* search-section *@
 <div class="row justify-content-center my-2 pt-3 ">

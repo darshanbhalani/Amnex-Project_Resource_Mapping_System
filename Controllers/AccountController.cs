@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using Amnex_Project_Resource_Mapping_System.Models;
+using Amnex_Project_Resource_Mapping_System.Repo.Classes;
+using Amnex_Project_Resource_Mapping_System.Repo.Interfaces;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -50,6 +52,25 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
             public IActionResult Profile()
             {
+                try
+                {
+                    int a = 5;
+                    int b = 0;
+                    int sum = a / b;
+                } catch (Exception ex) {
+                    ErrorModel e = new ErrorModel
+                    {
+                        ErrorMessage = ex.Message,
+                        StackTrace = ex.StackTrace,
+                        ErrorTime = DateTime.Now,
+                        ControllerName = "Account",
+                        ActionName = "Profile"
+                    };
+
+                    IError error = new Error(_connection);
+
+                    error.recordError(e);
+                }
                 return View();
             }
         }

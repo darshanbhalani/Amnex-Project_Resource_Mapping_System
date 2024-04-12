@@ -1,66 +1,199 @@
 ﻿@{
     ViewData["Title"] = "ProjectEmployeeMapping";
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+<style>
+    .cursor {
+        cursor: pointer;
+    }
+
+    #assign .dt-column-order {
+        display: none;
+    }
+
+    .logo-middle {
+        text-align: center !important;
+    }
+
+    .page-link {
+        color: black;
+    }
+
+    .page-item.active .page-link {
+        background-color: black;
+        border: 1px solid black;
+    }
+
+    #dataTable1 th {
+        text-align: center;
+    }
+
+    #dataTable1 td {
+        text-align: center;
+    }
+
+    #dataTable3 th {
+        text-align: center;
+    }
+
+    #dataTable3 td {
+        text-align: center;
+    }
+
+    #mainTable th {
+        text-align: center;
+    }
+
+    #mainTable td {
+        text-align: center;
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" />
+
 
 @* search section *@
-<div class="row justify-content-center my-2 pt-3 ">
-    <div class="col col-12 p-0">
-        <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search query"> <!-- Enhanced ARIA label for clarity -->
-            <button class="btn btn-outline-primary me-2" type="submit" aria-label="Submit search">
-                Search
-            </button>
-            <button class="btn btn-danger" id="filterBtn" type="button" aria-label="Open filter options" data-toggle="modal" data-target="#filterModal">
-                Filter
-            </button>
-        </form>
-    </div>
-</div>
+<h3>Project-Employee mapping</h3>
 
-@* grid *@
-<div class="container my-4 pt-3 px-0">
-    <div class="row justify-content-center text-center bg-dark p-2 border-bottom">
-        <div class="col-2 col-md-1 py-2 border-end text-white">Sr. No</div> <!-- Made narrower -->
-        <div class="col-10 col-md-4 py-2 border-end text-white">Project Name</div>
-        <div class="col-6 col-md-2 py-2 border-end text-white">Employees</div>
-        <div class="col-6 col-md-3 py-2 border-end text-white">Department</div>
-        <div class="col-6 col-md-2 py-2 text-white">Status</div>
-    </div>
-    <div id="dataRows">
-        <div class="row justify-content-center text-center bg-light p-2 border-bottom" data-toggle="modal" data-target="#projectModal" data-projectname="GIS Mapping" data-employees="8" data-department="Integrated" data-status="Active">
-            <div class="col-2 col-md-1 py-2 border-end">1</div> <!-- Sr. No -->
-            <div class="col-10 col-md-4 py-2 border-end">GIS Mapping</div>
-            <div class="col-6 col-md-2 py-2 border-end">8</div>
-            <div class="col-6 col-md-3 py-2 border-end">Integrated</div>
-            <div class="col-6 col-md-2 py-2">Active</div>
-        </div>
-        <div class="row justify-content-center text-center bg-light p-2 border-bottom" data-toggle="modal" data-target="#projectModal" data-projectname="Asset Management" data-employees="11" data-department="Mobility" data-status="Active">
-            <div class="col-2 col-md-1 py-2 border-end">2</div> <!-- Sr. No -->
-            <div class="col-10 col-md-4 py-2 border-end">Asset Management</div>
-            <div class="col-6 col-md-2 py-2 border-end">11</div>
-            <div class="col-6 col-md-3 py-2 border-end">Mobility</div>
-            <div class="col-6 col-md-2 py-2">Active</div>
-        </div>
-    </div>
-</div>
 
-@* main-modal *@
+@* grid to display data *@
+<table id="dataTable1" class="table table-striped table-bordered tcenter" style="width:100%">
+    <thead>
+        <tr class="bg-dark">
+            <th class="text-white">Project Name</th>
+            <th class="text-white">Department</th>
+            <th class="text-white">Project Skills</th>
+            <th class="text-white">Employees</th>
+            <th class="text-white">Start date</th>
+            <th class="text-white">End date</th>
+            <th class="text-white">Status</th>
+            <th class="text-white" id="assign" style="text-align:center">Assign</th>
+        </tr>
+    </thead>
+    <tbody id="dataRows">
+        <tr class="rows">
+            <td>Project 1</td>
+            <td>Integrated</td>
+            <td>React,python,ruby</td>
+            <td>20</td>
+            <td>2023-01-10</td>
+            <td>2023-07-20</td>
+            <td>Active</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 2</td>
+            <td>Department B</td>
+            <td>React,python,rust</td>
+            <td>15</td>
+            <td>2023-02-15</td>
+            <td>2023-09-25</td>
+            <td>Inactive</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 3</td>
+            <td>Department C</td>
+            <td>React,python,ruby</td>
+            <td>100</td>
+            <td>2023-03-20</td>
+            <td>2023-08-30</td>
+            <td>Active</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 4</td>
+            <td>Department A</td>
+            <td>React,python,ruby</td>
+            <td>25</td>
+            <td>2023-04-25</td>
+            <td>2023-10-15</td>
+            <td>Completed</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 5</td>
+            <td>Department B</td>
+            <td>React,python,ruby</td>
+            <td>10</td>
+            <td>2023-05-30</td>
+            <td>2023-11-20</td>
+            <td>Inactive</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 6</td>
+            <td>Department C</td>
+            <td>React,python,ruby</td>
+            <td>22</td>
+            <td>2023-06-10</td>
+            <td>2023-12-05</td>
+            <td>Active</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 7</td>
+            <td>Department A</td>
+            <td>React,python,ruby</td>
+            <td>27</td>
+            <td>2023-07-15</td>
+            <td>2023-10-10</td>
+            <td>Active</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 8</td>
+            <td>Department B</td>
+            <td>React,python,ruby</td>
+            <td>35</td>
+            <td>2023-08-20</td>
+            <td>2023-11-30</td>
+            <td>Completed</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 9</td>
+            <td>Department C</td>
+            <td>React,python,ruby</td>
+            <td>1</td>
+            <td>2023-09-25</td>
+            <td>2023-12-20</td>
+            <td>Inactive</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+        <tr class="rows">
+            <td>Project 10</td>
+            <td>Department A</td>
+            <td>React,python,ruby</td>
+            <td>29</td>
+            <td>2023-10-30</td>
+            <td>2024-01-10</td>
+            <td>Active</td>
+            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+<!-- Extra large main modal -->
 <div class="modal fade bd-example-modal-xl" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="mainModalLabel">Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
+                        <!-- 1st row: Project and Start Date -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="projectName">Project Name:</label>
                                 <input type="text" class="form-control" id="projectName" readonly>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="startDate">Start Date:</label>
@@ -69,6 +202,7 @@
                         </div>
                     </div>
                     <div class="row">
+                        <!-- 2nd row: Project Id and End Date -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="pid">Project Id:</label>
@@ -83,6 +217,7 @@
                         </div>
                     </div>
                     <div class="row">
+                        <!-- 3rd row: Department and Project Status -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="department">Department:</label>
@@ -97,6 +232,7 @@
                         </div>
                     </div>
                     <div class="row">
+                        <!-- 4th row: Project Skills and Number of Employees -->
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="skills">Project Skills:</label>
@@ -111,82 +247,88 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
-                            <h5>Employees Data</h5>
-                            <div class="table-responsive" style="height:200px ; overflow-y:auto">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Sr. No</th>
-                                            <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Name</th>
-                                            <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Skills</th>
-                                            <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Role</th>
-                                            <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">Start Date</th>
-                                            <th style="position: sticky;top: 0;background-color: #fff;z-index: 1;">End Date</th>
-                                            <!-- Add more columns as needed -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>John Doe</td>
-                                            <td>C#,React,Javascript</td>
-                                            <td>Developer</td>
-                                            <td>19-03-21</td>
-                                            <td>31-05-25</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>John Doe</td>
-                                            <td>C#,React,Javascript</td>
-                                            <td>Developer</td>
-                                            <td>19-03-21</td>
-                                            <td>31-05-25</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>John Doe</td>
-                                            <td>C#,React,Javascript</td>
-                                            <td>Developer</td>
-                                            <td>19-03-21</td>
-                                            <td>31-05-25</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>John Doe</td>
-                                            <td>C#,React,Javascript</td>
-                                            <td>Developer</td>
-                                            <td>19-03-21</td>
-                                            <td>31-05-25</td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>John Doe</td>
-                                            <td>C#,React,Javascript</td>
-                                            <td>Developer</td>
-                                            <td>19-03-21</td>
-                                            <td>31-05-25</td>
-                                        </tr>
-                                        <tr>
-                                            <td>6</td>
-                                            <td>John Doe</td>
-                                            <td>C#,React,Javascript</td>
-                                            <td>Developer</td>
-                                            <td>19-03-21</td>
-                                            <td>31-05-25</td>
-                                        </tr>
-                                        <tr>
-                                            <td>7</td>
-                                            <td>John Doe</td>
-                                            <td>C#,React,Javascript</td>
-                                            <td>Developer</td>
-                                            <td>19-03-21</td>
-                                            <td>31-05-25</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <!-- 5th row: Employees data -->
+                        <h5>Employees Data</h5>
+                        <!-- Grid to show employees data -->
+                        <table id="mainTable" class="table table-striped table-bordered dataTable2 tcenter" style="width:100%">
+                            <thead class="bg-dark">
+                                <tr>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Sr. No</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Name</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Skills</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Role</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Start Date</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">End Date</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1; text-align:center" id="assign">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populate data dynamically here -->
+                                <tr>
+                                    <td>1</td>
+                                    <td>John Doe</td>
+                                    <td>C#,React,Javascript</td>
+                                    <td>Developer</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>John Doe</td>
+                                    <td>C#,React,Javascript</td>
+                                    <td>Developer</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>John Doe</td>
+                                    <td>C#,React,Javascript</td>
+                                    <td>Developer</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>John Doe</td>
+                                    <td>C#,React,Javascript</td>
+                                    <td>Developer</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>John Doe</td>
+                                    <td>C#,React,Javascript</td>
+                                    <td>Developer</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>John Doe</td>
+                                    <td>C#,React,Javascript</td>
+                                    <td>Developer</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>John Doe</td>
+                                    <td>C#,React,Javascript</td>
+                                    <td>Developer</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -197,13 +339,34 @@
     </div>
 </div>
 
-@* filter-modal *@
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close close-confirmation" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this record?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-confirmation" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeletion">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="filterModalLabel">Filter Options</h5>
-                <h2 aria-hidden="true" class="applyBtn" style="cursor:pointer">&times;</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- First row: Dropdown for department -->
@@ -217,7 +380,7 @@
                         <option value="dept4">Research and Development</option>
                     </select>
                 </div>
-
+                <!-- Second row: Dropdown for status -->
                 <div class="form-group">
                     <label for="statusSelect">Status:</label>
                     <select class="form-control" id="statusSelect">
@@ -226,17 +389,41 @@
                         <option value="inactive">Inactive</option>
                     </select>
                 </div>
-
-                <div class="form-group">
-                    <label for="startDate">Start Date:</label>
-                    <input type="date" class="form-control" id="startDate">
+                <!-- Third row: Date inputs for start and end date -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                    </div>
                 </div>
+                <!-- Fourth row: Dropdown for skills -->
                 <div class="form-group">
-                    <label for="endDate">End Date:</label>
-                    <input type="date" class="form-control" id="endDate">
+                    <label for="skillSelect">Skills:</label>
+                    <select id="choices-multiple-remove-button" class="form-select" placeholder="Select skills" multiple>
+                        <option value="HTML">HTML</option>
+                        <option value="Jquery">Jquery</option>
+                        <option value="CSS">CSS</option>
+                        <option value="Bootstrap 3">Bootstrap 3</option>
+                        <option value="Bootstrap 4">Bootstrap 4</option>
+                        <option value="Java">Java</option>
+                        <option value="Javascript">Javascript</option>
+                        <option value="Angular">Angular</option>
+                        <option value="Python">Python</option>
+                        <option value="Hybris">Hybris</option>
+                        <option value="SQL">SQL</option>
+                        <option value="NOSQL">NOSQL</option>
+                        <option value="NodeJS">NodeJS</option>
+                    </select>
                 </div>
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger applyBtn" data-dismiss="modal">Apply</button>
             </div>
@@ -245,40 +432,383 @@
 </div>
 
 
+
+<!-- Assign Employee Modal -->
+<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Employee to project</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-center my-4">
+                    <!-- Show employees data -->
+                    <div class="col-md-12">
+                        <h5>Choose Employees</h5>
+                        <div class="table-responsive" id="dataTable3" style="max-height: 70vh; overflow-y: auto;">
+                            <table class="table table-striped table-bordered dataTable3 tcenter" id="empModal" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Sr. No</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Name</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Skills</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Company Role</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Project Role</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Department</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Rating</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Start Date</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">End Date</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Add</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populate data dynamically here -->
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Karan</td>
+                                        <td>C#, React, Javascript</td>
+                                        <td>Developer</td>
+                                        <td>Tester</td>
+                                        <td>Integrated</td>
+                                        <td>8/10</td>
+                                        <td>19-03-21</td>
+                                        <td>31-05-25</td>
+                                        <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp1"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>John Doe</td>
+                                        <td>C#, React, Javascript</td>
+                                        <td>Developer</td>
+                                        <td>Tester</td>
+                                        <td>Mobility</td>
+                                        <td>8/10</td>
+                                        <td>19-03-21</td>
+                                        <td>31-05-25</td>
+                                        <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp2"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>John Doe</td>
+                                        <td>C#, React, Javascript</td>
+                                        <td>Developer</td>
+                                        <td>Tester</td>
+                                        <td>Integrated</td>
+                                        <td>8/10</td>
+                                        <td>19-03-21</td>
+                                        <td>31-05-25</td>
+                                        <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp3"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Employee Filter Modal -->
+<div class="modal fade" id="addEmployeeFilter" tabindex="-1" aria-labelledby="addEmployeeFilterLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeFilterLabel">Filter Options</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="filterForm">
+                    <div class="mb-3">
+                        <label for="departmentSelect" class="form-label">Department:</label>
+                        <select class="form-select" id="departmentSelect">
+                            <option value="">Select Department</option>
+                            <option value="dept1">Mobility</option>
+                            <option value="dept2">Integrated</option>
+                            <option value="dept3">Agriculture</option>
+                            <option value="dept4">Research and Development</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skillSelect">Skills:</label>
+                        <select id="choices-multiple-remove-button" placeholder="Select skills" multiple>
+                            <option value="HTML">HTML</option>
+                            <option value="Jquery">Jquery</option>
+                            <option value="CSS">CSS</option>
+                            <option value="Bootstrap 3">Bootstrap 3</option>
+                            <option value="Bootstrap 4">Bootstrap 4</option>
+                            <option value="Java">Java</option>
+                            <option value="Javascript">Javascript</option>
+                            <option value="Angular">Angular</option>
+                            <option value="Python">Python</option>
+                            <option value="Hybris">Hybris</option>
+                            <option value="SQL">SQL</option>
+                            <option value="NOSQL">NOSQL</option>
+                            <option value="NodeJS">NodeJS</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="statusSelect" class="form-label">Status:</label>
+                        <select class="form-select" id="statusSelect">
+                            <option value="">Select Employee Project Status</option>
+                            <option value="allocated">Allocated</option>
+                            <option value="not_allocated">Not Allocated</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ratingSelect" class="form-label">Rating:</label>
+                        <select class="form-select" id="ratingSelect">
+                            <option value="">Select Rating</option>
+                            <option value="1">1 and more</option>
+                            <option value="2">2 and more</option>
+                            <option value="3">3 and more</option>
+                            <option value="4">4 and more</option>
+                            <option value="5">5 and more</option>
+                            <option value="6">6 and more</option>
+                            <option value="7">7 and more</option>
+                            <option value="8">8 and more</option>
+                            <option value="9">9 and more</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Start Date:</label>
+                                <input type="date" class="form-control" id="startDate">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">End Date:</label>
+                                <input type="date" class="form-control" id="endDate">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="applyFilterBtn">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section scripts {
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script>
         $(document).ready(function () {
-            $('#dataRows .row').click(function () {
-                $('#mainModal').modal('show');
+            new DataTable('#dataTable1');
+            new DataTable('.dataTable2');
+            new DataTable('.dataTable3');
 
-                var projectName = $(this).data('projectname');
-                var employees = $(this).data('employees');
-                var department = $(this).data('department');
-                var status = $(this).data('status');
+            $('#assign').click(function (event) {
+                event.preventDefault(); // Prevent default action
+                event.stopPropagation(); // Prevent the event from propagating
+                // Add any other logic here, if necessary
+                return false; // Ensure no other handlers are executed
+            });
 
+            // Event listener for row click to open modal
+            $('#dataRows .rows').click(function (event) {
+                if ($(event.target).closest('.mapEmp').length) {
+                    return;
+                }
+
+                // Get data from the clicked row
+                var projectName = $(this).find('td:eq(0)').text();
+                var department = $(this).find('td:eq(1)').text();
+                var skills = $(this).find('td:eq(2)').text();
+                var employees = $(this).find('td:eq(3)').text();
+                var startDate = $(this).find('td:eq(4)').text();
+                var endDate = $(this).find('td:eq(5)').text();
+                var status = $(this).find('td:eq(6)').text();
+
+                // Populate modal fields with the fetched data
                 $('#projectName').val(projectName);
-                $('#employees').val(employees);
                 $('#department').val(department);
+                $('#skills').val(skills);
+                $('#employees').val(employees);
+                $('#startDate').val(startDate);
+                $('#endDate').val(endDate);
                 $('#status').val(status);
+
+                // Show the modal
+                $('#mainModal').modal('show');
 
             });
 
-
             $("#mainModalClose").click(() => {
                 $('#mainModal').modal('hide');
-
             })
             $("#filterBtn").click(() => {
                 $('#filterModal').modal('show');
-
             })
             $(".applyBtn").click(() => {
                 $('#filterModal').modal('hide');
-
             })
+            // assign employee modal
+            $(".mapEmp").click(() => {
+                $('#mapModal').modal('show');
+            })
+
+            // Event listener for click events on icons within the "Remove" column
+            $('.fa-minus-square').on('click', function () {
+                // Get the parent row of the clicked remove icon
+                var $row = $(this).closest('tr');
+
+                // Display confirmation modal
+                $('#confirmationModal').modal('show');
+
+                // Handle confirmation button click
+                $('#confirmDeletion').on('click', function () {
+                    // Close modal
+                    $('#confirmationModal').modal('hide');
+
+                    // Remove the row from the table
+                    $row.remove();
+                });
+            });
+            $(".close-confirmation").click(() => {
+                $('#confirmationModal').modal('hide');
+            })
+
+
+            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+                removeItemButton: true,
+                // maxItemCount: 5,
+                // searchResultLimit: 5,
+                // renderChoiceLimit: 5
+            });
+
+            $('#filterBtnEmp').click(() => {
+                $('#addEmployeeFilter').modal('show');
+            })
+
+            // Target only checkboxes within the table with ID 'empModal'
+            $('#empModal .addEmp').change(function () {
+                sortCheckedRowsEmpModal();
+                updateProjectRolesToDropdown();
+                updateDateFields();
+            });
+
+            function sortCheckedRowsEmpModal() {
+                var rows = $('#empModal tbody tr').get();
+                rows.sort(function (a, b) {
+                    var keyA = $(a).find('.addEmp').is(':checked') ? 0 : 1;
+                    var keyB = $(b).find('.addEmp').is(':checked') ? 0 : 1;
+                    return keyA - keyB;
+                });
+                $.each(rows, function (index, row) {
+                    $('#empModal tbody').append(row);
+                });
+            }
+
+            function updateProjectRolesToDropdown() {
+                $('#empModal .addEmp').each(function () {
+                    var row = $(this).closest('tr');
+                    var projectRoleCell = row.find('td').eq(4);
+                    if ($(this).is(':checked')) {
+                        if (projectRoleCell.find('select').length === 0) {
+                            var dropdown = $('<select class="form-control"></select>');
+                            var roles = ["Developer", "Tester", "Manager", "Designer", "Analyst"];
+                            $.each(roles, function (index, role) {
+                                dropdown.append($('<option></option>').attr("value", role).text(role));
+                            });
+                            dropdown.val("Developer");
+                            projectRoleCell.html(dropdown);
+                        }
+                    } else {
+                        if (projectRoleCell.find('select').length > 0) {
+                            var role = projectRoleCell.find('select').val();
+                            projectRoleCell.html(role);
+                        }
+                    }
+                });
+            }
+
+            function updateDateFields() {
+                var projectStartDate = "01-01-2024";
+                var projectEndDate = "31-12-2024";
+
+                $('#empModal .addEmp').each(function () {
+                    var row = $(this).closest('tr');
+                    var startDateCell = row.find('td').eq(7);
+                    var endDateCell = row.find('td').eq(8);
+
+                    if ($(this).is(':checked')) {
+                        if (startDateCell.find('input').length === 0) {
+                            startDateCell.html(`<input type="date" class="form-control startDate" value="${projectStartDate}">`);
+                        }
+                        if (endDateCell.find('input').length === 0) {
+                            endDateCell.html(`<input type="date" class="form-control endDate" value="${projectEndDate}">`);
+                        }
+                    } else {
+                        if (startDateCell.find('input').length > 0) {
+                            startDateCell.html(projectStartDate);
+                        }
+                        if (endDateCell.find('input').length > 0) {
+                            endDateCell.html(projectEndDate);
+                        }
+                    }
+                });
+            }
+
+            // Datatable1
+            document.getElementById('dt-search-0').placeholder = 'Search something...';
+            $('label[for="dt-search-0"]').remove();
+            $('#dt-search-0').parent().parent().removeClass('ms-auto');
+            $('#dt-search-0').css({
+                'width': '30rem', 'border': '2px solid #dee2e6'
+            });
+            // Datatable2
+            document.getElementById('dt-search-1').placeholder = 'Search something...';
+            $('label[for="dt-search-1"]').remove();
+            $('#dt-search-1').parent().parent().removeClass('ms-auto');
+            $('#dt-search-1').css({ 'width': '30rem', 'border': '2px solid #dee2e6' });
+            // Datatable3
+            document.getElementById('dt-search-2').placeholder = 'Search something...';
+            $('label[for="dt-search-2"]').remove();
+            $('#dt-search-2').parent().parent().removeClass('ms-auto');
+            $('#dt-search-2').css({ 'width': '30rem', 'border': '2px solid #dee2e6' });
+
+            // changes
+            //1st filter button
+            var firstButton = $('<button>', {
+                class: 'btn btn-danger ms-1',
+                text: 'Filter',
+            });
+            $('#dt-search-0').parent('.dt-search').append(firstButton);
+            firstButton.click(() => {
+                $('#filterModal').modal('show');
+            });
+
+            //2nd and 3rd filter button
+            var secondButton = $('<button>', {
+                class: 'btn btn-danger ms-1',
+                text: 'Filter',
+            });
+            $('#dt-search-1').parent('.dt-search').append(secondButton);
+            secondButton.click(() => {
+                $('#addEmployeeFilter').modal('show');
+            });
+
+            var thirdButton = $('<button>', {
+                class: 'btn btn-danger ms-1',
+                text: 'Filter',
+            });
+            $('#dt-search-2').parent('.dt-search').append(thirdButton);
+            thirdButton.click(() => {
+                $('#addEmployeeFilter').modal('show');
+            });
         });
     </script>
-
 }
-
-

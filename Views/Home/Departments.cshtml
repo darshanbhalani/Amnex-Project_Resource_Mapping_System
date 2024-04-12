@@ -1,59 +1,138 @@
 ﻿@{
     ViewData["Title"] = "Department";
 }
+@* datatables *@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"
+></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" />
+
+<style>
+
+    #assign .dt-column-order {
+        display: none;
+    }
+
+    .asd {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .page-link {
+        color: black;
+    }
+
+    #example td {
+        text-align: center;
+    }
+
+    #example th {
+        text-align: center;
+    }
+
+    .page-item.active .page-link {
+        background-color: black;
+        border: 1px solid black;
+    }
+</style>
+<h3>Departments</h3>
+<table id="example" class="table table-striped table-bordered my-2" style="width:100%">
+    <thead>
+        <tr class="bg-dark">
+            <th class="text-white">Id</th>
+            <th class="text-white">Name</th>
+            <th class="text-white">Status</th>
+            <th class="text-white">Actions</th>
+         
+        </tr>
+    </thead>
+    <tbody id="dataRows">
+        <tr class="row123">
+            <td>Tiger Nixon</td>
+            <td>System Architect</td>
+            <td>Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+            <i class="fa fa-solid fa-trash delbtn"></i></td>
+
+           
+        </tr>
+        <tr class="row123">
+            <td>Garrett Winters</td>
+            <td>Accountant</td>
+            <td>Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+                <i class="fa fa-solid fa-trash delbtn"></i>
+            </td>
 
 
-<head>
-    <style>
-        .editbtn {
-            height: 20px;
-        }
-    </style>
-</head>
+        </tr>
+        <tr class="row123">
+            <td>Ashton Cox</td>
+            <td>Junior Technical Author</td>
+            <td>Not Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+                <i class="fa fa-solid fa-trash delbtn"></i>
+            </td>
+        </tr>
+        <tr class="row123">
+            <td>Cedric Kelly</td>
+            <td>Senior Javascript Developer</td>
+            <td>Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+                <i class="fa fa-solid fa-trash delbtn"></i>
+            </td>
 
-@* search-section *@ 
-<div class="row justify-content-center my-2 pt-3 ">
-    <div class="col-md-12 px-0">
-        <form class="d-flex">
-            <button type="button" id="addSkillButton" class="btn btn-dark me-2 px-4" data-toggle="modal" data-target="#departmentModal">
-                Add
-            </button>
-            <input class="form-control flex-grow-1 me-2 px-4" type="search" placeholder="Search" aria-label="Search query">
-            <button class="btn btn-outline-primary me-2 px-4" type="submit">
-                Search
-            </button>
-        </form>
-    </div>
-</div>
+        </tr>
+        <tr class="row123">
+            <td>Airi Satou</td>
+            <td>Accountant</td>
+            <td>Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+                <i class="fa fa-solid fa-trash delbtn"></i>
+            </td>
 
-@* grid *@
-<div class="container my-4 pt-3 px-0">
-    <div class="row justify-content-center text-center bg-dark p-2 border-bottom">
-        <div class="col-6 col-md-3 py-2 border-end text-light">Id</div>
-        <div class="col-6 col-md-3 py-2 border-end text-light">Name</div>
-        <div class="col-6 col-md-3 py-2 border-end text-light">Status</div>
-        <div class="col-6 col-md-3 py-2 text-light">Update</div>
-    </div>
-    <div class="row justify-content-center text-center bg-light p-2 border-bottom">
-        <div class="col-6 col-md-3 py-2 border-end">1</div>
-        <div class="col-6 col-md-3 py-2 border-end">Agriculture</div>
-        <div class="col-6 col-md-3 py-2 border-end">Active</div>
-        <div class="col-6 col-md-3 py-2"><img class="editbtn" src="~/assets/icons/edit.png" /></div>
-    </div>
-    <div class="row justify-content-center text-center bg-light p-2 border-bottom">
-        <div class="col-6 col-md-3 py-2 border-end">2</div>
-        <div class="col-6 col-md-3 py-2 border-end">Mobility</div>
-        <div class="col-6 col-md-3 py-2 border-end">Active</div>
-        <div class="col-6 col-md-3 py-2"><img class="editbtn" src="~/assets/icons/edit.png" /></div>
-    </div>
-    <div class="row justify-content-center text-center bg-light p-2 border-bottom">
-        <div class="col-6 col-md-3 py-2 border-end">3</div>
-        <div class="col-6 col-md-3 py-2 border-end">Integrated</div>
-        <div class="col-6 col-md-3 py-2 border-end">Active</div>
-        <div class="col-6 col-md-3 py-2"><img class="editbtn" src="~/assets/icons/edit.png" /></div>
-    </div>
-</div>
+        </tr>
+        <tr class="row123">
+            <td>Brielle Williamson</td>
+            <td>Integration Specialist</td>
+            <td>Not Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+                <i class="fa fa-solid fa-trash delbtn"></i>
+            </td>
 
+        </tr>
+        <tr class="row123">
+            <td>Herrod Chandler</td>
+            <td>Sales Assistant</td>
+            <td>Not Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+                <i class="fa fa-solid fa-trash delbtn"></i>
+            </td>
+
+        </tr>
+        <tr class="row123">
+            <td>Rhona Davidson</td>
+            <td>Integration Specialist</td>
+            <td>Active</td>
+            <td>
+                <i class="fa fa-pencil-square-o editbtn me-5" aria-hidden="true"></i>
+                <i class="fa fa-solid fa-trash delbtn"></i>
+            </td>
+
+        </tr>
+</table>
 
 @* add-modal *@
 <div class="modal fade" id="departmentModal" tabindex="-1" aria-labelledby="departmentModalLabel" aria-hidden="true">
@@ -78,17 +157,16 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" id="closedModal" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
 
-
 @* edit-modal *@
-<div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+ <div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -115,27 +193,48 @@
             </div>
         </div>
     </div>
-</div>
-@section scripts {
-    <script>
-        $(document).ready(function () {
-            $(".editbtn").click(function () {
-                var department = $(this).closest(".row").find(".col-md-3:nth-child(2)").text().trim();
-                var isActive = $(this).closest(".row").find(".col-md-3:nth-child(3)").text().trim();
+</div> 
 
-                $("#editDepartment").val(department);
-                $("#editIsActive").val(isActive);
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
+<script>
+    new DataTable('#example');
+    $('#dt-search-0').css({ 'width': '30rem' })
+    $('#dt-search-0').addClass('flex-row-reverse')
+    document.getElementById('dt-search-0').placeholder = 'Search Skills';
+    $('.dt-search label').remove();
+    var addButton = $('<button>').text('Add');
+    $('.dt-search').append(addButton);
+    $('.dt-search button').addClass('btn btn-dark');
+    // $('.dt-search button').css({'margin-left':'2rem'})
+    $('#dt-search-0').parent().addClass('d-flex flex-row-reverse');
+    $('#dt-search-0').parent().parent().parent().addClass('d-flex flex-row-reverse');
+    $('#dt-length-0').parent().parent().removeClass('me-auto');
+    $('#dt-search-0').parent().parent().removeClass('ms-auto');
+    
+    $(document).ready(function () {
+        $(document).on("click", ".editbtn", function () {
+            var department = $(this).closest("tr").find('td:eq(1)').text();                        
+            var isActive = $(this).closest("tr").find('td:eq(2)').text();
+           
+            $("#editDepartment").val(department);
+            $("#editIsActive").val(isActive);                                                                                                                                                                                                                                                                                                                                                                           
 
-                $("#editDepartmentModal").modal('show');
-            });
-
-            $("#saveChangesBtn,#closedModal").click(function () {
-                var editedDepartment = $("#editDepartment").val();
-                var editedIsActive = $("#editIsActive").val();
-                $(".modal").modal('hide');
-            });
-
-
+            $("#editDepartmentModal").modal('show');
         });
-    </script>
-}
+
+        // $("#saveChangesBtn, #closedModal").click(function () {
+        //     $(".modal").modal('hide');
+        // });
+
+        addButton.click(function () {
+            $("#departmentModal").modal('show');
+        })
+        $("#saveChangesBtn, #closedModal").click(function () {
+            $(".modal").modal('hide');
+        });
+    });
+
+</script>

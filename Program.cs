@@ -1,5 +1,7 @@
 using Amnex_Project_Resource_Mapping_System.Models;
+using Amnex_Project_Resource_Mapping_System.Repo.Interfaces;
 using Npgsql;
+using Amnex_Project_Resource_Mapping_System.Repo.Classes;
 
 namespace Amnex_Project_Resource_Mapping_System
 {
@@ -9,15 +11,14 @@ namespace Amnex_Project_Resource_Mapping_System
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession(options =>
             {
-                // Set a short timeout for easy testing
-                options.IdleTimeout = TimeSpan.FromMinutes(20); // Adjust as needed
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+
             builder.Services.AddHttpContextAccessor();
 
             var configuration = builder.Configuration;
@@ -39,11 +40,10 @@ namespace Amnex_Project_Resource_Mapping_System
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error connecting to database: {ex.Message}");
+                Console.WriteLine("Database connection error...");
             }
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -57,7 +57,7 @@ namespace Amnex_Project_Resource_Mapping_System
 
             app.UseAuthorization();
 
-            
+
 
             app.Use(async (context, next) =>
             {
@@ -87,7 +87,6 @@ namespace Amnex_Project_Resource_Mapping_System
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Dashboard}/{id?}");
-
 
             app.Run();
         }

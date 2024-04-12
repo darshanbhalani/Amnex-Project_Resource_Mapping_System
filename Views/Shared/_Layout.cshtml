@@ -75,7 +75,6 @@
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                           @*  <span class="d-none d-lg-inline-flex">MR. DARSHAN BHALANI</span> *@
                             @{
                                 var userId = HttpContextAccessor.HttpContext.Session.GetString("userName");
                             }
@@ -125,23 +124,27 @@
 
     <script>
         $(document).ready(function () {
+
+            var activeAction = "@ViewContext.RouteData.Values["action"]";
+            $('#'+ activeAction).addClass('active');
+
             // Website loader
-            $('#loader').show();
-            $(window).on('load', function () {
-                $('#loader').hide();
-            });
-            $('#button').click(function () {
-                $('#loader').show();
-                $.ajax({
-                    url: window.location.pathname.toString,
-                    success: function (data) {
-                        $('#loader').hide();
-                    },
-                    error: function () {
-                        $('#loader').hide();
-                    }
-                });
-            });
+            // $('#loader').show();
+            // $(window).on('load', function () {
+            //     $('#loader').hide();
+            // });
+            // $('#button').click(function () {
+            //     $('#loader').show();
+            //     $.ajax({
+            //         url: window.location.pathname.toString,
+            //         success: function (data) {
+            //             $('#loader').hide();
+            //         },
+            //         error: function () {
+            //             $('#loader').hide();
+            //         }
+            //     });
+            // });
 
             // logout
             $("#logout").click(function (e) {
