@@ -15,7 +15,7 @@ public partial class Employee
 
     public int Employeerating { get; set; }
 
-    public int Employeeroleid { get; set; }
+    public dynamic Employeeroleid { get; set; }
 
     public bool Isallocated { get; set; }
 
@@ -37,5 +37,7 @@ public partial class Employee
 
     public bool Isdeleted { get; set; }
 
-    public virtual Department Department { get; set; } = null!;
+    public string Department { get; set; } 
+
+    public string Email { get; set; }   
 }
