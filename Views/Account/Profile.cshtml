@@ -1,11 +1,12 @@
-﻿@model Employee;
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model Employee;
 @{
     ViewData["Title"] = "Profile";
 }
 
 <style>
-    .profile-container{
-        min-height:80vh;
+    .profile-container {
+        min-height: 80vh;
     }
 </style>
 
@@ -14,37 +15,372 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Employeeid">Employee Id :</label>
-                <input type="text" class="form-control" id="Employeeid" asp-for="Employeeid">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="Employeeid">Role :</label>
-                <input type="text" class="form-control" id="Role">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="Employeeid">Department :</label>
-                <input type="text" class="form-control" id="Employeeid" asp-for="Employeeid">
+                <label for="Employeeid">Employee Id</label>
+                <input type="text" class="form-control" asp-for="Employeeid" disabled>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="Employeename">Name:</label>
-                <input type="text" class="form-control" id="Employeename" asp-for="Employeename">
+                <input type="text" class="form-control" id="employeeName" asp-for="Employeename" disabled>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="D">Department</label>
+                <input type="text" class="form-control" asp-for="Department" disabled>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Employeeroleid">Role</label>
+                <input type="text" class="form-control" id="Role" asp-for="Employeeroleid" disabled>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Employeename">Rating:</label>
-                <input type="text" class="form-control" id="Employeename" asp-for="Employeename">
+                <label for="Email">Email:</label>
+                <input type="text" class="form-control" asp-for="Email" disabled >
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Employeerating">Rating:</label>
+                <input type="text" class="form-control" asp-for="Employeerating" disabled>
+            </div>
+        </div>
+    </div>
+
+    <div class="row pt-3">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password</button>
+        </div>
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <script>
+
+        // check input field value in checkPassword password
+        const password1 = document.getElementById('Fr-newPassword');
+        const password2 = document.getElementById('Fr-confirmPassword');
+
+        password1.addEventListener('input', checkPassword);
+        password2.addEventListener('input', checkPassword);
+
+        function checkPassword() {
+            const value1 = password1.value.trim();
+            const value2 = password2.value.trim();
+
+            if (value1 === value2) {
+                $('#change-password-btn').removeClass('btn-secondary');
+                $('#change-password-btn').addClass('btn-primary');
+                $('#change-password-btn').removeAttr('disabled');
+            } else {
+                $('#change-password-btn').removeClass('btn-primary');
+                $('#change-password-btn').addClass('btn-secondary');
+                $('#change-password-btn').attr('disabled');
+            }
+        }
+
+
+        // send otp
+        $('#sendOTP').click(function () {
+            loading();
+            $('#otp-form').removeClass('d-none');
+            $('#userEmail-form').addClass('d-none');
+            $('#sendOTP').parent().addClass('d-none');
+            var data = {
+                data: "darshanbhalanipatel@gmai.com"
+            }
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/Account/SendOTP',
+                success: function (res) {
+                    loading();
+                    showSnackbar("true","OTP successfully sended.");
+                },
+                error: function (res) {
+                    loading();
+                    showSnackbar("false", res.message);
+                }
+            });
+        });
+
+
+        // otp submission
+        $('#otp-form').submit(function (e) {
+            e.preventDefault();
+            loading();
+            var otp1 = document.getElementById("otp1").value;
+            var otp2 = document.getElementById("otp2").value;
+            var otp3 = document.getElementById("otp3").value;
+            var otp4 = document.getElementById("otp4").value;
+            var otp5 = document.getElementById("otp5").value;
+            var otp6 = document.getElementById("otp6").value;
+
+            var otp = otp1 + otp2 + otp3 + otp4 + otp5 + otp6;
+            var data = {
+                otp: otp
+            }
+            if (otp.length < 6) {
+                $('#response').text("Enter OTP...");
+                loading();
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/Account/checkOTP',
+                success: function (res) {
+                    if (res.success) {
+                        loading();
+                        $('#otp-form').addClass('d-none');
+                        $('#setPassword-form').removeClass('d-none');
+                    } else {
+                        loading();
+                        console.log(res.message);
+                        $('#response').text(res.message);
+                    }
+                },
+                error: function (res) {
+                    loading();
+                    showSnackbar("false", res.message);
+                },
+            });
+        });
+
+
+        // change password using forgot password
+        $('#setPassword-form').submit(function (e) {
+            e.preventDefault();
+            loading();
+            if (document.getElementById("Fr-newPassword").value != document.getElementById("Fr-confirmPassword").value) {
+                $('#password-error').text("Password not Matched...");
+                loading();
+                return;
+            }
+            if (document.getElementById("Fr-newPassword").value.trim().length < 8) {
+                $('#password-error').text("Password is too short. Minimum length of password is 8 charecters.");
+                loading();
+                return;
+            }
+            var password = document.getElementById("Fr-newPassword").value.trim();
+            var data = {
+                password: password
+            }
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/Account/ForgotPassword',
+                success: function (res) {
+                    if (res.success) {
+                        loading();
+                        $('#forgotPasswordModal').modal('hide');
+                        showSnackbar("true", "Password successfully changed.");
+                    } else {
+                        loading();
+                        $('#response').text(res.message);
+                        showSnackbar("false", res.message);
+                    }
+                },
+                error: function (res) {
+                    loading();
+                    showSnackbar("false", res.message);
+                }
+            });
+        });
+
+
+        // otp-box nevigation
+        document.querySelectorAll('.otp-input').forEach(function (element, index) {
+            element.addEventListener('input', function () {
+                if (this.value.length >= 1) {
+                    var nextIndex = index + 1;
+                    if (nextIndex < 6) {
+                        document.getElementById('otp' + (nextIndex + 1)).focus();
+                    }
+                }
+            });
+            element.addEventListener('keydown', function (event) {
+                if (event.key === 'Backspace' && this.value.length === 0) {
+                    var previousIndex = index - 1;
+                    if (previousIndex >= 0) {
+                        document.getElementById('otp' + (previousIndex + 1)).focus();
+                    }
+                }
+            });
+        });
+
+        // change password using current password
+        $("#changePassword-form").submit(function (e) {
+            e.preventDefault();
+            loading();
+            var currentPassword = document.getElementById("currentPassword").value;
+            var newPassword = document.getElementById("newPassword").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            console.log(currentPassword);
+            if (newPassword != confirmPassword) {
+                $('#changePassword-error').text("New Password and Confirm Password doesn't match.");
+                loading();
+                return;
+            }
+            if (newPassword.length < 8) {
+                $('#changePassword-error').text("Password is too short. Minimum length of password is 8 charecters.");
+                loading();
+                return;
+            }
+            if (currentPassword == newPassword) {
+                $('#changePassword-error').text("Current Password and New Password both are same.");
+                loading();
+                return;
+            }
+            var data = {
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            }
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/Account/ChangePassword',
+                success: function (res) {
+                    if (res.success) {
+                        loading();
+                        $('#changePasswordModal').modal('hide');
+                        showSnackbar("true", "Password successfully changed.");
+                    } else {
+                        loading();
+                        $('#changePassword-error').text("Wrong Password.");
+                    }
+                },
+                error: function (res) {
+                    loading();
+                    showSnackbar("false", res.error);
+
+                }
+            });
+        });
+    </script>
+
+}
+
+@* change password modal *@
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePassword-form">
+                    <div class="mb-2">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword">
+                    </div>
+                    <div class="mb-2">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword">
+                    </div>
+                    <div class="d-flex justify-content-center pb-3">
+                        <div id="changePassword-error" class="text-danger text-center"></div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+
+
+@* forgot password modal *@
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userEmail-form">
+                    <p>We will send OTP on</p>
+                    <input type="text" class="form-control" id="forgotPassword-email" placeholder="darshanbhalanipatel@gmail.com" disabled>
+                    <input type="text" class="d-none form-control mt-2" id="forgotPassword-id" placeholder="@HttpContextAccessor.HttpContext!.Session.GetString("userId")" disabled>
+                </form>
+                <form class="d-none" id="otp-form">
+                    <h6>Enter OTP</h6>
+                    <div class="row mt-2 px-5">
+                        <div class="col">
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="\d*" inputmode="numeric" id="otp1">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="\d*" inputmode="numeric" id="otp2">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="\d*" inputmode="numeric" id="otp3">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="\d*" inputmode="numeric" id="otp4">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="\d*" inputmode="numeric" id="otp5">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="\d*" inputmode="numeric" id="otp6">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center pt-2">
+                        <div id="response" class="text-danger"></div>
+                    </div>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" class="btn btn-success" id="submit-otp">Submit OTP</button>
+                    </div>
+                </form>
+                <form id="setPassword-form" class="d-none">
+                    <div class="mb-2">
+                        <label for="Fr-newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="Fr-newPassword">
+                    </div>
+                    <div class="mb-2">
+                        <label for="Fr-confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="Fr-confirmPassword">
+                    </div>
+                    <div class="d-flex justify-content-center pb-3">
+                        <div id="password-error" class="text-danger"></div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-secondary" id="change-password-btn" disabled>Change Password</button>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary" id="sendOTP">Send OTP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

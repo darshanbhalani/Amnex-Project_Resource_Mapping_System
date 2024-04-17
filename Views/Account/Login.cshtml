@@ -23,21 +23,28 @@
         .login-modal {
             color: black !important;
         }
+
+        #logo-image{
+            max-height:8vw;
+            min-height: 50px;
+            aspect-ratio:1/1;
+        }
     </style>
 </head>
+
+@* welcome content *@
 <div class="container-fluid d-flex justify-content-center align-items-center flex-column main-container text-center">
-    <img style="height:10rem;" src="~/assets/images/prms-logo.png" />
+    <img id="logo-image" src="~/assets/images/prms-logo.png" />
     <h1>Welcome to PRMS</h1>
-    @*     <p>Efficiently manage and allocate company resources <br />with our Project Resource Mapping System.<br /> Track current allocations and easily adjust as per project requirements.</p>
-    *@
     <p>
         Efficiently map, track and allocate resource to the required project.
     </p>
     <button id="loginBtnClick" class="btn btn-primary" data-bs-toggle="modal" data-target="#loginModal">Get Started</button>
 
 </div>
-@* login-modal *@
 
+
+@* login-modal *@
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -57,7 +64,7 @@
                             <input asp-for="Password" class="form-control" id="Password" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <div id="error-message" class="text-danger"></div> <!-- Display error messages here -->
+                        <div id="error-message" class="text-danger"></div> 
                         <div class="text-end mb-3 form-group">Forgot Password ?</div>
                         <div class="form-group">
                             <input type="button" id="loginbtn" value="submit" class="btn btn-primary px-5 text-center w-100 mt-3" />
@@ -87,13 +94,11 @@
             var username = $('#Username').val();
             var password = $('#Password').val();
 
-            // Perform basic client-side validation
             if (!username.trim() || !password.trim()) {
                 $('#Username').next('.text-danger').text('Please enter a username.');
                 $('#Password').next('.text-danger').text('Please enter a Password.'); return;
             }
 
-            // Send AJAX request
             $.ajax({
                 type: 'POST',
                 url: '/Account/Login',
@@ -103,8 +108,6 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        // Redirect to dashboard
-                        // window.location.href = 'Home/Departments';
                         window.location.replace('/Home/Dashboard');
 
                     } else {

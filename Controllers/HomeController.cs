@@ -1,5 +1,6 @@
 using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Npgsql;
 using System.Data;
 using System.Diagnostics;
@@ -134,10 +135,30 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         {
             return View();
         }
+        [HttpGet]
         public IActionResult Departments()
         {
-            return View();
+            List<Department> departments = new List<Department>();
+
+            var sql = "SELECT * FROM public.displayalldepartments()";
+
+            using (var cmd = new NpgsqlCommand(sql, _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        departments.Add(new Department
+                        {
+                            DepartmentId = reader.GetInt32(0),
+                            DepartmentName = reader.GetString(1),
+                        });
+                    }
+                }
+            }
+            return View(departments);
         }
+
         public IActionResult Skills()
         {
             return View();
