@@ -101,7 +101,7 @@
             $('#userEmail-form').addClass('d-none');
             $('#sendOTP').parent().addClass('d-none');
             var data = {
-                data: "darshanbhalanipatel@gmai.com"
+                data: "@Model.Email"
             }
             $.ajax({
                 type: 'POST',
@@ -322,7 +322,7 @@
             <div class="modal-body">
                 <form id="userEmail-form">
                     <p>We will send OTP on</p>
-                    <input type="text" class="form-control" id="forgotPassword-email" placeholder="darshanbhalanipatel@gmail.com" disabled>
+                    <input type="text" class="form-control" id="forgotPassword-email" placeholder="@Model.Email" disabled>
                     <input type="text" class="d-none form-control mt-2" id="forgotPassword-id" placeholder="@HttpContextAccessor.HttpContext!.Session.GetString("userId")" disabled>
                 </form>
                 <form class="d-none" id="otp-form">

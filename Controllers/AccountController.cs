@@ -76,7 +76,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             [HttpPost]
             public IActionResult SendOTP(string data)
             {
-                account.sendOTP("darshanbhalanipatel@gmail.com", HttpContext);
+                account.sendOTP(data, HttpContext);
                 return Ok();
             }
 
