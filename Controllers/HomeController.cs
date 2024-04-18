@@ -161,8 +161,24 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
         public IActionResult Skills()
         {
-            return View();
+            List<Skill> skills = new List<Skill>();
+            using (var cmd = new NpgsqlCommand("SELECT skillid, skillname FROM public.skills WHERE isdeleted = false order by skillid", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        skills.Add(new Skill
+                        {
+                            Skillid = reader.GetInt32(0),
+                            Skillname = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+            return View(skills);
         }
+
         public IActionResult Actions()
         {
             return View();

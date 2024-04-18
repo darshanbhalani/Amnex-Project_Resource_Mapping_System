@@ -1,58 +1,97 @@
-﻿@{
-    ViewData["Title"] = "Skills";
-}
-
-<html>
+﻿@model List<Skill>;
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+
+    <style>
+        #skills thead tr th {
+            color: white;
+            text-align: center;
+            border-right: 1px solid grey;
+            border-left: 1px solid grey;
+        }
+
+        #skills td {
+            text-align: center;
+        }
+
+
+        #skills tbody tr td {
+            border-left: 1px solid grey;
+            border-right: 1px solid grey;
+        }
+
+        .icon {
+            text-align: center;
+        }
+
+        table.dataTable td.dt-type-numeric {
+            text-align: center;
+        }
+
+        #addSkillButton {
+            width: auto;
+        }
+
+        .page-link {
+            color: black;
+        }
+
+        .page-item.active .page-link {
+            background-color: black;
+            border: 1px solid black;
+        }
+
+        .back-to-top {
+            display: none;
+        }
+
+        label[for="dt-length-0"] {
+            margin-right: 4%; /* Adjust the margin as needed */
+        }
+
+        .assign .dt-column-order {
+            display: none;
+        }
+
+        #dt-search-0 {
+            width: 30rem;
+        }
+
+        div.dt-container div.dt-search label {
+            padding: 0.5rem;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="container-fluid">
-            
-        <!-- search section -->
-        <div class="row justify-content-center my-2 pt-5">
-            <div class="col-md-12">
-                <form class="d-flex" role="search" id="searchForm">
-                    <button type="button" id="addSkillButton" class="btn btn-dark me-2 " style="margin-right:10rem" data-toggle="modal" data-target="#addSkillsModal" >
-                        Add
-                    </button>
-                    <input class="form-control me-2 px-4 py-1" type="search" placeholder="Search" aria-label="Search query" id="searchInput">
-                    <button class="btn btn-outline-primary me-2 px-4 py-1" type="submit" aria-label="Submit search" id="searchButton" >
-                        Search
-                    </button>
-                   
-                </form>
-            </div>
-        </div>
 
-        <!-- grid to display data -->
-        <div class="row justify-content-center my-2 pt-5 " >
-            <div class="row justify-content-center text-center bg-dark text-white p-2 border-bottom">
-                <div class="col-12 col-md-3 py-2 border-end">Skill Id</div>
-                <div class="col-12 col-md-3 py-2 border-end">Skill Name</div>
-                <div class="col-12 col-md-3 py-2 border-end">Status</div>
-                <div class="col-12 col-md-3 py-2">Update</div>
-            </div>
-            <div class="row justify-content-center text-center p-2 skill-row">
-                <div class="col-12 col-md-3 py-2 border-end">1</div>
-                <div class="col-12 col-md-3 py-2 border-end">HTML</div>
-                <div class="col-12 col-md-3 py-2 border-end">Active</div>
-                <div class="col-12 col-md-3 py-2">
-                    <i class="fas fa-edit fa-2x edit-icon" style="cursor:pointer"></i>
-                </div>
-            </div>
-            <div class="row justify-content-center text-center p-2 skill-row">
-                <div class="col-12 col-md-3 py-2 border-end">2</div>
-                <div class="col-12 col-md-3 py-2 border-end">CSS</div>
-                <div class="col-12 col-md-3 py-2 border-end">Inactive</div>
-                <div class="col-12 col-md-3 py-2">
-                    <i class="fas fa-edit fa-2x edit-icon" style="cursor:pointer"></i>
-                </div>
-            </div>
-        </div>
+    <h3>Skills</h3>
 
-    </div>
-
+    <table id="skills" class="table table-striped" style="width:100%">
+        <thead class="bg-dark">
+            <tr>
+                <th>Skill Id</th>
+                <th>Skill's Name</th>
+                <th class="assign">Update</th>
+                <th class="assign">Delete</th>
+            </tr>
+        </thead>
+        <tbody id="dataRows">
+            @foreach (var skill in Model)
+            {
+                <tr>
+                    <td class="text-center" id="SkillID">@skill.Skillid</td>
+                    <td>@skill.Skillname</td>
+                    <td class="icon"><i class="fa fa-edit fa-lg edit-icon" style="cursor:pointer;" aria-hidden="true"></i></td>
+                    <td class="icon"><i class="fa fa-trash fa-lg delete-icon" style="cursor:pointer;" aria-hidden="true"></i></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
     <!-- Modal for adding skills -->
     <div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillsModalLabel" aria-hidden="true">
@@ -60,9 +99,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addSkillsModalLabel">Add Skill</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="addCloseModelBtn">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <span class="close close-btn" style="cursor:pointer" aria-hidden="true">&times;</span>
                 </div>
                 <div class="modal-body">
                     <!-- Form to add skills -->
@@ -74,8 +111,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="addCloseBtn">Close</button>
-                    <button type="button" class="btn btn-success" id="saveSkillButton">Save Skill</button>
+                    <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success save-btn" id="saveAddSkillButton">Save Skill</button>
                 </div>
             </div>
         </div>
@@ -87,106 +124,242 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editSkillsModalLabel">Update Skill</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="editCloseModelBtn">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <span class="close close-btn" style="cursor:pointer" aria-hidden="true">&times;</span>
+
                 </div>
                 <div class="modal-body">
                     <!-- Form to edit skills -->
                     <form id="editSkillForm">
                         <div class="form-group">
                             <label for="editSkillName">Edit Skill Name</label>
-                            <input type="text" class="form-control" id="editSkillName" placeholder="Edit skill name">
-                        </div>
-                        <div class="form-group">
-                            <label for="editSkillStatus">Edit Skill Status</label>
-                            <select class="form-select" id="editSkillStatus">
-                                <option value="Active" >Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
+                            <input type="text" class="form-control" id="editSkillName" style="color:#666666;" placeholder="Edit skill name">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="editCloseBtn">Close</button>
-                    <button type="button" class="btn btn-success" id="saveSkillButton">Save Skill</button>
+                    <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success save-btn" id="saveEditSkillButton" disabled>Save Skill</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for deleting skills -->
+    <div class="modal fade" id="deleteSkillModal" tabindex="-1" role="dialog" aria-labelledby="deleteSkillModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteSkillModalLabel">Delete Skill</h5>
+                    <span class="close close-btn" style="cursor:pointer" aria-hidden="true"> &times;</span>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="deleteSkillName">Are you sure you want to delete <b><span id="deleteSkillName"></span>?</b></label>
+                            <input type="text" class="form-control" id="confirmInput" placeholder="Type CONFIRM">
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton" disabled>Delete Skill</button>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!--Add skills-->
-    <script>
-        $(document).ready(function () {
-            // Add Skills button click event
-            $('#addSkillButton').click(function () {
-                // Load the modal content via AJAX
-                $('#addSkillModal').modal('show');
-            });
-            $('#addCloseModelBtn').click(function () {
-                $('#addSkillModal').modal('hide'); // Hide the modal
-            });
-            $('#addCloseBtn').click(function () {
-                $('#addSkillModal').modal('hide'); // Hide the modal
-            });
-        });
-    </script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <!-- Bootstrap 5 JS -->
 
-    <!--Search skills-->
+
     <script>
+        var addButtonAppend = false;
+
         $(document).ready(function () {
-            $('#searchInput').on('input', function () {
-                var searchQuery = $(this).val().toLowerCase();
-                $('.skill-row').each(function () {
-                    var skillName = $(this).find('.col-md-3:nth-child(2)').text().toLowerCase();
-                    if (skillName.includes(searchQuery)) {
-                        $(this).show();
+            new DataTable('#skills');
+            if (!addButtonAppend) {
+                var addButton = $('<button>').text('Add').attr('id', 'addSkillButton');
+                $('.dt-search').append(addButton);
+
+                addButton.click(function () {
+                    $("#addSkillModal").modal('show');
+                })
+                addButtonAppend = true;
+            }
+            $('.dt-search button').addClass('btn btn-dark');
+            $('.dt-search').prepend(addButton);
+            $('.dt-search').addClass('d-flex');
+
+            document.getElementById('dt-search-0').placeholder = 'Search Skills';
+            $('#dt-length-0').parent().parent().parent().addClass('d-flex flex-row-reverse');
+            $('#dt-length-0').parent().addClass('d-flex flex-row-reverse');
+
+            $('#dt-search-0').parent().parent().removeClass('ms-auto');
+            $('#dt-search-0').parent().parent().addClass('searchSkill');
+
+
+            $('#dt-length-0').parent().parent().removeClass('me-auto');
+            $('#dt-length-0').parent().parent().addClass('ms-auto');
+
+            $('.close-btn').on('click', function () {
+                $('#addSkillModal').modal('hide');
+                $('#deleteSkillModal').modal('hide');
+                $('#editSkillModal').modal('hide');
+            });
+            
+
+            $('#saveAddSkillButton').on('click', function () {
+                var skillName = $('#skillName').val();
+                if (skillName.trim() === '') {
+                    alert('Skill name cannot be empty');
+                    return;
+                }
+                saveSkill(skillName);
+            });
+            function saveSkill(skillName) {
+                var data = {
+                    skillname: skillName,
+                };
+                $.ajax({
+                    type: 'POST',
+                    url: '/Skills/AddSkill',
+                    data: data,
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Skill ' + skillName + ' added successfully');
+                            $('#addSkillModal').modal('hide');
+                            // getskillData();
+                            location.reload();
+                            // addRowToTable(response.skillId, skillName);
+                        } else {
+                            $('#addSkillModal').modal('hide');
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            //EDIT SKILLS
+            $('#skills').on('click', '.edit-icon', function () {
+                // Get the skill ID and skill name from the corresponding table row
+                var skillId = $(this).closest('tr').find('#SkillID').text();
+                var skillName = $(this).closest('tr').find('td:nth-child(2)').text();
+                $('#editSkillName').val(skillName);
+                $('#editSkillName').val(skillName).data('originalSkillName', skillName); // Store original skill name as data attribute
+                $('#editSkillModal').data('skillId', skillId);
+                $('#editSkillModal').modal('show');
+                $('#editSkillName').on('input', function () {
+                    var editedSkillName = $(this).val().trim();
+                    var originalSkillName = $(this).data('originalSkillName');
+
+                    // Enable the "Save Skill" button if the skill name is different from the original one
+                    if (editedSkillName !== originalSkillName) {
+                        $('#saveEditSkillButton').prop('disabled', false);
                     } else {
-                        $(this).hide();
+                        $('#saveEditSkillButton').prop('disabled', true);
                     }
                 });
             });
+
+
+            $('#saveEditSkillButton').on('click', function () {
+                // Get the updated skill name and skill ID from the edit skill modal
+                var updatedSkillName = $('#editSkillName').val();
+                console.log(updatedSkillName);
+                var skillId = $('#editSkillModal').data('skillId');
+
+                // Send an AJAX request to update the skill
+                $.ajax({
+                    type: 'PUT', // Assuming you use PUT method for updates
+                    url: '/Skills/UpdateSkill', // Adjust the URL to your controller action
+                    data: { skillId: skillId, updatedSkillName: updatedSkillName },
+                    success: function (response) {
+                        // Check if the update was successful
+                        if (response.success) {
+                            // Hide the editSkillModal
+                            $('#editSkillModal').modal('hide');
+                            // Optionally update the corresponding table row with the new skill name
+                            $('#skills tbody tr:contains(' + skillId + ')').find('td:nth-child(2)').text(updatedSkillName);
+                        } else {
+                            // Handle the case where update was not successful
+                            alert('Failed to update skill: ' + response.error);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors
+                        console.error(error);
+                        alert('An error occurred while updating the skill. Please try again later.');
+                    }
+                });
+            });
+
+            //DELETE SKILL
+            $('#skills').on('click', '.delete-icon', function () {
+                var skillId = $(this).closest('tr').find('#SkillID').text();
+                var skillName = $(this).closest('tr').find('td:nth-child(2)').text();
+                $('#deleteSkillName').val(skillName);
+                $('#deleteSkillName').text(skillName);
+                $('#deleteSkillModal').data('skillId', skillId);
+                $('#deleteSkillModal').data('skillName', skillName);
+                $('#deleteSkillModal').modal('show');
+            });
+            $('#confirmInput').on('input', function () {
+                var confirmInputValue = $(this).val().trim();
+                var confirmButton = $('#confirmDeleteButton');
+                // Enable the "Delete Skill" button if the input value is "CONFIRM"
+                if (confirmInputValue === 'CONFIRM') {
+                    confirmButton.prop('disabled', false);
+                } else {
+                    confirmButton.prop('disabled', true);
+                }
+            });
+            $('#confirmDeleteButton').on('click', function () {
+                var skillIdToDelete = $('#deleteSkillModal').data('skillId');
+                var skillNameToDelete = $('#deleteSkillModal').data('skillName');
+                var confirmInputValue = $('#confirmInput').val().trim();
+                // Check if the input value matches the confirmation text
+                if (confirmInputValue !== 'CONFIRM') {
+                    alert('Please type "CONFIRM" to proceed with the deletion.');
+                    return;
+                }
+                $.ajax({
+                    type: 'DELETE',
+                    url: '/Skills/DeleteSkill', // Replace 'YourController' with the actual name of your controller
+                    data: { skillId: skillIdToDelete },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(skillNameToDelete + ' deleted successfully');
+                            // Remove the deleted row from the table
+                            $('#skills tbody tr:contains(' + skillIdToDelete + ')').remove();
+                            $('#deleteSkillModal').modal('hide');
+                        } else {
+                            alert('Failed to delete skill: ' + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                        alert('An error occurred while deleting the skill. Please try again later.');
+                    }
+                });
+            });
+
+            $("label[for='dt-search-0']").remove();
+
+
+            $('.assign').click(function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            });
+
         });
-    </script>
 
-    <!--Update skills-->
-    <script>
-        $(document).ready(function () {
-            // Event listener for clicking on the edit button
-            $(".edit-icon").click(function () {
-                // Get values from the row
-                var skillName = $(this).closest(".skill-row").find(".col-md-3:nth-child(2)").text().trim();
-                var skillStatus = $(this).closest(".skill-row").find(".col-md-3:nth-child(3)").text().trim();
-
-                // Set values to modal fields
-                $("#editSkillName").val(skillName);
-                $("#editSkillStatus").val(skillStatus);
-                // Show modal
-                $("#editSkillModal").modal('show');
-            });
-
-            // Save changes button functionality
-            $("#saveSkillButton").click(function () {
-                // Retrieve values from modal fields
-                var editedSkillName = $("#editSkillName").val();
-                var editedSkillStatus = $("#editSkillStatus").val();
-
-                // Update values in the row (you can add this part)
-                // $(".modal").modal('hide'); // Hide modal
-                // Here you can update the row with the new values
-            });
-            $('#editCloseModelBtn').click(function () {
-                $('#editSkillModal').modal('hide'); // Hide the modal
-            });
-       
-            $('#editCloseBtn').click(function () {
-                $('#editSkillModal').modal('hide'); // Hide the modal
-            });
-        });
     </script>
 </body>
 </html>

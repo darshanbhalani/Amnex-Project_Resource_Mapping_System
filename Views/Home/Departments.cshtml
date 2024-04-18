@@ -66,14 +66,6 @@
 
         $(document).ready(function () {
 
-            //Display table
-            function displayDept(Departments) {
-                if (addButtonAppend) {
-                    var table = $('#example').DataTable();
-                    table.destroy();
-                }
-            }
-
             new DataTable('#example');
             $('#dt-search-0').css({ 'width': '30rem' })
             $('#dt-search-0').addClass('flex-row-reverse')
