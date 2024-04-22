@@ -5,29 +5,25 @@ namespace Amnex_Project_Resource_Mapping_System.Models;
 
 public partial class Project
 {
-    public int Projectid { get; set; }
+    public int projectId { get; set; }
+    public string projectName { get; set; }
+    public string status { get; set; }
+    public DateTime modifyTime { get; set; }
+    public string modifyBy { get; set; }
 
-    public string Projectname { get; set; } = null!;
+    public DateOnly startDate { get; set; }
+    public DateOnly endDate { get; set; }
 
-    public int Departmentid { get; set; }
+    public string createdBy { get; set; }
 
-    public DateOnly Startdate { get; set; }
+    public DateTime createdTime { get; set; }
+    public bool isDeleted { get; set; }
 
-    public DateOnly Enddate { get; set; }
 
-    public string Skillsid { get; set; } = null!;
-
-    public string Status { get; set; } = null!;
-
-    public string Createdby { get; set; } = null!;
-
-    public DateTime Createdtime { get; set; }
-
-    public string Modifyby { get; set; } = null!;
-
-    public DateTime Modifytime { get; set; }
-
-    public bool Isdeleted { get; set; }
-
-    public virtual Department Department { get; set; } = null!;
+    //skills
+    public string skillname { get; set; }
+    public string skillid { get; set; }
+    //department
+    public int departmentId { get; set; }
+    public string departmentName { get; set; }
 }

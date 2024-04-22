@@ -81,7 +81,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
 <script>
     $(document).ready(function () {
         $("#loginBtnClick").click(function () {
@@ -101,7 +100,6 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/Account/Login',
                 data: {
                     username: username,
                     password: password
@@ -109,7 +107,6 @@
                 success: function (response) {
                     if (response.success) {
                         window.location.replace('/Home/Dashboard');
-
                     } else {
                         $('#Password').next('.text-danger').text('Invalid username or Password.');
                         return;

@@ -1,5 +1,6 @@
 using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Npgsql;
 using System.Data;
@@ -44,7 +45,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
             int currentYear = DateTime.Now.Year;
 
-            using (var command = new NpgsqlCommand($"SELECT * FROM countEmployeesByYear({currentYear-4});", _connection))
+            using (var command = new NpgsqlCommand($"SELECT * FROM countEmployeesByYear({currentYear - 4});", _connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
@@ -73,7 +74,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                         projectsLable.Add(reader.GetInt32(0).ToString());
                         projectsData.Add(reader.GetInt32(1));
                     }
-                   
+
                     for (int i = 0; i < projectsData.Count; i++)
                     {
                         projectsSum += projectsData[i];
@@ -125,7 +126,66 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
         public IActionResult Projects()
         {
-            return View();
+            List<Project> lst = new List<Project>();
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand("select * from public.displayactiveprojects();", _connection))
+            {
+                using (NpgsqlDataReader dr = cmd.ExecuteReader()) {
+                    while (dr.Read())
+                    {
+                        Project project = new Project();
+                        project.projectId = Convert.ToInt32(dr.GetValue(0).ToString());
+                        project.projectName = dr.GetValue(1).ToString();
+                        project.status = dr.GetValue(6).ToString();
+
+                        lst.Add(project);
+                    }
+                }
+            }
+
+
+            List<dynamic> lst1 = [];
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallskills();", _connection))
+            {
+                using(NpgsqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        List<dynamic> x = [];
+                        Project project = new Project();
+                        x.Add(Convert.ToInt32(dr.GetValue(0)));
+                        x.Add(dr.GetValue(1));
+                        lst1.Add(x);
+                    }
+                }
+                ;
+            }
+
+            List<dynamic> lst2 = [];
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand("select * from public.displayalldepartments();", _connection))
+            {
+                using (NpgsqlDataReader dr = cmd.ExecuteReader())
+                {
+                    while (dr.Read())
+                    {
+                        List<dynamic> x = [];
+                        Project project = new Project();
+                        x.Add(Convert.ToInt32(dr.GetValue(0)));
+                        x.Add(dr.GetValue(1));
+                        lst2.Add(x);
+                    }
+                }
+            }
+
+
+            temp temp = new temp();
+            temp.list = lst1;
+            temp.project = lst;
+            temp.list2 = lst2;
+            return View(temp);
+
         }
         public IActionResult Employees()
         {
@@ -181,8 +241,79 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
         public IActionResult Actions()
         {
-            return View();
+            var dropdownOptions = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "html", Text = "HTML" },
+            new SelectListItem { Value = "css", Text = "CSS" },
+            new SelectListItem { Value = "net", Text = ".NET" },
+            // Add more options as needed
+        };
+
+            // Preselected values
+            var preselectedValues = new List<string> { "html", "css" }; // Example preselected values
+
+            // Create and populate view model
+            var model = new TempList
+            {
+                DropdownOptions = dropdownOptions,
+                PreselectedValues = preselectedValues
+            };
+
+            // Pass the model to the view
+            return View(model);
         }
+        [HttpPost]
+        public IActionResult projectDelete(int projectId)
+        {
+            Console.Write("okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+                NpgsqlCommand cmd = new NpgsqlCommand("select public.deleteproject(:projectId,:modifyTime ,:modifyBy);", _connection);
+                cmd.Parameters.AddWithValue("projectId", projectId);
+                cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
+                cmd.Parameters.AddWithValue("modifyBy", "Bhavya Soni");
+                cmd.ExecuteNonQuery();
+            
+            return Json(new { success = true });
+        }
+
+        public IActionResult insertProject(Project project)
+        {
+            
+                NpgsqlCommand cmd = new NpgsqlCommand(" select public.insertproject(:in_project_name::text,:in_department_id,:in_start_date::date ,:in_end_date::date,:in_skills_id::text,:in_status::text,:in_created_by::text,:in_create_time::timestamp,:in_modify_by::text,:in_modify_time::timestamp,:in_is_deleted);", _connection);
+                cmd.Parameters.AddWithValue("in_project_name", project.projectName);
+                cmd.Parameters.AddWithValue("in_department_id", project.departmentId);
+                cmd.Parameters.AddWithValue("in_start_date", project.startDate);
+                cmd.Parameters.AddWithValue("in_end_date", project.endDate);
+                cmd.Parameters.AddWithValue("in_skills_id", project.skillid);
+                cmd.Parameters.AddWithValue("in_status", "Inactive");
+                cmd.Parameters.AddWithValue("in_created_by", "Bhavya Soni");
+                cmd.Parameters.AddWithValue("in_create_time", DateTime.Now);
+                cmd.Parameters.AddWithValue("in_modify_time", DateTime.Now);
+                cmd.Parameters.AddWithValue("in_modify_by", "Bhavya Soni");
+                cmd.Parameters.AddWithValue("in_is_deleted", false);
+                cmd.ExecuteNonQuery();
+            
+            return Json(new { success = true });
+        }
+
+        public IActionResult updateProject(Project project)
+        {
+            
+                NpgsqlCommand cmd = new NpgsqlCommand(" select public.updateproject(:in_project_id::integer ,:in_project_name::text,:in_department_id::integer,:in_start_date::date,:in_end_date::date,:in_skills_id::text,:in_status::text,:in_modify_by::text,:in_modify_time::timestamp);", _connection);
+                cmd.Parameters.AddWithValue("in_project_id", project.projectId);
+                cmd.Parameters.AddWithValue("in_project_name", project.projectName);
+                cmd.Parameters.AddWithValue("in_department_id", project.departmentId);
+                cmd.Parameters.AddWithValue("in_start_date", project.startDate);
+                cmd.Parameters.AddWithValue("in_end_date", project.endDate);
+                cmd.Parameters.AddWithValue("in_skills_id", project.skillid);
+                cmd.Parameters.AddWithValue("in_status", project.status);
+                cmd.Parameters.AddWithValue("in_modify_time", DateTime.Now);
+                cmd.Parameters.AddWithValue("in_modify_by", "Bhavya Soni");
+                cmd.Parameters.AddWithValue("in_is_deleted", false);
+                cmd.ExecuteNonQuery();
+            
+            return Json(new { success = true });
+        }
+
 
         public IActionResult Error()
         {
