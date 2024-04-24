@@ -239,33 +239,10 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             return View(skills);
         }
 
-        public IActionResult Actions()
-        {
-            var dropdownOptions = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "html", Text = "HTML" },
-            new SelectListItem { Value = "css", Text = "CSS" },
-            new SelectListItem { Value = "net", Text = ".NET" },
-            // Add more options as needed
-        };
-
-            // Preselected values
-            var preselectedValues = new List<string> { "html", "css" }; // Example preselected values
-
-            // Create and populate view model
-            var model = new TempList
-            {
-                DropdownOptions = dropdownOptions,
-                PreselectedValues = preselectedValues
-            };
-
-            // Pass the model to the view
-            return View(model);
-        }
+        
         [HttpPost]
         public IActionResult projectDelete(int projectId)
         {
-            Console.Write("okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
                 NpgsqlCommand cmd = new NpgsqlCommand("select public.deleteproject(:projectId,:modifyTime ,:modifyBy);", _connection);
                 cmd.Parameters.AddWithValue("projectId", projectId);
                 cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
@@ -313,7 +290,28 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             
             return Json(new { success = true });
         }
-
+        public IActionResult Actions()
+        {
+            List<Log> logs = new List<Log>();   
+            using(var cmd = new NpgsqlCommand("select * from getLogDetails()", _connection))
+            {
+                using(var reader =  cmd.ExecuteReader()) { 
+                    while (reader.Read())
+                    {
+                        logs.Add(new Log
+                        {
+                            EntityName = reader.GetString(1),
+                            EntityType = reader.GetString(2),
+                            Description = reader.GetString(3),
+                            Action = reader.GetString(4),
+                            CreateTime = reader.GetDateTime(5),
+                            LogBy = reader.GetString(6),
+                        });
+                    }
+                }
+            }
+            return View(logs);
+        }
 
         public IActionResult Error()
         {

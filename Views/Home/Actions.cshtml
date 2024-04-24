@@ -1,31 +1,55 @@
-﻿<h3>Actions</h3>
+﻿@model List<Log>;
+
+<h3>Actions</h3>
 <table id="example" class="table table-striped table-bordered" style="width:100%">
     <thead>
         <tr class="bg-dark">
             <th class="text-white">Recent Actions</th>
+            <th class="text-white">Time</th>
         </tr>
     </thead>
     <tbody id="dataRows">
-        
-            <tr>
-                <td>Hello</td>
-            </tr>
-            <tr>
-                <td>Hello</td>
-            </tr>
-            <tr>
-                <td>Hello</td>
-            </tr>
-            <tr>
-                <td>Hello67696</td>
-            </tr>
-            <tr>
-                <td>Hello wvt3tv</td>
-            </tr>
-            <tr>
-                <td>Hellomtte</td>
-            </tr>
+        @foreach (var x in Model)
+        {
 
+            @if (x.Action == "INSERT")
+            {
+                <tr>
+                    <td>
+                        <span>New</span>
+                        <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
+                        <b><span>&nbsp;@x.EntityName</span></b>
+                        <span>&nbsp;add by</span>
+                        <b><span>&nbsp;@x.LogBy</span></b>
+                    </td>
+                    <td>@x.CreateTime</td>
+                </tr>
+            }
+            else if (x.Action == "UPDATE")
+            {
+                <tr>
+                    <td>
+                        <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
+                        <b><span>&nbsp;@x.EntityName</span></b>
+                        <span>'s&nbsp;Details update</span>
+                        <b><span>&nbsp;@x.LogBy</span></b>
+                    </td>
+                    <td>@x.CreateTime</td>
+                </tr>
+            }
+            else if (x.Action == "DELETE")
+            {
+                <tr>
+                    <td>
+                        <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
+                        <b><span>&nbsp;@x.EntityName</span></b>
+                        <span>&nbsp;delete by</span>
+                        <b><span>&nbsp;@x.LogBy</span></b>
+                    </td>
+                    <td>@x.CreateTime</td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
 @section Scripts {
@@ -34,7 +58,9 @@
 
         $(document).ready(function () {
 
-            new DataTable('#example');
+            $('#example').DataTable({
+                "order": [[1, "desc"]]
+            });
             $('#dt-search-0').css({ 'width': '30rem' });
             $('#dt-search-0').css({ 'margin': '0px' });
             $('#dt-search-0').addClass('flex-row-reverse');

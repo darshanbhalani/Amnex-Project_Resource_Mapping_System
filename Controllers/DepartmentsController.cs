@@ -122,6 +122,30 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
         }
 
+        public IActionResult getDepartmentwithId()
+        {
+            List<Department> departments = new List<Department>();
+
+            var sql = "SELECT * FROM public.displayalldepartments()";
+
+            using (var cmd = new NpgsqlCommand(sql, _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        departments.Add(new Department
+                        {
+                            DepartmentId = reader.GetInt32(0),
+                            DepartmentName = reader.GetString(1),
+                        });
+                    }
+                }
+            }
+            return Json(new { success = false, data = departments});
+        }
+
+
         public int CheckId(string departmentname)
         {
             int departmentId = 0;
@@ -163,5 +187,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 return (bool)cmd.ExecuteScalar();
             }
         }
+
+       
     }
 }
