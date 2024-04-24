@@ -3,15 +3,24 @@
 @{
     ViewData["Title"] = "Profile";
 }
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .profile-container {
+            min-height: 80vh;
+        }
+    </style>
+</head>
 
-<style>
-    .profile-container {
-        min-height: 80vh;
-    }
-</style>
 
 <div class="container-fluid p-0 m-0 profile-container pt-3">
-    <h4>Profile</h4>
+    <div class="row">
+        <h4 class="col">Profile</h4>
+        <div class="col d-flex justify-content-end">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal" id="edit-profile"><i class="text-light fa fa-pencil text-black p-1"></i>&ensp; Edit Profile</button>
+            <button class="btn d-none btn-success" id="save-profile"><i class="text-light fa fa-save text-black p-1"></i>&ensp; Save Details</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
@@ -21,47 +30,57 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Employeename">Name:</label>
+                <label for="Employeename">Name</label>
                 <input type="text" class="form-control" id="employeeName" asp-for="Employeename" disabled>
             </div>
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="D">Department</label>
-                <input type="text" class="form-control" asp-for="Department" disabled>
+                <label for="Department">Department</label>
+                <input type="text" class="form-control" asp-for="Department" id="department" disabled>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Employeeroleid">Role</label>
-                <input type="text" class="form-control" id="Role" asp-for="Employeeroleid" disabled>
+                <label asp-for="Employeeroleid" >Role</label>
+                <select class="form-control" asp-for="Employeeroleid" id="employeeRole" disabled>
+                    @if (Model.Employeeroleid == "Admin")
+                    {
+                        <option value="0" selected>Admin</option>
+                        <option value="1">User</option>
+                    }
+                    else
+                    {
+                        <option value="0" >Admin</option>
+                        <option value="1" selected>User</option>
+                    }
+                    
+                </select>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Email">Email:</label>
-                <input type="text" class="form-control" asp-for="Email" disabled >
+                <label for="Email">Email</label>
+                <input type="text" class="form-control" asp-for="Email" id="email" disabled>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Employeerating">Rating:</label>
+                <label for="Employeerating">Rating</label>
                 <input type="text" class="form-control" asp-for="Employeerating" disabled>
             </div>
         </div>
     </div>
-
     <div class="row pt-3">
         <div class="col-md-6">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password</button>
         </div>
-
     </div>
 </div>
 
@@ -93,7 +112,6 @@
             }
         }
 
-
         // send otp
         $('#sendOTP').click(function () {
             loading();
@@ -109,7 +127,7 @@
                 url: '/Account/SendOTP',
                 success: function (res) {
                     loading();
-                    showSnackbar("true","OTP successfully sended.");
+                    $('#OTP-message').text("OTP successfully sended.");
                 },
                 error: function (res) {
                     loading();
@@ -271,6 +289,58 @@
                 }
             });
         });
+
+
+        // resend OTP
+        $("#resend-OTP").click(function (e) {
+            loading();
+            var data = {
+                data: "@Model.Email"
+            }
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/Account/SendOTP',
+                success: function (res) {
+                    loading();
+                    $('#OTP-message').text("OTP successfully Re-sended.");
+                },
+                error: function (res) {
+                    loading();
+                    showSnackbar("false", res.message);
+                }
+            });
+        });
+
+        $("#edit-profile-confirm").click(function () {
+            $("#email").removeAttr('disabled');
+            $("#department").removeAttr('disabled');
+            $("#employeeName").removeAttr('disabled');
+            $("#employeeRole").removeAttr('disabled');
+            $("#employeeRole").addClass(' bg-transparent');
+            $("#editProfileModal").modal('hide');
+            $('.modal-backdrop').remove();
+            $("#edit-profile").addClass('d-none');
+            $("#save-profile").removeClass('d-none');
+
+            $.ajax({
+                type:'POST',
+                url: '/Departments/getDepartmentwithId',
+                success: function (res) {
+                    if (res.success) {
+                        var element = document.getElementById("department");
+                        $.each(res.data, function (index, department) {
+                            element.append
+                        });
+                    }
+                            
+                },
+                error: function (res) {
+
+                }
+            });
+        });
     </script>
 
 }
@@ -326,6 +396,7 @@
                     <input type="text" class="d-none form-control mt-2" id="forgotPassword-id" placeholder="@HttpContextAccessor.HttpContext!.Session.GetString("userId")" disabled>
                 </form>
                 <form class="d-none" id="otp-form">
+                    <p id="OTP-message"></p>
                     <h6>Enter OTP</h6>
                     <div class="row mt-2 px-5">
                         <div class="col">
@@ -346,6 +417,9 @@
                         <div class="col">
                             <input type="text" class="form-control otp-input" maxlength="1" pattern="\d*" inputmode="numeric" id="otp6">
                         </div>
+                    </div>
+                    <div class="d-flex justify-content-center pt-2">
+                        <p>Didn't receive OTP ? <a id="resend-OTP" style="cursor:pointer;">Resend OTP</a></p>
                     </div>
                     <div class="d-flex justify-content-center pt-2">
                         <div id="response" class="text-danger"></div>
@@ -380,6 +454,23 @@
 
 
 
+@* edir profile modal *@
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to edit profile ?</p>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-success" id="edit-profile-confirm">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
