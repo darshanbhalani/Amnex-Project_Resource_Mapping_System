@@ -57,26 +57,20 @@ namespace Amnex_Project_Resource_Mapping_System
             app.UseAuthorization();
 
 
-
             app.Use(async (context, next) =>
             {
-                await next();
-
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Response.Redirect("/Home/Error");
-                }
-            });
-
-            app.Use(async (context, next) =>
-            {
+                
                 var path = context.Request.Path;
                 var session = context.Session;
                 var userId = session.GetString("userId");
-
+                
                 if (path.StartsWithSegments("/Account/Login") || !string.IsNullOrEmpty(userId))
                 {
-                    await next();
+                        await next();
+                        if (context.Response.StatusCode == 404)
+                        {
+                            context.Response.Redirect("/Home/Error");
+                        }
                     return;
                 }
 

@@ -23,6 +23,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         public IActionResult Dashboard()
         {
             DashboardGraphs dashboardGraphs = new DashboardGraphs();
+
             Graph employees = new Graph();
             List<string> employeesLable = new List<string>();
             List<int> employeesData = new List<int>();
@@ -38,6 +39,14 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             Graph departmentProject = new Graph();
             List<string> departmentProjecLable = new List<string>();
             List<int> departmentProjectData = new List<int>();
+
+            Graph inserts = new Graph();
+            Graph updates = new Graph();
+            Graph deletes = new Graph();
+            List<string> date = new List<string>();
+            List<int> insert = new List<int>();
+            List<int> update = new List<int>();
+            List<int> delete = new List<int>();
 
             int employeesSum = 0;
             int projectsSum = 0;
@@ -118,6 +127,28 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     departmentProject.Label = departmentProjecLable;
                 }
             }
+            using (var command = new NpgsqlCommand($"SELECT * FROM getLogCountsLast7Days();", _connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        date.Add(reader.GetDateTime(0).ToString().Split(" ")[0]); 
+                        insert.Add(reader.GetInt32(1));
+                        update.Add(reader.GetInt32(2));
+                        delete.Add(reader.GetInt32(3));
+                    }
+                    inserts.Label = date;
+                    inserts.Data = insert;
+                    updates.Label = date;
+                    updates.Data = update;
+                    deletes.Label = date;
+                    deletes.Data = delete;
+                }
+            }
+            dashboardGraphs.Inserts = inserts;
+            dashboardGraphs.Updates = updates;
+            dashboardGraphs.Deletes = deletes;
             dashboardGraphs.Employees = employees;
             dashboardGraphs.Projects = projects;
             dashboardGraphs.Departments = departments;
