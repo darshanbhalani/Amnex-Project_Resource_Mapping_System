@@ -24,10 +24,10 @@
             color: black !important;
         }
 
-        #logo-image{
-            max-height:8vw;
+        #logo-image {
+            max-height: 8vw;
             min-height: 50px;
-            aspect-ratio:1/1;
+            aspect-ratio: 1/1;
         }
     </style>
 </head>
@@ -39,7 +39,7 @@
     <p>
         Efficiently map, track and allocate resource to the required project.
     </p>
-    <button id="loginBtnClick" class="btn btn-primary" data-bs-toggle="modal" data-target="#loginModal">Get Started</button>
+    <button id="loginBtnClick" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Get Started</button>
 
 </div>
 
@@ -64,10 +64,12 @@
                             <input asp-for="Password" class="form-control" id="Password" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <div id="error-message" class="text-danger"></div> 
-                        <div class="text-end mb-3 form-group">Forgot Password ?</div>
+                        <div id="error-message" class="text-danger"></div>
+                        <div class="d-flex justify-content-end">
+                            <a class="text-decoration-none" id="forgot-password-btn">Forgot Password ?</a>
+                        </div>
                         <div class="form-group">
-                            <input type="button" id="loginbtn" value="submit" class="btn btn-primary px-5 text-center w-100 mt-3" />
+                            <input type="button" id="loginbtn" value="ubmit" class="btn btn-primary px-5 text-center w-100 mt-3" />
                         </div>
                     </form>
 
@@ -77,16 +79,45 @@
     </div>
 </div>
 
+<div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="container-fluid">
+                <div class="bg-light rounded h-100 p-4 login-modal">
+                    <h3 class="text-center">Forgot password</h3>
+                    <p class="mb-4 text-center">We need to verify you before getting started!</p>
+                    <form id="forgot-password-form" asp-controller="Account" asp-action="ForgotPassword" method="post">
+                        <div class="mb-3 form-group">
+                            <label class="control-label">User Name</label>
+                            <input class="form-control" id="userName" />
+                        </div>
+                        <div class="mb-1 form-group">
+                            <label class="control-label">Email</label>
+                            <input class="form-control" id="email" />
+                        </div>
+                        <div id="errorMessage" class="text-danger text-center"></div>
+                        <div class="form-group">
+                            <input type="button" id="submitBTN" value="Submit" class="btn btn-primary px-5 text-center w-100 mt-3" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* snackbar *@
+<div id="snackbar" class="text-white text-center position-absolute bottom-0 start-50 translate-middle-x p-2 rounded-3 mx-5 mb-4" style="display: none; z-index:1; width:50%">
+</div>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script> <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
+
 <script>
     $(document).ready(function () {
-        $("#loginBtnClick").click(function () {
-            $("#loginModal").modal('show');
-        });
-
+       
         $('#loginbtn').click(function (e) {
             e.preventDefault();
 
@@ -95,7 +126,8 @@
 
             if (!username.trim() || !password.trim()) {
                 $('#Username').next('.text-danger').text('Please enter a username.');
-                $('#Password').next('.text-danger').text('Please enter a Password.'); return;
+                $('#Password').next('.text-danger').text('Please enter a Password.');
+                return;
             }
 
             $.ajax({
@@ -118,6 +150,65 @@
             });
         });
     });
+
+    $("#submitBTN").click(function (e) {
+        e.preventDefault();
+        if ($("#userName").val().length < 1 & $("#email").val().length < 1 ) {
+            $("#errorMessage").text("Enter User Name and Email");
+            return;
+        }
+        if ($("#userName").val().length < 1) {
+            $("#errorMessage").text("Enter User Name");
+            return;
+        }
+        if ($("#email").val().length < 1) {
+            $("#errorMessage").text("Enter Email");
+            return;
+        }
+
+        var data = {
+            EmployeeUserName: $("#userName").val(),
+            Email: $("#email").val()
+        };
+        $.ajax({
+            type:'POST',
+            url: '/Account/ForgotPassword',
+            data: data,
+            success: function (res) {
+                if (res.success) {
+                    console.log("Ok");
+                    $('.modal-backdrop').remove();
+                    $("#forgotPassword").modal('hide');
+                    showSnackbar("true", "Password successfuly sended");
+                }
+                else {
+                    $("#errorMessage").text("Invalid User Name or Email");
+                }
+            },
+            error: function (res) {
+
+            }
+        });
+    });
+
+    $("#forgot-password-btn").click(function () { 
+        $("#loginModal").modal('hide');
+        $('.modal-backdrop').remove();
+        $("#forgotPassword").modal('show');
+    });
+
+    function showSnackbar(status, message) {
+        console.log("snackbar");
+        if (status === "true") {
+            $('#snackbar').addClass('bg-success');
+        } else {
+            $('#snackbar').addClass('bg-danger');
+        }
+        var snackbar = document.getElementById("snackbar");
+        snackbar.textContent = message;
+        snackbar.style.display = "block";
+        setTimeout(function () { snackbar.style.display = "none"; }, 3000);
+    }
 </script>
 
 @section Scripts {
@@ -125,3 +216,5 @@
         await Html.RenderPartialAsync("_ValidationScriptspartial");
     }
 }
+
+

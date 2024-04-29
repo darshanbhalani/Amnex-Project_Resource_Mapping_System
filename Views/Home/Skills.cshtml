@@ -1,83 +1,83 @@
-﻿
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
-<script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
-<style>
-    body {
-        color: black;
-    }
+﻿@section Style {
+    <style>
+        body {
+            color: black;
+        }
 
-    #skills thead tr th {
-        background-color: black;
-        color: white;
-        text-align: center;
-        border-right: 1px solid grey;
-        border-left: 1px solid grey;
-    }
+        #skills thead tr th {
+            background-color: black;
+            color: white;
+            text-align: center;
+            border-right: 1px solid grey;
+            border-left: 1px solid grey;
+        }
 
-    #skills tbody tr td {
-        border-left: 1px solid grey;
-        border-right: 1px solid grey;
-        color: black;
-        text-align: center;
-    }
+        #skills tbody tr td {
+            border-left: 1px solid grey;
+            border-right: 1px solid grey;
+            color: black;
+            text-align: center;
+        }
 
-    #dataRows td:nth-child(2) {
-        text-align: left;
-    }
+        #dataRows td:nth-child(2) {
+            text-align: left;
+        }
 
-    .icon {
-        text-align: center;
-    }
+        .icon {
+            text-align: center;
+        }
 
-    table.dataTable td.dt-type-numeric {
-        text-align: center;
-    }
+        table.dataTable td.dt-type-numeric {
+            text-align: center;
+        }
 
-    #addSkillButton {
-        width: auto;
-    }
+        #addSkillButton {
+            width: auto;
+        }
 
-    .page-link {
-        color: black;
-    }
+        .page-link {
+            color: black;
+        }
 
-    .page-item.active .page-link {
-        background-color: black;
-        border: 1px solid black;
-    }
+        .page-item.active .page-link {
+            background-color: black;
+            border: 1px solid black;
+        }
 
-    .back-to-top {
-        display: none;
-    }
+        .back-to-top {
+            display: none;
+        }
 
-    label[for="dt-length-0"] {
-        margin-right: 4%;
-    }
+        label[for="dt-length-0"] {
+            margin-right: 4%;
+        }
 
-    .assign .dt-column-order {
-        display: none;
-    }
+        .assign .dt-column-order {
+            display: none;
+        }
 
-    #dt-search-0 {
-        width: 30rem;
-        margin-left: 1rem;
-    }
+        #dt-search-0 {
+            width: 30rem;
+            margin-left: 1rem;
+        }
 
-    div.dt-container div.dt-search label {
-        padding: 0.5rem;
-        text-align: center;
-        margin-left: 1rem;
-    }
+        div.dt-container div.dt-search label {
+            padding: 0.5rem;
+            text-align: center;
+            margin-left: 1rem;
+        }
 
-    div.dt-container div.dt-length label {
-        margin-top: 0.5rem;
-    }
+        div.dt-container div.dt-length label {
+            margin-top: 0.5rem;
+        }
 
-    div.dt-container div.dt-length select {
-        margin-top: 0.3rem;
-    }
-</style>
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" />
+        div.dt-container div.dt-length select {
+            margin-top: 0.3rem;
+        }
+    </style>
+}
+
+
 <h3>Skills</h3>
 <table id="skills" class="table table-striped" style="width:100%">
     <thead class="">
@@ -101,7 +101,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Form to add skills -->
                 <form id="addSkillForm">
                     <div class="form-group">
                         <label for="skillName">Skill Name</label>
@@ -126,7 +125,6 @@
 
             </div>
             <div class="modal-body">
-                <!-- Form to edit skills -->
                 <form id="editSkillForm">
                     <div class="form-group">
                         <label for="editSkillName">Edit Skill Name</label>
@@ -150,7 +148,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Form to delete skills -->
                 <form>
                     <div class="form-group">
                         <label for="deleteSkillName">Are you sure you want to delete <b><span id="deleteSkillName"></span>?</b></label>

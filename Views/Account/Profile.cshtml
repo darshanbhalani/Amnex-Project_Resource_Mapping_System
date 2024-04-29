@@ -1,19 +1,19 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@model Employee;
+﻿@model UserProfileModel
 @{
-    ViewData["Title"] = "Profile";
+    var tempProfileData = Model.ProfileData;
 }
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@section Style {
     <style>
         .profile-container {
             min-height: 80vh;
         }
     </style>
-</head>
+}
 
 
-<div class="container-fluid p-0 m-0 profile-container pt-3">
+
+<div class="container-fluid p-0 m-0 profile-container pt-4">
     <div class="row">
         <h4 class="col">Profile</h4>
         <div class="col d-flex justify-content-end">
@@ -21,58 +21,61 @@
             <button class="btn d-none btn-success" id="save-profile"><i class="text-light fa fa-save text-black p-1"></i>&ensp; Save Details</button>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Employeeid">Employee Id</label>
-                <input type="text" class="form-control" asp-for="Employeeid" disabled>
+                <label asp-for="ProfileData.Employeeid">Employee Id</label>
+                <input type="text" class="form-control" asp-for="ProfileData.Employeeid" id="employeeId" disabled>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Employeename">Name</label>
-                <input type="text" class="form-control" id="employeeName" asp-for="Employeename" disabled>
+                <label asp-for="ProfileData.EmployeeUserName">Employee User Name</label>
+                <input type="text" class="form-control" asp-for="ProfileData.EmployeeUserName" disabled>
             </div>
         </div>
     </div>
-
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Department">Department</label>
-                <input type="text" class="form-control" asp-for="Department" id="department" disabled>
+                <label for="Employeeid">Employee Name</label>
+                <input type="text" class="form-control" asp-for="ProfileData.Employeename" id="name" disabled>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="Employeeroleid" >Role</label>
-                <select class="form-control" asp-for="Employeeroleid" id="employeeRole" disabled>
-                    @if (Model.Employeeroleid == "Admin")
+                <label asp-for="ProfileData.Email">Email Id</label>
+                <input type="text" class="form-control" asp-for="ProfileData.Email" id="email" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ProfileData.DepartmentName">Department</label>
+                <select class="form-control" asp-for="ProfileData.DepartmentName" id="department" disabled>
+                    @foreach (var d in Model.Departments)
                     {
-                        <option value="0" selected>Admin</option>
-                        <option value="1">User</option>
+                        <option value=@d.DepartmentId selected=@(Model.ProfileData.Departmentid == d.DepartmentId ? "selected":null)>@d.DepartmentName</option>
                     }
-                    else
-                    {
-                        <option value="0" >Admin</option>
-                        <option value="1" selected>User</option>
-                    }
-                    
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="ProfileData.LoginRoleId">Role</label>
+                <select class="form-control" asp-for="ProfileData.LoginRoleId" id="loginRole" disabled>
+                    <option value="0" selected="@(Model.ProfileData.LoginRoleId==0 ? "selected":null)">Admin</option>
+                    <option value="1" selected="@(Model.ProfileData.LoginRoleId==1 ? "selected":null)">User</option>
                 </select>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="Email">Email</label>
-                <input type="text" class="form-control" asp-for="Email" id="email" disabled>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="Employeerating">Rating</label>
-                <input type="text" class="form-control" asp-for="Employeerating" disabled>
+                <label asp-for="ProfileData.EmployeeRating">Rating</label>
+                <input type="text" class="form-control" asp-for="ProfileData.EmployeeRating" disabled>
             </div>
         </div>
     </div>
@@ -85,17 +88,14 @@
 </div>
 
 @section scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
     <script>
 
         // check input field value in checkPassword password
-        const password1 = document.getElementById('Fr-newPassword');
-        const password2 = document.getElementById('Fr-confirmPassword');
+        // const password1 = document.getElementById('Fr-newPassword');
+        // const password2 = document.getElementById('Fr-confirmPassword');
 
-        password1.addEventListener('input', checkPassword);
-        password2.addEventListener('input', checkPassword);
+        // password1.addEventListener('input', checkPassword);
+        // password2.addEventListener('input', checkPassword);
 
         function checkPassword() {
             const value1 = password1.value.trim();
@@ -119,7 +119,7 @@
             $('#userEmail-form').addClass('d-none');
             $('#sendOTP').parent().addClass('d-none');
             var data = {
-                data: "@Model.Email"
+                data: "@Model.ProfileData.Email"
             }
             $.ajax({
                 type: 'POST',
@@ -295,7 +295,7 @@
         $("#resend-OTP").click(function (e) {
             loading();
             var data = {
-                data: "@Model.Email"
+                data: "@Model.ProfileData.Email"
             }
             e.preventDefault();
             $.ajax({
@@ -315,31 +315,40 @@
 
         $("#edit-profile-confirm").click(function () {
             $("#email").removeAttr('disabled');
+            $("#name").removeAttr('disabled');
             $("#department").removeAttr('disabled');
             $("#employeeName").removeAttr('disabled');
-            $("#employeeRole").removeAttr('disabled');
-            $("#employeeRole").addClass(' bg-transparent');
+            $("#loginRole").removeAttr('disabled');
+            $("#loginRole").addClass('bg-transparent');
+            $("#department").addClass('bg-transparent');
             $("#editProfileModal").modal('hide');
             $('.modal-backdrop').remove();
             $("#edit-profile").addClass('d-none');
             $("#save-profile").removeClass('d-none');
 
-            $.ajax({
-                type:'POST',
-                url: '/Departments/getDepartmentwithId',
-                success: function (res) {
-                    if (res.success) {
-                        var element = document.getElementById("department");
-                        $.each(res.data, function (index, department) {
-                            element.append
-                        });
-                    }
-                            
-                },
-                error: function (res) {
+        });
 
+        $("#save-profile").click(function () {
+            var data = {
+                Employeeid: "@Model.ProfileData.Employeeid",
+                EmployeeName: "@Model.ProfileData.Employeename" !== $("#name").val() ? $("#name").val() : null,
+                Departmentid: "@Model.ProfileData.Departmentid" !== $("#department").val() ? $("#department").val() : null,
+                LoginRoleId: "@Model.ProfileData.LoginRoleId" !== $("#loginRole").val() ? $("#loginRole").val() : null,
+                Email: "@Model.ProfileData.Email" !== $("#email").val() ? $("#email").val() : null,
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/Employees/UpdateEmployee',
+                data: data,
+                success: function (res) {
+                    alert("Details Updated....");
+                },
+                error: function () {
+                    alert("Error...");
                 }
             });
+            console.log(data);
         });
     </script>
 
@@ -382,7 +391,7 @@
 
 
 @* forgot password modal *@
-<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+@* <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -392,8 +401,8 @@
             <div class="modal-body">
                 <form id="userEmail-form">
                     <p>We will send OTP on</p>
-                    <input type="text" class="form-control" id="forgotPassword-email" placeholder="@Model.Email" disabled>
-                    <input type="text" class="d-none form-control mt-2" id="forgotPassword-id" placeholder="@HttpContextAccessor.HttpContext!.Session.GetString("userId")" disabled>
+                    <input type="text" class="form-control" id="forgotPassword-email" placeholder="@Model.ProfileData.Email" disabled>
+                    <input type="text" class="d-none form-control mt-2" id="forgotPassword-id" placeholder="@Model.ProfileData.Email" disabled>
                 </form>
                 <form class="d-none" id="otp-form">
                     <p id="OTP-message"></p>
@@ -450,7 +459,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 
 
 
@@ -471,7 +480,3 @@
         </div>
     </div>
 </div>
-
-
-
-

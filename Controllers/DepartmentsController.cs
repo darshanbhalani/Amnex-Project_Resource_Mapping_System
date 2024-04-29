@@ -52,7 +52,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         [HttpPost]
         public IActionResult Add(Department model)
         {
-            string uid = HttpContext.Session.GetString("userId");
+            string uid = HttpContext.Session.GetString("userId")!;
 
             try
             {
@@ -105,7 +105,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             {
                 cmd.Parameters.AddWithValue("departmentname", departmentname);
 
-                object result = cmd.ExecuteScalar();
+                object result = cmd.ExecuteScalar()!;
 
                 // Check if the result is not null and can be converted to int
                 if (result != null)
@@ -125,7 +125,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
         public void changeIsDeleted(int DepartmentId)
         {
-            string uid = HttpContext.Session.GetString("userId");
+            string uid = HttpContext.Session.GetString("userId")!;
 
             var sql = "update departments set modifyby = @modifyby,modifytime = @modifytime, isDeleted = false where departmentid = @departmentid";
             using (var cmd = new NpgsqlCommand(sql, _connection))
@@ -147,14 +147,14 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             using (var cmd = new NpgsqlCommand(sql, _connection))
             {
                 cmd.Parameters.AddWithValue("departmentname", departmentname);
-                var count = (bool)cmd.ExecuteScalar();
+                var count = (bool)cmd.ExecuteScalar()!;
                 return count;
             }
         }
         [HttpPut]
         public IActionResult Editdepartment(Department model)
         {
-            string uid = HttpContext.Session.GetString("userId");
+            string uid = HttpContext.Session.GetString("userId")!;
 
             try
             {
@@ -182,7 +182,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         [HttpPost]
         public IActionResult Deletedepartment(Department model)
         {
-            string uid = HttpContext.Session.GetString("userId");
+            string uid = HttpContext.Session.GetString("userId")!;
 
             try
             {
