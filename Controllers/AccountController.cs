@@ -61,16 +61,16 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 List<Skill> skills = new List<Skill>();
                 List<Department> departments = new List<Department>();
                 Employee employee = new Employee();
-                using (var command = new NpgsqlCommand($"select * from getemployeeprofile({Convert.ToInt32(HttpContext.Session.GetString("userId"))});", _connection))
+                using (var command = new NpgsqlCommand($"select * from getemployeeprofile(1);", _connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            employee.Employeeid = reader.GetInt32(0);
-                            employee.Employeename = reader.GetString(1);
+                            employee.EmployeeId = reader.GetInt32(0);
+                            employee.EmployeeName = reader.GetString(1);
                             employee.EmployeeUserName = reader.GetString(2);
-                            employee.Departmentid = reader.GetInt32(3);
+                            employee.DepartmentId = reader.GetInt32(3);
                             employee.DepartmentName = reader.GetString(4);
                             employee.SkillsId = reader.GetString(5);
                             employee.SkillsName = reader.GetString(6);
@@ -197,7 +197,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     mailMessage.To.Add(employee.Email);
                     mailMessage.Subject = "PRMS Account Credentials";
                     mailMessage.IsBodyHtml = true;
-                    mailMessage.Body = $"<h3>Hello {employee.Employeename},</h3></br><p>Your PRMS account is created. your UserName is \"<b>{employee.EmployeeUserName}</b>\" and Password is \"<b>{employee.Password}</b>\".";
+                    mailMessage.Body = $"<h3>Hello {employee.EmployeeName},</h3></br><p>Your PRMS account is created. your UserName is \"<b>{employee.EmployeeUserName}</b>\" and Password is \"<b>{employee.Password}</b>\".";
 
                     smtpClient.Send(mailMessage);
 

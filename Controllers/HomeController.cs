@@ -220,7 +220,29 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
         public IActionResult Employees()
         {
-            return View();
+
+            EmployeesModel model = new EmployeesModel();
+            
+            int allocated = 0;
+            int unallocated = 0;
+            using(var cmd = new NpgsqlCommand("select * from count_allocated_unallocated_employees()", _connection)) {
+                using(var reader= cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        allocated = reader.GetInt32(0);
+                        unallocated = reader.GetInt32(1);
+                    }
+                }
+            }
+
+            model.employees = GetEmployees();
+            model.employeeDepartments = getEmployeeDepartment();
+            model.employeeSkills = getEmployeeSkills();
+            model.allocatedEmployees = allocated;
+            model.unallocatedEmployees = unallocated;
+
+            return View(model);
         }
         public IActionResult ProjectEmployeeMapping()
         {
@@ -347,6 +369,91 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        public List<Employee> GetEmployees()
+        {
+            List<Employee> employees = new List<Employee>();
+            try
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayemployees()", _connection))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Employee employee = new Employee
+                            {
+                                EmployeeId = Convert.ToInt32(reader["employee_id"]),
+                                EmployeeName = Convert.ToString(reader["employee_name"]),
+                                DepartmentId = Convert.ToInt32(reader["department_id"]),
+                                SkillsId = Convert.ToString(reader["skills_id"]),
+                                LoginRoleId = Convert.ToInt32(reader["login_role_id"]),
+                                IsAllocated = Convert.ToBoolean(reader["is_allocated"]),
+                                Email = Convert.ToString(reader["email"]),
+                                CreatedbyName = Convert.ToString(reader["created_by"]), // Assuming createdBy is of type text
+                                CreatedTime = Convert.ToDateTime(reader["created_time"]),
+                                ModifybyName = Convert.ToString(reader["modify_by"]), // Assuming modifyBy is of type text
+                                ModifyTime = Convert.ToDateTime(reader["modify_time"])
+                            };
+
+                            employees.Add(employee);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception (e.g., log it, throw it, etc.)
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return employees;
+        }
+
+
+        public List<Department> getEmployeeDepartment()
+        {
+            List<Department> employeeDepartment = new List<Department>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayalldepartments();", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Department employeeDepartmentObj = new Department
+                        {
+                            DepartmentId = Convert.ToInt32(reader[0]),
+                            DepartmentName = Convert.ToString(reader[1])
+                        };
+                        employeeDepartment.Add(employeeDepartmentObj);
+
+                    }
+
+                }
+            }
+            return employeeDepartment;
+        }
+        public List<Skill> getEmployeeSkills()
+        {
+            List<Skill> employeeSkill = new List<Skill>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallskills();", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Skill employeeSkillObj = new Skill
+                        {
+                            Skillid = Convert.ToInt32(reader[0]),
+                            Skillname = Convert.ToString(reader[1])
+                        };
+                        employeeSkill.Add(employeeSkillObj);
+
+                    }
+
+                }
+            }
+            return employeeSkill;
         }
 
     }

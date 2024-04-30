@@ -24,8 +24,8 @@
     <div class="row mb-2">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="ProfileData.Employeeid">Employee Id</label>
-                <input type="text" class="form-control" asp-for="ProfileData.Employeeid" id="employeeId" disabled>
+                <label asp-for="ProfileData.EmployeeId">Employee Id</label>
+                <input type="text" class="form-control" asp-for="ProfileData.EmployeeId" id="employeeId" disabled>
             </div>
         </div>
         <div class="col-md-6">
@@ -39,7 +39,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="Employeeid">Employee Name</label>
-                <input type="text" class="form-control" asp-for="ProfileData.Employeename" id="name" disabled>
+                <input type="text" class="form-control" asp-for="ProfileData.EmployeeName" id="name" disabled>
             </div>
         </div>
         <div class="col-md-6">
@@ -56,7 +56,7 @@
                 <select class="form-control" asp-for="ProfileData.DepartmentName" id="department" disabled>
                     @foreach (var d in Model.Departments)
                     {
-                        <option value=@d.DepartmentId selected=@(Model.ProfileData.Departmentid == d.DepartmentId ? "selected":null)>@d.DepartmentName</option>
+                        <option value=@d.DepartmentId selected=@(Model.ProfileData.DepartmentId == d.DepartmentId ? "selected":null)>@d.DepartmentName</option>
                     }
                 </select>
             </div>
@@ -330,9 +330,9 @@
 
         $("#save-profile").click(function () {
             var data = {
-                Employeeid: "@Model.ProfileData.Employeeid",
-                EmployeeName: "@Model.ProfileData.Employeename" !== $("#name").val() ? $("#name").val() : null,
-                Departmentid: "@Model.ProfileData.Departmentid" !== $("#department").val() ? $("#department").val() : null,
+                EmployeeId: "@Model.ProfileData.EmployeeId",
+                EmployeeName: "@Model.ProfileData.EmployeeName" !== $("#name").val() ? $("#name").val() : null,
+                DepartmentId: "@Model.ProfileData.DepartmentId" !== $("#department").val() ? $("#department").val() : null,
                 LoginRoleId: "@Model.ProfileData.LoginRoleId" !== $("#loginRole").val() ? $("#loginRole").val() : null,
                 Email: "@Model.ProfileData.Email" !== $("#email").val() ? $("#email").val() : null,
             }
