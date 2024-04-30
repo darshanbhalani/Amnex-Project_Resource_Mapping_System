@@ -276,6 +276,7 @@
                     if (res.success) {
                         loading();
                         $('#changePasswordModal').modal('hide');
+                        $('.modal-backdrop').remove();
                         showSnackbar("true", "Password successfully changed.");
                     } else {
                         loading();

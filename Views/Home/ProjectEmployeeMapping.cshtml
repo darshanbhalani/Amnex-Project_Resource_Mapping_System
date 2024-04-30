@@ -1,7 +1,4 @@
-﻿@{
-    ViewData["Title"] = "ProjectEmployeeMapping";
-}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+﻿<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
 <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 <style>
     .cursor {
@@ -9,6 +6,14 @@
     }
 
     #assign .dt-column-order {
+        display: none;
+    }
+
+    #remove .dt-column-order {
+        display: none;
+    }
+
+    #add .dt-column-order {
         display: none;
     }
 
@@ -52,14 +57,14 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" />
 
 
-@* search section *@
-<h3>Project-Employee mapping</h3>
 
+<h1>Project-Employee mapping section</h1>
 
 @* grid to display data *@
 <table id="dataTable1" class="table table-striped table-bordered tcenter" style="width:100%">
     <thead>
         <tr class="bg-dark">
+            <th class="text-white">Project Id</th>
             <th class="text-white">Project Name</th>
             <th class="text-white">Department</th>
             <th class="text-white">Project Skills</th>
@@ -71,110 +76,9 @@
         </tr>
     </thead>
     <tbody id="dataRows">
-        <tr class="rows">
-            <td>Project 1</td>
-            <td>Integrated</td>
-            <td>React,python,ruby</td>
-            <td>20</td>
-            <td>2023-01-10</td>
-            <td>2023-07-20</td>
-            <td>Active</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 2</td>
-            <td>Department B</td>
-            <td>React,python,rust</td>
-            <td>15</td>
-            <td>2023-02-15</td>
-            <td>2023-09-25</td>
-            <td>Inactive</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 3</td>
-            <td>Department C</td>
-            <td>React,python,ruby</td>
-            <td>100</td>
-            <td>2023-03-20</td>
-            <td>2023-08-30</td>
-            <td>Active</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 4</td>
-            <td>Department A</td>
-            <td>React,python,ruby</td>
-            <td>25</td>
-            <td>2023-04-25</td>
-            <td>2023-10-15</td>
-            <td>Completed</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 5</td>
-            <td>Department B</td>
-            <td>React,python,ruby</td>
-            <td>10</td>
-            <td>2023-05-30</td>
-            <td>2023-11-20</td>
-            <td>Inactive</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 6</td>
-            <td>Department C</td>
-            <td>React,python,ruby</td>
-            <td>22</td>
-            <td>2023-06-10</td>
-            <td>2023-12-05</td>
-            <td>Active</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 7</td>
-            <td>Department A</td>
-            <td>React,python,ruby</td>
-            <td>27</td>
-            <td>2023-07-15</td>
-            <td>2023-10-10</td>
-            <td>Active</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 8</td>
-            <td>Department B</td>
-            <td>React,python,ruby</td>
-            <td>35</td>
-            <td>2023-08-20</td>
-            <td>2023-11-30</td>
-            <td>Completed</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 9</td>
-            <td>Department C</td>
-            <td>React,python,ruby</td>
-            <td>1</td>
-            <td>2023-09-25</td>
-            <td>2023-12-20</td>
-            <td>Inactive</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
-        <tr class="rows">
-            <td>Project 10</td>
-            <td>Department A</td>
-            <td>React,python,ruby</td>
-            <td>29</td>
-            <td>2023-10-30</td>
-            <td>2024-01-10</td>
-            <td>Active</td>
-            <td class="logo-middle mapEmp cursor"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i></td>
-        </tr>
+        <!--Populate Data Here-->
     </tbody>
 </table>
-
-
 
 <!-- Extra large main modal -->
 <div class="modal fade bd-example-modal-xl" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalLabel" aria-hidden="true">
@@ -196,8 +100,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="startDate">Start Date:</label>
-                                <input type="date" class="form-control" id="startDate" readonly>
+                                <label for="startDate1">Start Date:</label>
+                                <input type="date" class="form-control" id="startDate1" readonly>
                             </div>
                         </div>
                     </div>
@@ -211,8 +115,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="endDate">End Date:</label>
-                                <input type="date" class="form-control" id="endDate" readonly>
+                                <label for="endDate1">End Date:</label>
+                                <input type="date" class="form-control" id="endDate1" readonly>
                             </div>
                         </div>
                     </div>
@@ -253,80 +157,18 @@
                         <table id="mainTable" class="table table-striped table-bordered dataTable2 tcenter" style="width:100%">
                             <thead class="bg-dark">
                                 <tr>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Sr. No</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Id</th>
                                     <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Name</th>
                                     <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Skills</th>
                                     <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Role</th>
                                     <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Start Date</th>
                                     <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">End Date</th>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1; text-align:center" id="assign">Remove</th>
+                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1; text-align:center" id="remove">Remove</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Populate data dynamically here -->
-                                <tr>
-                                    <td>1</td>
-                                    <td>John Doe</td>
-                                    <td>C#,React,Javascript</td>
-                                    <td>Developer</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>John Doe</td>
-                                    <td>C#,React,Javascript</td>
-                                    <td>Developer</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>John Doe</td>
-                                    <td>C#,React,Javascript</td>
-                                    <td>Developer</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>John Doe</td>
-                                    <td>C#,React,Javascript</td>
-                                    <td>Developer</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>John Doe</td>
-                                    <td>C#,React,Javascript</td>
-                                    <td>Developer</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>John Doe</td>
-                                    <td>C#,React,Javascript</td>
-                                    <td>Developer</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
-                                </tr>
-                                <tr>
-                                    <td>7</td>
-                                    <td>John Doe</td>
-                                    <td>C#,React,Javascript</td>
-                                    <td>Developer</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td class="logo-middle"><i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i></td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -339,7 +181,6 @@
     </div>
 </div>
 
-
 <!-- Confirm Delete Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -349,7 +190,7 @@
                 <button type="button" class="btn-close close-confirmation" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete this record?
+                <p id="employeeDetails"></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary close-confirmation" data-dismiss="modal">Cancel</button>
@@ -358,7 +199,6 @@
         </div>
     </div>
 </div>
-
 
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
@@ -393,14 +233,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="startDate">Start Date:</label>
-                            <input type="date" class="form-control" id="startDate">
+                            <label for="startDate2">Start Date:</label>
+                            <input type="date" class="form-control" id="startDate2">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="endDate">End Date:</label>
-                            <input type="date" class="form-control" id="endDate">
+                            <label for="endDate2">End Date:</label>
+                            <input type="date" class="form-control" id="endDate2">
                         </div>
                     </div>
                 </div>
@@ -431,8 +271,6 @@
     </div>
 </div>
 
-
-
 <!-- Assign Employee Modal -->
 <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -447,68 +285,48 @@
                     <div class="col-md-12">
                         <h5>Choose Employees</h5>
                         <div class="table-responsive" id="dataTable3" style="max-height: 70vh; overflow-y: auto;">
-                            <table class="table table-striped table-bordered dataTable3 tcenter" id="empModal" style="width:100%">
+                            <table id="empModal" class="table table-striped table-bordered dataTable3 tcenter" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Sr. No</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Employee Id</th>
                                         <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Name</th>
                                         <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Skills</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Company Role</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Project Role</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Department</th>
+                                        @* <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Company Role</th> *@
                                         <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Rating</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Project Role</th>
+                                        @* <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Department</th> *@
                                         <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Start Date</th>
                                         <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">End Date</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Add</th>
+                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;" id="add">Add</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <!-- Populate data dynamically here -->
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Karan</td>
-                                        <td>C#, React, Javascript</td>
-                                        <td>Developer</td>
-                                        <td>Tester</td>
-                                        <td>Integrated</td>
-                                        <td>8/10</td>
-                                        <td>19-03-21</td>
-                                        <td>31-05-25</td>
-                                        <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp1"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>John Doe</td>
-                                        <td>C#, React, Javascript</td>
-                                        <td>Developer</td>
-                                        <td>Tester</td>
-                                        <td>Mobility</td>
-                                        <td>8/10</td>
-                                        <td>19-03-21</td>
-                                        <td>31-05-25</td>
-                                        <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp2"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>John Doe</td>
-                                        <td>C#, React, Javascript</td>
-                                        <td>Developer</td>
-                                        <td>Tester</td>
-                                        <td>Integrated</td>
-                                        <td>8/10</td>
-                                        <td>19-03-21</td>
-                                        <td>31-05-25</td>
-                                        <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp3"></td>
-                                    </tr>
+                                    @*  <tr>
+                                    <td>1</td>
+                                    <td>Karan</td>
+                                    <td>C#, React, Javascript</td>
+                                    <td>Developer</td>
+                                    <td>Tester</td>
+                                    <td>Integrated</td>
+                                    <td>8/10</td>
+                                    <td>19-03-21</td>
+                                    <td>31-05-25</td>
+                                    <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp1"></td>
+                                    </tr> *@
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+            <div class="modal-footer d-flex justify-content-between">
+                <div><span style="color:red">Note: You can save changes only after assigning atleast one employee</span></div>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="savechange" class="btn btn-primary" disabled>Save changes</button>
+                </div>
             </div>
         </div>
     </div>
@@ -579,14 +397,14 @@
                     <div class="row">
                         <div class="col">
                             <div class="mb-3">
-                                <label for="startDate" class="form-label">Start Date:</label>
-                                <input type="date" class="form-control" id="startDate">
+                                <label for="startDate3" class="form-label">Start Date:</label>
+                                <input type="date" class="form-control" id="startDate3">
                             </div>
                         </div>
                         <div class="col">
                             <div class="mb-3">
-                                <label for="endDate" class="form-label">End Date:</label>
-                                <input type="date" class="form-control" id="endDate">
+                                <label for="endDate3" class="form-label">End Date:</label>
+                                <input type="date" class="form-control" id="endDate3">
                             </div>
                         </div>
                     </div>
@@ -610,41 +428,130 @@
             new DataTable('.dataTable2');
             new DataTable('.dataTable3');
 
+            // Display Main data
+            function displaydata(Data) {
+                var table = $('#dataTable1').DataTable();
+                table.clear();//.draw();
+                $.each(Data, function (index, data) {
+                    table.row.add([
+                        data.projectId,
+                        data.projectName,
+                        data.projectDepartment,
+                        data.projectSkills,
+                        data.numberOfEmployees,
+                        new Date(data.startDate).toLocaleDateString(),
+                        new Date(data.endDate).toLocaleDateString(),
+                        data.projectStatus,
+                        '<i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>'
+                    ]).draw();
+                });
+                $('.fa-user-plus').parent().addClass('logo-middle mapEmp cursor');
+                $('.page-link').click(() => {
+                    $('.fa-user-plus').parent().addClass('logo-middle mapEmp cursor');
+                })
+            }
+
+            function getData() {
+                $.ajax({
+                    url: '/Home/GetProjectEmployeeMapping',
+                    type: 'GET',
+                    success: function (data) {
+                        displaydata(data.data);
+                    }
+                });
+            }
+            getData();
+            $('#dt-length-0').on('change', function () {
+                $('.fa-user-plus').parent().addClass('logo-middle mapEmp cursor');
+            });
+            // Data table ni last columns mate
             $('#assign').click(function (event) {
                 event.preventDefault(); // Prevent default action
                 event.stopPropagation(); // Prevent the event from propagating
-                // Add any other logic here, if necessary
                 return false; // Ensure no other handlers are executed
             });
+            $('#remove').click(function (event) {
+                event.preventDefault();
+                event.stopPropagation();
 
+                return false;
+            });
+            $('#add').click(function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                return false;
+            });
+            let projectId;
+            let skills;
             // Event listener for row click to open modal
-            $('#dataRows .rows').click(function (event) {
+            $('#dataRows').on('click', 'tr', function (event) {
                 if ($(event.target).closest('.mapEmp').length) {
                     return;
                 }
 
                 // Get data from the clicked row
-                var projectName = $(this).find('td:eq(0)').text();
-                var department = $(this).find('td:eq(1)').text();
-                var skills = $(this).find('td:eq(2)').text();
-                var employees = $(this).find('td:eq(3)').text();
-                var startDate = $(this).find('td:eq(4)').text();
-                var endDate = $(this).find('td:eq(5)').text();
-                var status = $(this).find('td:eq(6)').text();
+                projectId = $(this).find('td:eq(0)').text();
+                let projectName = $(this).find('td:eq(1)').text();
+                let department = $(this).find('td:eq(2)').text();
+                skills = $(this).find('td:eq(3)').text();
+                let employees = $(this).find('td:eq(4)').text();
+                let startDate = formatDate($(this).find('td:eq(5)').text());
+                let endDate = formatDate($(this).find('td:eq(6)').text());
+                let status = $(this).find('td:eq(7)').text();
 
                 // Populate modal fields with the fetched data
+                $('#pid').val(projectId);
                 $('#projectName').val(projectName);
                 $('#department').val(department);
                 $('#skills').val(skills);
                 $('#employees').val(employees);
-                $('#startDate').val(startDate);
-                $('#endDate').val(endDate);
+                $('#startDate1').val(startDate);
+                $('#endDate1').val(endDate);
                 $('#status').val(status);
-
+                // alert(skills);
                 // Show the modal
-                $('#mainModal').modal('show');
+                $('#mainModal').modal('show').on('shown.bs.modal', function () {
+                    $.ajax({
+                        url: '/Home/getAllocatedEmployeesData',
+                        type: 'POST',
+                        data: { ProjectId: projectId, skills: skills },
+                        dataType: 'json',
+                        success: function (data) {
+                            populateEmployeeData(data.data);
+                        },
+                        error: function (error) {
+                            console.log('Error fetching data:', error);
+                        }
+                    });
+                });
 
             });
+
+            // Display remove modal data
+            function populateEmployeeData(data) {
+                var table = $('#mainTable').DataTable();
+
+                table.clear().draw();
+
+                $.each(data, function (index, employee) {
+                    table.row.add([
+                        // employee.aEmployeeId,
+                        // employee.employeename,
+                        // employee.employeeSkills,
+                        // employee.employeeRole,
+                        // new Date(employee.employeeStartDate).toLocaleDateString(),
+                        // new Date(employee.employeeEndDate).toLocaleDateString(),
+                        employee.workingEmployeeId,
+                        employee.employeename,
+                        employee.employeeSkills,
+                        employee.employeeRole,
+                        new Date(employee.employeeStartDate).toLocaleDateString(),
+                        new Date(employee.employeeEndDate).toLocaleDateString(),
+                        '<i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i>'
+                    ]).draw();
+                });
+            }
 
             $("#mainModalClose").click(() => {
                 $('#mainModal').modal('hide');
@@ -655,34 +562,251 @@
             $(".applyBtn").click(() => {
                 $('#filterModal').modal('hide');
             })
-            // assign employee modal
-            $(".mapEmp").click(() => {
-                $('#mapModal').modal('show');
-            })
+
 
             // Event listener for click events on icons within the "Remove" column
-            $('.fa-minus-square').on('click', function () {
-                // Get the parent row of the clicked remove icon
-                var $row = $(this).closest('tr');
+            $('#mainTable').on('click', '.fa-minus-square', function () {
+                let $row = $(this).closest('tr');
+                let employeeId = $row.find('td:eq(0)').text();
+                let employeeName = $row.find('td:eq(1)').text();
+                let message = `Are you sure you want to remove <b>${employeeName}</b> having employeeid <b>${employeeId}</b> from the project?`;
+                $('#employeeDetails').html(message);
 
-                // Display confirmation modal
                 $('#confirmationModal').modal('show');
 
-                // Handle confirmation button click
-                $('#confirmDeletion').on('click', function () {
-                    // Close modal
-                    $('#confirmationModal').modal('hide');
+                // Store reference to $(this) in a variable
+                var $button = $(this);
 
-                    // Remove the row from the table
-                    $row.remove();
+                $('#confirmDeletion').click(() => {
+                    $.ajax({
+                        url: '/Home/RemoveFromProject',
+                        type: 'POST',
+                        data: { employeeId: employeeId, projectId: projectId },
+                        success: function (result) {
+                            $('#confirmationModal').modal('hide');
+                            // Remove the closest row to the button element
+                            $button.closest('tr').remove();
+                            // Fetch updated data and update the table
+                            $.ajax({
+                                url: '/Home/getAllocatedEmployeesData',
+                                type: 'POST',
+                                data: { ProjectId: projectId },
+                                dataType: 'json',
+                                success: function (data) {
+                                    // Update the table with new data
+                                    getData();
+                                    populateEmployeeData(data.data);
+                                    location.reload();
+                                },
+                                error: function (error) {
+                                    console.log('Error fetching data:', error);
+                                }
+                            });
+                        },
+                        error: function (error) {
+                            console.error('Error removing employee from project:', error);
+                        }
+                    });
                 });
             });
+
             $(".close-confirmation").click(() => {
                 $('#confirmationModal').modal('hide');
             })
 
+            // Event listener for click events on icons within the "Assign" column
+            $('#dataTable1').on('click', '.mapEmp', function () {
+                var $row = $(this).closest('tr');
+                var projectId = $row.find('td:eq(0)').text();
+                var departmentName = $row.find('td:eq(2)').text();
+                $.ajax({
+                    url: '/Home/FetchNotAllocatedEmployees',
+                    type: 'GET',
+                    data: { departmentName: departmentName },
+                    success: function (data) {
+                        displayNotAllocatedData(data.data);
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error: ' + error);
+                    }
+                });
 
-            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+                $('#mapModal').modal('show');
+                $('#savechange').prop('disabled', true);
+                $('#savechange').click(() => {
+                    saveChangesToDatabase(projectId);
+                });
+
+            });
+            function saveChangesToDatabase(projectId) {
+                let data = {
+                    ProjectId: parseInt(projectId),
+                    EmployeesId: [],
+                    ProjectRoleId: [],
+                    StartDate: [],
+                    EndDate: []
+                };
+
+                // $('#empModal tbody tr').each(function () {
+                //     let row = $(this);
+                //     var isChecked = row.find('td:eq(7) input[type="checkbox"]').is(':checked');
+                //     if (isChecked) {
+                //         let employeeId = parseInt(row.find('td:eq(0)').text());
+                //         let projectRole = parseInt(row.find('td:eq(4) select').val());
+                //         let startDate = row.find('td:eq(5) input').val();
+                //         let endDate = row.find('td:eq(6) input').val();
+                //         let startDateObj = new Date(startDate);
+                //         let endDateObj = new Date(endDate);
+
+                //         data.EmployeesId.push(employeeId);
+                //         data.ProjectRoleId.push(projectRole);
+                //         data.StartDate.push(startDate);
+                //         data.EndDate.push(endDate);
+
+                //     }
+                // });
+
+                $('#empModal tbody tr:has(td:eq(7) input[type="checkbox"]:checked)').each(function () {
+                    let row = $(this);
+                    let employeeId = parseInt(row.find('td:eq(0)').text());
+                    let projectRole = parseInt(row.find('td:eq(4) select').val());
+                    let startDate = row.find('td:eq(5) input').val();
+                    let endDate = row.find('td:eq(6) input').val();
+                    // let startDateObj = new Date(startDate);
+                    // let endDateObj = new Date(endDate);
+
+                    data.EmployeesId.push(employeeId);
+                    data.ProjectRoleId.push(projectRole);
+                    data.StartDate.push(startDate);
+                    data.EndDate.push(endDate);
+                });
+
+                $.ajax({
+                    url: '/Home/AssignEmployees',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        $('#mapModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error saving data:', error);
+                    }
+                });
+            }
+
+            function displayNotAllocatedData(Data) {
+                var table = $('#empModal').DataTable();
+                table.clear().draw();
+                $.each(Data, function (index, data) {
+                    table.row.add([
+                        // data.employeeId,
+                        // data.aEmployeename,
+                        // data.aEmployeeSkills,
+                        // data.employeeRating,
+                        data.employeeId,
+                        data.notAllocatedEmployeeName,
+                        data.notAllocatedEmployeeSkills,
+                        data.employeeRating,
+                        'not assigned',
+                        'not assigned',
+                        'not assigned',
+                        '<input type="checkbox" class="form-check-input addEmp cursor" id="addEmp' + data.employeeId + '">'
+                    ]).draw();
+                });
+
+                // Target only checkboxes within the table with ID 'empModal'
+                $('#empModal .addEmp').change(function () {
+                    updateSaveButton();
+                    sortCheckedRowsEmpModal();
+                    updateProjectRolesToDropdown();
+                    updateDateFields();
+                });
+
+                function sortCheckedRowsEmpModal() {
+                    let rows = $('#empModal tbody tr').get();
+                    rows.sort(function (a, b) {
+                        let keyA = $(a).find('.addEmp').is(':checked') ? 0 : 1;
+                        let keyB = $(b).find('.addEmp').is(':checked') ? 0 : 1;
+                        return keyA - keyB;
+                    });
+                    $.each(rows, function (index, row) {
+                        $('#empModal tbody').append(row);
+                    });
+                }
+
+                function updateProjectRolesToDropdown() {
+                    $('#empModal .addEmp').each(function () {
+                        let row = $(this).closest('tr');
+                        let projectRoleCell = row.find('td').eq(4);
+
+                        if ($(this).is(':checked')) {
+                            if (projectRoleCell.find('select').length === 0) {
+                                $.ajax({
+                                    url: '/Home/getProjectRoles',
+                                    type: 'GET',
+                                    success: function (response) {
+                                        let dropdown = $('<select class="form-control"></select>');
+
+                                        response.data.forEach(function (item) {
+                                            if (item.projectRoleName) {
+                                                // dropdown.append($('<option></option>').attr("value", item.pRoleId).text(item.pRoleName));
+                                                dropdown.append($('<option></option>').attr("value", item.projectRoleId).text(item.projectRoleName));
+                                            }
+                                        });
+
+                                        projectRoleCell.empty().append(dropdown);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error fetching project roles:', error);
+                                    }
+                                });
+                            }
+                        } else {
+                            // Handle the unchecked state if needed
+                            if (projectRoleCell.find('select').length > 0) {
+                                projectRoleCell.empty().text('not assigned');
+                            }
+                        }
+                    });
+                }
+
+                function updateDateFields() {
+                    let projectStartDate = "not assigned";
+                    let projectEndDate = "not assigned";
+
+                    $('#empModal .addEmp').each(function () {
+                        let row = $(this).closest('tr');
+                        let startDateCell = row.find('td').eq(5);
+                        let endDateCell = row.find('td').eq(6);
+
+                        if ($(this).is(':checked')) {
+                            if (startDateCell.find('input').length === 0) {
+                                startDateCell.html(`<input type="date" class="form-control startDate" value="${projectStartDate}">`);
+                            }
+                            if (endDateCell.find('input').length === 0) {
+                                endDateCell.html(`<input type="date" class="form-control endDate" value="${projectEndDate}">`);
+                            }
+                        } else {
+                            if (startDateCell.find('input').length > 0) {
+                                startDateCell.html(projectStartDate);
+                            }
+                            if (endDateCell.find('input').length > 0) {
+                                endDateCell.html(projectEndDate);
+                            }
+                        }
+                    });
+                }
+
+            }
+            function updateSaveButton() {
+                var anyChecked = $('#empModal .addEmp:checked').length > 0;
+                $('#savechange').prop('disabled', !anyChecked);
+            }
+
+
+            let multipleCancelButton = new Choices('#choices-multiple-remove-button', {
                 removeItemButton: true,
                 // maxItemCount: 5,
                 // searchResultLimit: 5,
@@ -693,74 +817,6 @@
                 $('#addEmployeeFilter').modal('show');
             })
 
-            // Target only checkboxes within the table with ID 'empModal'
-            $('#empModal .addEmp').change(function () {
-                sortCheckedRowsEmpModal();
-                updateProjectRolesToDropdown();
-                updateDateFields();
-            });
-
-            function sortCheckedRowsEmpModal() {
-                var rows = $('#empModal tbody tr').get();
-                rows.sort(function (a, b) {
-                    var keyA = $(a).find('.addEmp').is(':checked') ? 0 : 1;
-                    var keyB = $(b).find('.addEmp').is(':checked') ? 0 : 1;
-                    return keyA - keyB;
-                });
-                $.each(rows, function (index, row) {
-                    $('#empModal tbody').append(row);
-                });
-            }
-
-            function updateProjectRolesToDropdown() {
-                $('#empModal .addEmp').each(function () {
-                    var row = $(this).closest('tr');
-                    var projectRoleCell = row.find('td').eq(4);
-                    if ($(this).is(':checked')) {
-                        if (projectRoleCell.find('select').length === 0) {
-                            var dropdown = $('<select class="form-control"></select>');
-                            var roles = ["Developer", "Tester", "Manager", "Designer", "Analyst"];
-                            $.each(roles, function (index, role) {
-                                dropdown.append($('<option></option>').attr("value", role).text(role));
-                            });
-                            dropdown.val("Developer");
-                            projectRoleCell.html(dropdown);
-                        }
-                    } else {
-                        if (projectRoleCell.find('select').length > 0) {
-                            var role = projectRoleCell.find('select').val();
-                            projectRoleCell.html(role);
-                        }
-                    }
-                });
-            }
-
-            function updateDateFields() {
-                var projectStartDate = "01-01-2024";
-                var projectEndDate = "31-12-2024";
-
-                $('#empModal .addEmp').each(function () {
-                    var row = $(this).closest('tr');
-                    var startDateCell = row.find('td').eq(7);
-                    var endDateCell = row.find('td').eq(8);
-
-                    if ($(this).is(':checked')) {
-                        if (startDateCell.find('input').length === 0) {
-                            startDateCell.html(`<input type="date" class="form-control startDate" value="${projectStartDate}">`);
-                        }
-                        if (endDateCell.find('input').length === 0) {
-                            endDateCell.html(`<input type="date" class="form-control endDate" value="${projectEndDate}">`);
-                        }
-                    } else {
-                        if (startDateCell.find('input').length > 0) {
-                            startDateCell.html(projectStartDate);
-                        }
-                        if (endDateCell.find('input').length > 0) {
-                            endDateCell.html(projectEndDate);
-                        }
-                    }
-                });
-            }
 
             // Datatable1
             document.getElementById('dt-search-0').placeholder = 'Search something...';
@@ -780,9 +836,8 @@
             $('#dt-search-2').parent().parent().removeClass('ms-auto');
             $('#dt-search-2').css({ 'width': '30rem', 'border': '2px solid #dee2e6' });
 
-            // changes
             //1st filter button
-            var firstButton = $('<button>', {
+            let firstButton = $('<button>', {
                 class: 'btn btn-danger ms-1',
                 text: 'Filter',
             });
@@ -792,7 +847,7 @@
             });
 
             //2nd and 3rd filter button
-            var secondButton = $('<button>', {
+            let secondButton = $('<button>', {
                 class: 'btn btn-danger ms-1',
                 text: 'Filter',
             });
@@ -801,7 +856,7 @@
                 $('#addEmployeeFilter').modal('show');
             });
 
-            var thirdButton = $('<button>', {
+            let thirdButton = $('<button>', {
                 class: 'btn btn-danger ms-1',
                 text: 'Filter',
             });
@@ -809,6 +864,14 @@
             thirdButton.click(() => {
                 $('#addEmployeeFilter').modal('show');
             });
+
+            function formatDate(dateString) {
+                // Split the date string into day, month, and year components
+                var parts = dateString.split('/');
+                return parts[2] + '-' + parts[1] + '-' + parts[0];
+            }
+            updateSaveButton();
+
         });
     </script>
 }

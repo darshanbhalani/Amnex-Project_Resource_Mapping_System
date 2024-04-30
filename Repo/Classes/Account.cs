@@ -70,7 +70,18 @@ namespace Amnex_Project_Resource_Mapping_System.Repo.Classes
         {
             using (var cmd = new NpgsqlCommand($"SELECT changePassword({Convert.ToInt32(httpContext.Session.GetString("userId"))},'{currentPassword}','{newPassword}');", connection))
             {
-                return (bool)cmd.ExecuteScalar();
+                using(var reader = cmd.ExecuteReader())
+                {
+                    if(reader.Read())
+                    {
+                        return reader.GetBoolean(0);
+
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
         }
     }
