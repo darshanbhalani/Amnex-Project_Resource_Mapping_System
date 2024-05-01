@@ -133,7 +133,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 {
                     while (reader.Read())
                     {
-                        date.Add(reader.GetDateTime(0).ToString().Split(" ")[0]); 
+                        date.Add(reader.GetDateTime(0).ToString().Split(" ")[0]);
                         insert.Add(reader.GetInt32(1));
                         update.Add(reader.GetInt32(2));
                         delete.Add(reader.GetInt32(3));
@@ -158,17 +158,16 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         public IActionResult Projects()
         {
             List<Project> lst = new List<Project>();
-
             using (NpgsqlCommand cmd = new NpgsqlCommand("select * from public.displayactiveprojects();", _connection))
             {
-                using (NpgsqlDataReader dr = cmd.ExecuteReader()) {
+                using (NpgsqlDataReader dr = cmd.ExecuteReader())
+                {
                     while (dr.Read())
                     {
                         Project project = new Project();
                         project.projectId = Convert.ToInt32(dr.GetValue(0).ToString());
                         project.projectName = dr.GetValue(1).ToString();
                         project.status = dr.GetValue(6).ToString();
-
                         lst.Add(project);
                     }
                 }
@@ -176,22 +175,21 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
 
             List<dynamic> lst1 = [];
-
             using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallskills();", _connection))
             {
-                using(NpgsqlDataReader dr = cmd.ExecuteReader())
+                using (var reader = cmd.ExecuteReader())
                 {
-                    while (dr.Read())
+                    while (reader.Read())
                     {
                         List<dynamic> x = [];
                         Project project = new Project();
-                        x.Add(Convert.ToInt32(dr.GetValue(0)));
-                        x.Add(dr.GetValue(1));
+                        x.Add(Convert.ToInt32(reader.GetValue(0)));
+                        x.Add(reader.GetValue(1));
                         lst1.Add(x);
                     }
                 }
-                ;
             }
+
 
             List<dynamic> lst2 = [];
 
@@ -216,17 +214,17 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             temp.project = lst;
             temp.list2 = lst2;
             return View(temp);
-
         }
         public IActionResult Employees()
         {
 
             EmployeesModel model = new EmployeesModel();
-            
+
             int allocated = 0;
             int unallocated = 0;
-            using(var cmd = new NpgsqlCommand("select * from count_allocated_unallocated_employees()", _connection)) {
-                using(var reader= cmd.ExecuteReader())
+            using (var cmd = new NpgsqlCommand("select * from count_allocated_unallocated_employees()", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -292,63 +290,13 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             return View(skills);
         }
 
-        
-        [HttpPost]
-        public IActionResult projectDelete(int projectId)
-        {
-                NpgsqlCommand cmd = new NpgsqlCommand("select public.deleteproject(:projectId,:modifyTime ,:modifyBy);", _connection);
-                cmd.Parameters.AddWithValue("projectId", projectId);
-                cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
-                cmd.Parameters.AddWithValue("modifyBy", "Bhavya Soni");
-                cmd.ExecuteNonQuery();
-            
-            return Json(new { success = true });
-        }
-
-        public IActionResult insertProject(Project project)
-        {
-            
-                NpgsqlCommand cmd = new NpgsqlCommand(" select public.insertproject(:in_project_name::text,:in_department_id,:in_start_date::date ,:in_end_date::date,:in_skills_id::text,:in_status::text,:in_created_by::text,:in_create_time::timestamp,:in_modify_by::text,:in_modify_time::timestamp,:in_is_deleted);", _connection);
-                cmd.Parameters.AddWithValue("in_project_name", project.projectName);
-                cmd.Parameters.AddWithValue("in_department_id", project.departmentId);
-                cmd.Parameters.AddWithValue("in_start_date", project.startDate);
-                cmd.Parameters.AddWithValue("in_end_date", project.endDate);
-                cmd.Parameters.AddWithValue("in_skills_id", project.skillid);
-                cmd.Parameters.AddWithValue("in_status", "Inactive");
-                cmd.Parameters.AddWithValue("in_created_by", "Bhavya Soni");
-                cmd.Parameters.AddWithValue("in_create_time", DateTime.Now);
-                cmd.Parameters.AddWithValue("in_modify_time", DateTime.Now);
-                cmd.Parameters.AddWithValue("in_modify_by", "Bhavya Soni");
-                cmd.Parameters.AddWithValue("in_is_deleted", false);
-                cmd.ExecuteNonQuery();
-            
-            return Json(new { success = true });
-        }
-
-        public IActionResult updateProject(Project project)
-        {
-            
-                NpgsqlCommand cmd = new NpgsqlCommand(" select public.updateproject(:in_project_id::integer ,:in_project_name::text,:in_department_id::integer,:in_start_date::date,:in_end_date::date,:in_skills_id::text,:in_status::text,:in_modify_by::text,:in_modify_time::timestamp);", _connection);
-                cmd.Parameters.AddWithValue("in_project_id", project.projectId);
-                cmd.Parameters.AddWithValue("in_project_name", project.projectName);
-                cmd.Parameters.AddWithValue("in_department_id", project.departmentId);
-                cmd.Parameters.AddWithValue("in_start_date", project.startDate);
-                cmd.Parameters.AddWithValue("in_end_date", project.endDate);
-                cmd.Parameters.AddWithValue("in_skills_id", project.skillid);
-                cmd.Parameters.AddWithValue("in_status", project.status);
-                cmd.Parameters.AddWithValue("in_modify_time", DateTime.Now);
-                cmd.Parameters.AddWithValue("in_modify_by", "Bhavya Soni");
-                cmd.Parameters.AddWithValue("in_is_deleted", false);
-                cmd.ExecuteNonQuery();
-            
-            return Json(new { success = true });
-        }
         public IActionResult Actions()
         {
-            List<Log> logs = new List<Log>();   
-            using(var cmd = new NpgsqlCommand("select * from getLogDetails()", _connection))
+            List<Log> logs = new List<Log>();
+            using (var cmd = new NpgsqlCommand("select * from getLogDetails()", _connection))
             {
-                using(var reader =  cmd.ExecuteReader()) { 
+                using (var reader = cmd.ExecuteReader())
+                {
                     while (reader.Read())
                     {
                         logs.Add(new Log
@@ -456,7 +404,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             return employeeSkill;
         }
 
-       
+
         [HttpGet]
         public IActionResult GetProjectEmployeeMapping()
         {

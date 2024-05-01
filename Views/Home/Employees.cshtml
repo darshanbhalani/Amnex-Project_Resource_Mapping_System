@@ -5,6 +5,8 @@
 
 
 @section style{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
     <style>
 
         #assign .dt-column-order {
@@ -477,7 +479,7 @@
                 var employeeObj = {
                     EmployeeName: employeeName,
                     EmployeeUserName: employeeUserName,
-                    Email: employeeEmailId,
+                    Email: employeeEmailId, 
                     DepartmentId: department,
                     LoginRoleId: userRole, // Corrected property name
                     SkillsId: selectedSkills.join(',') // Convert array to comma-separated string
@@ -517,9 +519,11 @@
                     success: function (result) {
                         // Populate modal with employee data
                         console.log(result);
+                       
+
                         $('#employeeIdUpdate').val(result.employee.employeeId);
                         $('#employeeNameUpdate').val(result.employee.employeeName);
-                        $('#employeeUserNameUpdate').val(result.employee.employeeUsername);
+                        $('#employeeUserNameUpdate').val(result.employee.employeeUserName);
                         $('#employeeEmailUpdate').val(result.employee.email);
                         $('#departmentNameUpdate').val(result.employee.departmentId);
                         $('#userRoleUpdate').val(result.employee.loginRoleId);
