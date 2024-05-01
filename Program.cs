@@ -1,6 +1,9 @@
 using Amnex_Project_Resource_Mapping_System.Models;
 using Npgsql;
 using Amnex_Project_Resource_Mapping_System.Repo.Classes;
+using System.Net.Mail;
+using System.Net;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Amnex_Project_Resource_Mapping_System
 {
@@ -21,9 +24,12 @@ namespace Amnex_Project_Resource_Mapping_System
             builder.Services.AddHttpContextAccessor();
 
             var configuration = builder.Configuration;
-            var dbConfiguration = configuration.GetSection("DBConfiguration").Get<DBConfiguration>();
-            var connectionString = $"Host={dbConfiguration.Host};Port={dbConfiguration.Port};Username={dbConfiguration.Username};Password={dbConfiguration.Password};Database={dbConfiguration.Database}";
 
+            var dbConfiguration = configuration.GetSection("DBConfiguration").Get<DBConfiguration>();
+            var connectionString = $"Host={dbConfiguration!.Host};Port={dbConfiguration.Port};Username={dbConfiguration.Username};Password={dbConfiguration.Password};Database={dbConfiguration.Database}";
+
+
+            var smtpConfiguration = configuration.GetSection("SMTPConfiguration").Get<SMTPConfiguration>();
             try
             {
                 using (var tempConnection = new NpgsqlConnection(connectionString))
@@ -57,26 +63,20 @@ namespace Amnex_Project_Resource_Mapping_System
             app.UseAuthorization();
 
 
-
             app.Use(async (context, next) =>
             {
-                await next();
 
-                if (context.Response.StatusCode == 404)
-                {
-                    context.Response.Redirect("/Home/Error");
-                }
-            });
-
-            app.Use(async (context, next) =>
-            {
                 var path = context.Request.Path;
                 var session = context.Session;
                 var userId = session.GetString("userId");
 
-                if (path.StartsWithSegments("/Account/Login") || !string.IsNullOrEmpty(userId))
+                if (path.StartsWithSegments("/Account/Login") || !string.IsNullOrEmpty(userId) || path.StartsWithSegments("/Account/ForgotPassword"))
                 {
                     await next();
+                    if (context.Response.StatusCode == 404)
+                    {
+                        context.Response.Redirect("/Home/Error");
+                    }
                     return;
                 }
 

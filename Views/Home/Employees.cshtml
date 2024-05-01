@@ -1,81 +1,24 @@
-﻿@{
+﻿@model EmployeesModel;
+@{
     ViewData["Title"] = "Employees";
 }
 
-<head>
+
+@section style{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
     <style>
-        #updateIcon {
-            color: blue;
+
+        #assign .dt-column-order {
+            display: none;
         }
 
-        #deleteIcon {
-            color: red;
-        }
-
-        .data-rows-scrollable {
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-            .data-rows-scrollable::-webkit-scrollbar {
-                display: none;
-            }
-
-        /* section-2 */
-        .flex-center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            flex-direction: column;
-        }
-
-        .box:nth-child(1) {
-            background-color: #B4D4FF;
-        }
-
-        .box:nth-child(2) {
-            background-color: #FEC7B4;
-        }
-
-        .box:nth-child(3) {
-            background-color: #C1F2B0;
-        }
-
-        .box {
-            max-height: 160px;
-            height: 25vw;
-            min-height: 50px;
-            width: 20vw;
-        }
-
-        .card {
-            background-color: transparent;
-            margin: 1%;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .box .col .fa {
-            font-size: 1rem;
-        }
-
-        .col h3 {
-            font-weight: bolder;
-        }
-
-        .box-icon {
-            height: 5vw;
-        }
-    
         .box {
             min-height: 140px;
             height: 20vh;
             max-height: 200px;
-            max-width: 320px;
-            width: 20vw;
+            max-width: 100%;
+            width: 100%;
             min-width: 250px;
         }
 
@@ -98,112 +41,116 @@
             align-items: center;
             text-align: center;
         }
-        </style>
-</head>
-<h3>Employees</h3>
-<div class="container-fluid pt-2">
-    <div class="row g-4 d-flex align-items-center justify-content-evenly">
-        <div class="col-sm-6 col-xl-3 px-0">
-            <div class="bg-light rounded d-flex align-items-center justify-content-between p-5 box">
+    </style>
+}
+
+<h3 class=" pt-2 ">Employees</h3>
+<div class="container-fluid px-4 pb-2">
+    <div class="row g-4 d-flex justify-content-center align-items-center">
+        <div class="col-sm-6 col-xl-4 px-4">
+            <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
                 <i class="fa fa-chart-line fa-3x"></i>
-                <div>
+                <div class="ms-3">
                     <p class="mb-2">Total Employees</p>
-                    <h4 class="mb-0">422</h4>
+                    <h4 class="mb-0">@(Model.unallocatedEmployees + Model.allocatedEmployees)</h4>
                 </div>
             </div>
         </div>
-        
-        <div class="col-sm-6 col-xl-3  px-0">
-            <div class="bg-light rounded d-flex align-items-center justify-content-between p-5 box">
+        <div class="col-sm-6 col-xl-4 px-4">
+            <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
                 <i class="fa fa-chart-bar fa-3x"></i>
-                <div>
-                    <p class="mb-2">Assigned Employees</p>
-                    <h4 class="mb-0">385</h4>
+                <div class="ms-3">
+                    <p class="mb-2">Allocated Employees</p>
+                    <h4 class="mb-0">@(Model.allocatedEmployees)</h4>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-xl-3  px-0">
-            <div class="bg-light rounded d-flex align-items-center justify-content-between p-5 box">
+        <div class="col-sm-6 col-xl-4 px-4">
+            <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
                 <i class="fa fa-chart-area fa-3x"></i>
-                <div>
-                    <p class="mb-2">Ideal Employees</p>
-                    <h4 class="mb-0">37</h4>
+                <div class="ms-3">
+                    <p class="mb-2">Unallocated Employees</p>
+                    <h4 class="mb-0">@(Model.unallocatedEmployees)</h4>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-@* search-section *@
-<div class="row justify-content-center my-2 pt-3 ">
-    <div class="col-md-12 px-0">
-        <form class="d-flex">
-
-            <button type="button" id="addEmployeeBtn" class="btn btn-dark me-2 px-4" data-toggle="modal">
-                Add
-            </button>
-            <input class="form-control flex-grow-1 me-2 px-4" type="search" placeholder="Search" aria-label="Search query">
-            <button class="btn btn-outline-primary me-2 px-4" type="submit">
-                Search
-            </button>
-            <button class="btn btn-danger me-2 px-4 py-1" type="button" aria-label="Open filter options">
-                Filter
-            </button>
-
-        </form>
-    </div>
-</div>
-
-
-<div class="container my-4 pt-3 px-0">
-    <div class="row justify-content-center text-center bg-dark p-2 border-bottom">
-        <div class="col-2 col-md-1 py-2 border-end text-white">EmployeeId</div> <!-- Made narrower -->
-        <div class="col-10 col-md-4 py-2 border-end text-white">Employee Name</div>
-        <div class="col-6 col-md-2 py-2 border-end text-white">Department</div>
-        <div class="col-6 col-md-3 py-2 border-end text-white">Project</div>
-        <div class="col-6 col-md-1 py-2 text-white">Update</div>
-        <div class="col-6 col-md-1 py-2 text-white">Delete</div>
-    </div>
-    <div id="dataRows">
-        <div class="row justify-content-center text-center bg-light p-2 border-bottom" data-toggle="modal" data-target="#projectModal" data-projectname="GIS Mapping" data-employees="8" data-department="Integrated" data-status="Active">
-            <div class="col-2 col-md-1 py-2 border-end">1</div> <!-- Sr. No -->
-            <div class="col-10 col-md-4 py-2 border-end">Kishan</div>
-            <div class="col-6 col-md-2 py-2 border-end">Mobility</div>
-            <div class="col-6 col-md-3 py-2 border-end">xyz</div>
-            <div class="col-6 col-md-1 py-2 border-end">
-                <button class="btn update-btn" id="updateIcon" data-toggle="modal" data-target="#updateModal"><i class="fa fa-pencil-square-o " aria-hidden="true"></i></button>
-            </div>
-            <div class="col-6 col-md-1 py-2">
-                <button class="btn delete-btn" id="deleteIcon" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash " aria-hidden="true"></i></button>
-            </div>
-        </div>
-        <div class="row justify-content-center text-center bg-light p-2 border-bottom" data-toggle="modal" data-target="#projectModal" data-projectname="GIS Mapping" data-employees="8" data-department="Integrated" data-status="Active">
-            <div class="col-2 col-md-1 py-2 border-end">1</div> <!-- Sr. No -->
-            <div class="col-10 col-md-4 py-2 border-end">Kishan</div>
-            <div class="col-6 col-md-2 py-2 border-end">Mobility</div>
-            <div class="col-6 col-md-3 py-2 border-end">xyz</div>
-            <div class="col-6 col-md-1 py-2 border-end">
-                <button class="btn update-btn" id="updateIcon" data-toggle="modal" data-target="#updateModal"><i class="fa fa-pencil-square-o " aria-hidden="true"></i></button>
-            </div>
-            <div class="col-6 col-md-1 py-2">
-                <button class="btn delete-btn" id="deleteIcon" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash " aria-hidden="true"></i></button>
-            </div>
-        </div>
-        <div class="row justify-content-center text-center bg-light p-2 border-bottom" data-toggle="modal" data-target="#projectModal" data-projectname="GIS Mapping" data-employees="8" data-department="Integrated" data-status="Active">
-            <div class="col-2 col-md-1 py-2 border-end">1</div> <!-- Sr. No -->
-            <div class="col-10 col-md-4 py-2 border-end">Kishan</div>
-            <div class="col-6 col-md-2 py-2 border-end">Mobility</div>
-            <div class="col-6 col-md-3 py-2 border-end">xyz</div>
-            <div class="col-6 col-md-1 py-2 border-end">
-                <button class="btn update-btn" id="updateIcon" data-toggle="modal" data-target="#updateModal"><i class="fa fa-pencil-square-o " aria-hidden="true"></i></button>
-            </div>
-            <div class="col-6 col-md-1 py-2">
-                <button class="btn delete-btn" id="deleteIcon" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash " aria-hidden="true"></i></button>
-            </div>
-        </div>
 
     </div>
 </div>
+<table id="example" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr class="bg-dark">
+            <th class="text-white">Employee ID</th>
+            <th class="text-white">Employee Name</th>
+            <th class="text-white">Department</th>
+            <th class="text-white">Role</th>
+            <th class="text-white assign" style="text-align:center">Update</th>
+            <th class="text-white assign" style="text-align:center">Delete</th>
+        </tr>
+    </thead>
+    <tbody id="dataRows">
+        @foreach (var emp in Model.employees)
+        {
+            <tr class="row123">
+                <td id="emplpyeeId">@emp.EmployeeId</td>
+                <td>@emp.EmployeeName</td>
+                <td>
+                    @*  @emp.DepartmentId *@
+
+                    @foreach (var y in Model.employeeDepartments)
+                    {
+                        if (y.DepartmentId == @emp.DepartmentId)
+                        {
+
+                            @y.DepartmentName
+
+                        }
+                    }
+                </td>
+
+
+                <td>
+
+                    @if (emp.LoginRoleId == 0)
+                    {
+                        <text>Admin</text>
+                    }
+                    else
+                    {
+                        <text>User</text>
+                    }
+                </td>
+
+                <td class="updatebtn center-icon" data-toggle="modal" data-target="#updateModal" style="text-align:center"><i class="fa fa-edit fa-lg edit-icon" style="cursor:pointer;" aria-hidden="true"></i></td>
+                <td class="deletebtn center-icon" data-toggle="modal" data-target="#deleteModal" style="text-align:center"><i class="fa fa-trash fa-lg delete-icon" style="cursor:pointer;" aria-hidden="true"></i></td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
+
+@*  Delete modal code  *@
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this item?</p>
+                <input type="text" id="confirmInput" class="form-control" placeholder="Type 'CONFIRM' to proceed">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="deleteButton" disabled>Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 @* add-employee-modal *@
@@ -216,11 +163,26 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <form>
+                    <form id="asdasd">
                         <div class="row mb-3">
-                            <div class="col">
-                                <label for="employeeEmailId">Employee Email Name</label>
+
+                            <div class="col-12">
+                                <label for="employeename">Employee Name</label>
                                 <input type="text" class="form-control" id="employeeName" placeholder="Enter Employee Name">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+
+                            <div class="col-12">
+                                <label for="employeeUserName">Employee UserName</label>
+                                <input type="text" class="form-control" id="employeeUserName" placeholder="Enter Employee UserName">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+
+                            <div class="col-12">
+                                <label for="employeeEmailId">Employee EmailId</label>
+                                <input type="text" class="form-control" id="employeeEmailId" placeholder="Enter Employee EmailId ">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -228,53 +190,49 @@
                                 <label for="department">Department</label>
                                 <select class="form-control" id="department">
                                     <option value="">Select Department</option>
-                                    <option value="Mobility">Mobility</option>
-                                    <option value="Integrated">Integrated</option>
-                                    <option value="Agriculture">Agriculture</option>
-                                    <option value="Research">Research</option>
+                                    @foreach (var item in Model.employeeDepartments)
+                                    {
+                                        <option value="@item.DepartmentId">@item.DepartmentName</option>
+                                    }
                                 </select>
+
                             </div>
                             <div class="col-6">
-                                <label for="userRole">UserRole</label>
-                                <select class="form-control" id="userRole">
+                                <label for="employeeLoginRole">UserRole</label>
+                                <select class="form-control" id="employeeLoginRole">
                                     <option value="">Select Role</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="User">User</option>
+                                    <option value="0">Admin</option>
+                                    <option value="1">User</option>
                                 </select>
                             </div>
                         </div>
+
                         <div class="row mb-3">
                             <div class="col">
                                 <label for="skills">Skills</label>
-                                <div class="checkbox-list">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="skill1" value="HTML">
-                                        <label class="form-check-label" for="skill1">HTML</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="skill2" value="CSS">
-                                        <label class="form-check-label" for="skill2">CSS</label>
-                                    </div>
+                                <div class="col-md-6">
+                                    <select class="choices-multiple-remove-button" placeholder="Select skill" multiple>
 
+                                        @foreach (var item in Model.employeeSkills)
+                                        {
+                                            <option value="@item.Skillid">@item.Skillname</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label for="employeeEmailId">Employee Email ID</label>
-                                <input type="text" class="form-control" id="employeeEmailId" placeholder="Enter Employee EmailId">
-                            </div>
-                        </div>
+
                     </form>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                <button type="button" class="btn btn-primary">Add Employee</button>
+                <button type="button" class="btn btn-primary" id="addEmployeeBtn">Add Employee</button>
             </div>
         </div>
     </div>
 </div>
+
 
 
 @* update-modal *@
@@ -286,71 +244,62 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="updateModalForm">
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="employeeId" class="form-label">Employee ID</label>
-                            <input type="text" class="form-control" id="employeeId" readonly>
+                            <label for="employeeIdUpdate" class="form-label">Employee ID</label>
+                            <input type="text" class="form-control" id="employeeIdUpdate" readonly>
                         </div>
                         <div class="col">
-                            <label for="employeeName" class="form-label">Employee Name</label>
-                            <input type="text" class="form-control" id="employeeName">
+                            <label for="employeeUserNameUpdate" class="form-label">Employee User Name</label>
+                            <input type="text" class="form-control" id="employeeUserNameUpdate" readonly>
                         </div>
                     </div>
                     <div class="row mb-3">
+
                         <div class="col">
-                            <label for="departmentName" class="form-label">Department Name</label>
-                            <select class="form-select" id="departmentName">
-                                <option value="Mobility">Mobility</option>
-                                <option value="Integrated">Integrated</option>
-                                <option value="Agriculture">Agriculture</option>
-                                <option value="Research and Development">Research and Development</option>
-                            </select>
+                            <label for="employeeNameUpdate" class="form-label">Employee Name</label>
+                            <input type="text" class="form-control" id="employeeNameUpdate">
                         </div>
                         <div class="col">
-                            <label for="userRole" class="form-label">User Role</label>
-                            <select class="form-select" id="userRole">
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="employeeUserName" class="form-label">Employee Username</label>
-                            <input type="text" class="form-control" id="employeeUserName">
-                        </div>
-                        <div class="col">
-                            <label for="employeeEmail" class="form-label">Employee Email</label>
-                            <input type="email" class="form-control" id="employeeEmail" readonly>
+                            <label for="employeeEmailUpdate" class="form-label">Employee Email Id</label>
+                            <input type="text" class="form-control" id="employeeEmailUpdate">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="employeeRating" class="form-label">Employee Rating</label>
-                            <select class="form-select" id="employeeRating">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
+                            <label for="departmentNameUpdate" class="form-label">Department Name</label>
+                            <select class="form-select" id="departmentNameUpdate">
+
+                                @foreach (var item in Model.employeeDepartments)
+                                {
+                                    <option value="@item.DepartmentId">@item.DepartmentName</option>
+                                }
                             </select>
                         </div>
                         <div class="col">
-                            <label class="form-label">Is Active</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="isActive" id="isActiveActive" value="Active">
-                                <label class="form-check-label" for="isActiveActive">Active</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="isActive" id="isActiveNotActive" value="NotActive">
-                                <label class="form-check-label" for="isActiveNotActive">Not Active</label>
+                            <label for="userRoleUpdate" class="form-label">User Role</label>
+                            <select class="form-select" id="userRoleUpdate">
+                                <option value="0">Admin</option>
+                                <option value="1">User</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="skills">Skills</label>
+                            <div class="col-md-6">
+                                <select id="Updated-choices-multiple-remove-button" placeholder="Select skill" multiple>
+
+                                    @foreach (var item in Model.employeeSkills)
+                                    {
+                                        <option value="@item.Skillid">@item.Skillname</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -358,80 +307,336 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                <button type="button" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-primary" id="updateEmployeeModalBtn">Update</button>
             </div>
         </div>
     </div>
 </div>
 
 
-@* delete-modal *@
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="employeeIdDelete" class="form-label">Employee ID</label>
-                        <input type="text" class="form-control" id="employeeIdDelete" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="employeeNameDelete" class="form-label">Employee Name</label>
-                        <input type="text" class="form-control" id="employeeNameDelete" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userNameDelete" class="form-label">User Name</label>
-                        <input type="text" class="form-control" id="userNameDelete" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="emailIdDelete" class="form-label">Email ID</label>
-                        <input type="email" class="form-control" id="emailIdDelete" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <p>Are you sure you want to delete this employee?</p>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                <button type="button" class="btn btn-danger">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
+
+
+
+
+
 
 
 
 
 @section scripts {
-
     <script>
         $(document).ready(function () {
-            $("#addEmployeeBtn").click(function () {
+
+
+            // DataTable initialization
+            new DataTable('#example');
+
+            // Disable link clicks within table cells
+            $('.assign').click(function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            });
+
+            // Initialize Choices.js for multi-select dropdowns
+            var multipleCancelButton = new Choices('.choices-multiple-remove-button', {
+                removeItemButton: true,
+                maxItemCount: 50,
+                searchResultLimit: 50,
+                renderChoiceLimit: 50
+            });
+            var multipleCancelButton = new Choices('#Updated-choices-multiple-remove-button', {
+                removeItemButton: true,
+                maxItemCount: 50,
+                searchResultLimit: 50,
+                renderChoiceLimit: 50
+            });
+
+            // Customize DataTable search input
+            $('#dt-search-0').attr('placeholder', 'Search something');
+            $('label[for="dt-search-0"]').remove();
+            $('#dt-search-0').parent().parent().removeClass('ms-auto');
+            $('#dt-search-0').css({ 'width': '30rem', 'border': '1px solid black' });
+
+            // Customize DataTable length select input
+            $('.dt-search').parent().parent().addClass('d-flex flex-row-reverse');
+            $('#dt-length-0').parent().parent().removeClass('me-auto');
+            $('.dt-search').prepend('<button class="btn custom-btn addEmployeebtn" style="margin:0; width:auto; background-color: black; color:white;">Add</button>');
+            $('.dt-search').parent().css({ 'padding': '0' });
+            $('.dt-length').append('<button class="btn btn-danger custom-btn filterEmployeebtn" style="margin-left:1rem;">Filter</button>');
+            $('.dt-length').parent().css({ 'padding': '0' });
+
+            // Handle delete button click event
+            $(".deletebtn").click(function (e) {
+                e.preventDefault();
+                $("#deleteModal").modal('show');
+                var employeeId = $(this).closest('tr').find('#emplpyeeId').text();
+
+                $('#confirmInput').on('input', function () {
+                    var confirmInput = $('#confirmInput').val();
+                    var deleteButton = $('#deleteButton');
+
+                    if (confirmInput === 'CONFIRM') {
+                        deleteButton.prop('disabled', false).removeClass('btn-secondary').addClass('btn-danger');
+                    } else {
+                        deleteButton.prop('disabled', true).removeClass('btn-danger').addClass('btn-secondary');
+                    }
+                });
+
+                $('#deleteButton').click(function () {
+                    var confirmValue = $('#confirmInput').val().trim().toUpperCase();
+                    if (confirmValue === "CONFIRM") {
+                        $.ajax({
+                            url: "/Home/employeeDelete",
+                            data: { employeeId: employeeId },
+                            type: 'POST',
+                            success: function (result) {
+                                showSnackbar("true", "Delete Employee successfuly. ");
+                                location.reload();
+
+                            },
+                            error: function (errorMessage) {
+                                alert('Error deleting project.');
+                                showSnackbar("false", "Error deleting employee. ");
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Show filter modal on button click
+            $(document).on("click", ".filterEmployeebtn", function () {
+                $("#filterEmployeeModal").modal('show');
+            });
+
+            // Hide delete modal on button click
+            $('#deleteButton').on('click', function () {
+                $('#deleteModal').modal('hide');
+            });
+
+
+            $(document).on("click", ".addEmployeebtn", function () {
                 $("#addEmployeeModal").modal('show');
             });
-            $(".update-btn").click(function () {
-                $("#updateModal").modal('show');
-            });
-            $(".delete-btn").click(function () {
-                $("#deleteModal").modal('show');
+
+            $(document).on("click", ".addEmployeebtn", function () {
+                $("#addEmployeeModal").modal('show');
             });
 
+            // Handle form submission when "Add Employee" button is clicked
+            $('#addEmployeeBtn').click(function () {
+                // Get form data
+                var employeeName = $('#employeeName').val().trim();
+                var employeeUserName = $('#employeeUserName').val().trim();
+                var employeeEmailId = $('#employeeEmailId').val().trim();
+                var department = $('#department').val();
+                var userRole = $('#employeeLoginRole').val();
+                var selectedSkills = $('.choices-multiple-remove-button').val();
 
+                // Validate employee name
+                if (employeeName === "") {
+                    showSnackbar("false", "Please enter employee name.");
 
+                    return;
+                }
 
+                // Validate employee username
+                if (employeeUserName === "") {
+                    showSnackbar("false", "Please enter employee username.");
 
+                    return;
+                }
 
-            $("#saveEmployeeBtn").click(function () {
+                // Validate employee email
+                if (employeeEmailId === "") {
+                    showSnackbar("false", "Please enter employee email.");
 
-                $("#addEmployeeModal").modal("hide");
+                    return;
+                }
+
+                // Validate department
+                if (department === "") {
+                    showSnackbar("false", "Please select department.");
+
+                    return;
+                }
+
+                // Validate user role
+                if (userRole === "") {
+                    showSnackbar("false", "Please select user role.");
+
+                    return;
+                }
+
+                // Validate skills
+                if (selectedSkills === null || selectedSkills.length === 0) {
+                    showSnackbar("false", "Please select at least one skill.");
+
+                    return;
+                }
+
+                // Construct employee object
+                var employeeObj = {
+                    EmployeeName: employeeName,
+                    EmployeeUserName: employeeUserName,
+                    Email: employeeEmailId, 
+                    DepartmentId: department,
+                    LoginRoleId: userRole, // Corrected property name
+                    SkillsId: selectedSkills.join(',') // Convert array to comma-separated string
+                };
+
+                // Send AJAX request to add employee
+                $.ajax({
+                    type: "POST",
+                    url: "/Employees/AddEmployee",
+                    data: employeeObj,
+                    success: function (result) {
+
+                        $('#addEmployeeModal').modal('hide');
+                        showSnackbar("true", "Add New Employee successfuly. ");
+                        location.reload();
+                    },
+                    error: function (errormessage) {
+                        showSnackbar("false", errormessage.responseText);
+
+                    }
+                });
             });
+
+
+
+
+
+            $(document).on("click", ".updatebtn", function (e) {
+                e.preventDefault();
+                var row = $(this).closest('tr');
+                var employeeId = row.find('td:eq(0)').text().trim();
+
+                $.ajax({
+                    url: '/Employees/GetEmployeeById',
+                    type: 'POST',
+                    data: { EmployeeId: employeeId },
+                    success: function (result) {
+                        // Populate modal with employee data
+                        console.log(result);
+                       
+
+                        $('#employeeIdUpdate').val(result.employee.employeeId);
+                        $('#employeeNameUpdate').val(result.employee.employeeName);
+                        $('#employeeUserNameUpdate').val(result.employee.employeeUserName);
+                        $('#employeeEmailUpdate').val(result.employee.email);
+                        $('#departmentNameUpdate').val(result.employee.departmentId);
+                        $('#userRoleUpdate').val(result.employee.loginRoleId);
+
+
+
+
+
+                        var skills = result.employee.skillsId;
+                        if (skills) {
+                            var skillIds = skills.split(',');
+
+
+                            skillIds.forEach(function (skillId) {
+                                console.log("Processing skillId:", skillId);
+
+                                multipleCancelButton.setChoiceByValue(skillId);
+                            });
+                        } else {
+                            console.error(skills);
+                            console.error("SkillsId is undefined or null.");
+                        }
+
+
+
+
+
+                        $('#updateModal').modal('show');
+                    },
+                    error: function (err) {
+                        showSnackbar("false", 'Error fetching employee: ' + err.responseText);
+                        alert();
+                    }
+                });
+            });
+
+            $('#updateEmployeeModalBtn').click(function (e) {
+                e.preventDefault();
+
+                var employeeId = $('#employeeIdUpdate').val().trim();
+                var employeeName = $('#employeeNameUpdate').val().trim();
+                var employeeUserName = $('#employeeUserNameUpdate').val().trim();
+                var employeeEmail = $('#employeeEmailUpdate').val().trim();
+                var departmentId = $('#departmentNameUpdate').val();
+                var userRole = $('#userRoleUpdate').val();
+                var selectedSkills = $('#Updated-choices-multiple-remove-button').val();
+
+                if (employeeName === "") {
+                    showSnackbar("false", "Please enter employee name.");
+
+                    return;
+                }
+
+                if (employeeUserName === "") {
+                    showSnackbar("false", "Please enter employee username.");
+
+                    return;
+                }
+
+                if (employeeEmail === "") {
+                    showSnackbar("false", "Please enter employee email.");
+
+                    return;
+                }
+
+                if (departmentId === "") {
+                    showSnackbar("false", "Please enter employee department.");
+
+                    return;
+                }
+                if (!userRole) {
+                    showSnackbar("false", 'User role is required.');
+                    alert('User role is required.');
+                    return;
+                }
+
+                if (selectedSkills === null || selectedSkills.length === 0) {
+                    showSnackbar("false", "Please select at least one skill.");
+
+                    return;
+                }
+
+                var skillId2 = selectedSkills.join(',');
+
+                var empUpdateObj = {
+                    EmployeeId: employeeId,
+                    EmployeeName: employeeName,
+                    EmployeeUserName: employeeUserName,
+                    Email: employeeEmail,
+                    DepartmentId: departmentId,
+                    SkillsId: skillId2,
+                    LoginRoleId: userRole,
+                };
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Employees/UpdateEmployee",
+                    data: empUpdateObj,
+                    success: function (result) {
+                        $('#updateModal').modal('hide');
+                        showSnackbar("true", "Update Employee Details successfuly. ");
+                        location.reload();
+                    },
+                    error: function (errormessage) {
+                        alert(errormessage.responseText);
+                    }
+                });
+            });
+
+            $("#example").parent().addClass('p-0 ,-0');
+
         });
-
 
     </script>
 
