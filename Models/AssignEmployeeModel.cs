@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-
-namespace Amnex_Project_Resource_Mapping_System.Models
+﻿namespace Amnex_Project_Resource_Mapping_System.Models
 {
     public class AssignEmployeeModel
     {
@@ -9,10 +7,5 @@ namespace Amnex_Project_Resource_Mapping_System.Models
         public List<int> ProjectRoleId { get; set; }
         public List<DateOnly?> StartDate { get; set; }
         public List<DateOnly?> EndDate { get; set; }
-
-        // for project role dropdown
-        //public int RoleId { get; set; }
-        //public string RoleName { get; set; }
-
     }
 }

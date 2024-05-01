@@ -2,9 +2,10 @@
 {
     public class ProjectsModal
     {
-        public List<Project> project { get; set; }
-        public List<dynamic> list { get; set; }
-        public List<dynamic> list2 { get; set; }
-
+        public List<Project> Projects { get; set; }
+        public List<dynamic> Skills { get; set; }
+        public List<dynamic> Departments { get; set; }
+        public int RunningProjects { get; set; }
+        public int CompletedProjects { get; set; }
     }
 }

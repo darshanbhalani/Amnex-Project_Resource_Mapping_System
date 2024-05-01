@@ -44,15 +44,15 @@
     </style>
 }
 
-<h3 class=" pt-2 ">Employees</h3>
-<div class="container-fluid px-4 pb-2">
+<h3 class="pt-2">Employees</h3>
+<div class="container-fluid px-4 py-4">
     <div class="row g-4 d-flex justify-content-center align-items-center">
         <div class="col-sm-6 col-xl-4 px-4">
             <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
                 <i class="fa fa-chart-line fa-3x"></i>
                 <div class="ms-3">
                     <p class="mb-2">Total Employees</p>
-                    <h4 class="mb-0">@(Model.unallocatedEmployees + Model.allocatedEmployees)</h4>
+                    <h4 class="mb-0">@(Model.UnallocatedEmployees + Model.AllocatedEmployees)</h4>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
                 <i class="fa fa-chart-bar fa-3x"></i>
                 <div class="ms-3">
                     <p class="mb-2">Allocated Employees</p>
-                    <h4 class="mb-0">@(Model.allocatedEmployees)</h4>
+                    <h4 class="mb-0">@(Model.AllocatedEmployees)</h4>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                 <i class="fa fa-chart-area fa-3x"></i>
                 <div class="ms-3">
                     <p class="mb-2">Unallocated Employees</p>
-                    <h4 class="mb-0">@(Model.unallocatedEmployees)</h4>
+                    <h4 class="mb-0">@(Model.UnallocatedEmployees)</h4>
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
         </tr>
     </thead>
     <tbody id="dataRows">
-        @foreach (var emp in Model.employees)
+        @foreach (var emp in Model.Employees)
         {
             <tr class="row123">
                 <td id="emplpyeeId">@emp.EmployeeId</td>
@@ -97,7 +97,7 @@
                 <td>
                     @*  @emp.DepartmentId *@
 
-                    @foreach (var y in Model.employeeDepartments)
+                    @foreach (var y in Model.EmployeeDepartments)
                     {
                         if (y.DepartmentId == @emp.DepartmentId)
                         {
@@ -190,7 +190,7 @@
                                 <label for="department">Department</label>
                                 <select class="form-control" id="department">
                                     <option value="">Select Department</option>
-                                    @foreach (var item in Model.employeeDepartments)
+                                    @foreach (var item in Model.EmployeeDepartments)
                                     {
                                         <option value="@item.DepartmentId">@item.DepartmentName</option>
                                     }
@@ -213,7 +213,7 @@
                                 <div class="col-md-6">
                                     <select class="choices-multiple-remove-button" placeholder="Select skill" multiple>
 
-                                        @foreach (var item in Model.employeeSkills)
+                                        @foreach (var item in Model.EmployeeSkills)
                                         {
                                             <option value="@item.Skillid">@item.Skillname</option>
                                         }
@@ -272,7 +272,7 @@
                             <label for="departmentNameUpdate" class="form-label">Department Name</label>
                             <select class="form-select" id="departmentNameUpdate">
 
-                                @foreach (var item in Model.employeeDepartments)
+                                @foreach (var item in Model.EmployeeDepartments)
                                 {
                                     <option value="@item.DepartmentId">@item.DepartmentName</option>
                                 }
@@ -295,7 +295,7 @@
                             <div class="col-md-6">
                                 <select id="Updated-choices-multiple-remove-button" placeholder="Select skill" multiple>
 
-                                    @foreach (var item in Model.employeeSkills)
+                                    @foreach (var item in Model.EmployeeSkills)
                                     {
                                         <option value="@item.Skillid">@item.Skillname</option>
                                     }

@@ -1,9 +1,5 @@
 using Amnex_Project_Resource_Mapping_System.Models;
 using Npgsql;
-using Amnex_Project_Resource_Mapping_System.Repo.Classes;
-using System.Net.Mail;
-using System.Net;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Amnex_Project_Resource_Mapping_System
 {
@@ -24,7 +20,6 @@ namespace Amnex_Project_Resource_Mapping_System
             builder.Services.AddHttpContextAccessor();
 
             var configuration = builder.Configuration;
-
             var dbConfiguration = configuration.GetSection("DBConfiguration").Get<DBConfiguration>();
             var connectionString = $"Host={dbConfiguration!.Host};Port={dbConfiguration.Port};Username={dbConfiguration.Username};Password={dbConfiguration.Password};Database={dbConfiguration.Database}";
 
@@ -46,6 +41,7 @@ namespace Amnex_Project_Resource_Mapping_System
             catch (Exception ex)
             {
                 Console.WriteLine("Database connection error...");
+                Console.WriteLine(ex.Message);
             }
             var app = builder.Build();
 
@@ -72,12 +68,28 @@ namespace Amnex_Project_Resource_Mapping_System
 
                 if (path.StartsWithSegments("/Account/Login") || !string.IsNullOrEmpty(userId) || path.StartsWithSegments("/Account/ForgotPassword"))
                 {
-                    await next();
-                    if (context.Response.StatusCode == 404)
+                    try
                     {
-                        context.Response.Redirect("/Home/Error");
+                        await next();
+                        if (context.Response.StatusCode == 404)
+                        {
+                            context.Response.Redirect("/Home/Error");
+                        }
+                        return;
                     }
-                    return;
+                    catch (Exception ex)
+                    {
+                        string _connectionString = $"Host={dbConfiguration!.Host};Port={dbConfiguration.Port};Username={dbConfiguration.Username};Password={dbConfiguration.Password};Database={dbConfiguration.Database}";
+                        using (var _connection = new NpgsqlConnection(_connectionString))
+                        {
+                            _connection.Open();
+                            using (var cmd = new NpgsqlCommand($"SELECT recordError('{DateTime.Now}','{ex.Message}','{ex.StackTrace}','{context.Request.RouteValues["controller"]}','{context.Request.RouteValues["action"]}');", _connection))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
                 }
 
                 context.Response.Redirect("/Account/Login");

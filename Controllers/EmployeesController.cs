@@ -1,11 +1,10 @@
-﻿using Amnex_Project_Resource_Mapping_System.Models;
+﻿using Amnex_Project_Resource_Mapping_System.Controllers.Amnex_Project_Resource_Mapping_System.Controllers;
+using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
-
 using Npgsql;
-using System.Net.Mail;
 using System.Net;
+using System.Net.Mail;
 using System.Text;
-using static System.Net.WebRequestMethods;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
@@ -19,43 +18,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             _connection.Open();
         }
 
-        private string GenerateRandomPassword()
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            StringBuilder passwordBuilder = new StringBuilder();
-            Random random = new Random();
-            for (int i = 0; i < 8; i++)
-            {
-                passwordBuilder.Append(chars[random.Next(chars.Length)]);
-            }
-            return passwordBuilder.ToString();
-        }
-
-        internal void SendCredentialsToUser(string to, string password)
-        {
-            using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
-            {
-                smtpClient.Port = 587;
-                smtpClient.Credentials = new NetworkCredential("connect.nextgentechnology@gmail.com", "tcllfvvxodcydksv");
-                smtpClient.EnableSsl = true;
-
-                MailMessage mailMessage = new MailMessage();
-                mailMessage.From = new MailAddress("connect.nextgentechnology@gmail.com");
-                mailMessage.To.Add(to);
-                mailMessage.Subject = "PRMS Credentials";
-                mailMessage.Body = $"Your credentials for PRMS are as follows:\n\nUsername: {to}\nPassword: {password}";
-
-                smtpClient.Send(mailMessage);
-
-
-
-            }
-        }
 
         [HttpPost]
         public IActionResult AddEmployee(Employee empObj)
         {
-            string password = GenerateRandomPassword();
+            string password = generateRandomPassword();
             string query = "SELECT * FROM public.insertemployee(@in_employeename, @in_employeeusername, @in_departmentid, @in_skillsid, @in_employeeloginroleid, @in_email, @in_password, @in_createdby, @in_createdtime)";
 
             using (NpgsqlCommand command = new NpgsqlCommand(query, _connection))
@@ -67,27 +34,24 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 command.Parameters.AddWithValue("@in_employeeloginroleid", empObj.LoginRoleId);
                 command.Parameters.AddWithValue("@in_email", empObj.Email);
                 command.Parameters.AddWithValue("@in_password", password);
-                command.Parameters.AddWithValue("@in_createdby", 1); // Assuming a default value for created by
-                command.Parameters.AddWithValue("@in_createdtime", DateTime.Now); // Current timestamp
-                                                                                  // Assuming modify by and modify time are set to the same as created by and created time initially
+                command.Parameters.AddWithValue("@in_createdby", 1); 
+                command.Parameters.AddWithValue("@in_createdtime", DateTime.Now); 
                 command.Parameters.AddWithValue("@in_modifyby", 1);
                 command.Parameters.AddWithValue("@in_modifytime", DateTime.Now);
-
                 command.ExecuteNonQuery();
             }
-            SendCredentialsToUser(empObj.Email, password);
+            Employee employee = new Employee { 
+                EmployeeName = empObj.EmployeeName,
+                EmployeeUserName = empObj.EmployeeUserName,
+                Password = password,
+                Email = empObj.Email,
+            };
+            AccountController.SendCredentials(employee);
             return Json(new { success = true });
         }
 
 
-
-
-
-
-
-
         [HttpPost]
-
         public IActionResult GetEmployeeById(int employeeId)
         {
             try
@@ -103,14 +67,13 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                             Employee employee = new Employee
                             {
                                 EmployeeId = Convert.ToInt32(reader["employeeid"]),
-                                EmployeeName = reader["employeename"].ToString(),
-                                EmployeeUserName = reader["employeeusername"].ToString(),
-                                DepartmentId = Convert.ToInt32(reader["departmentid"]), // Note the column name correction
-                                SkillsId = reader["skillsid"].ToString(), // Note the column name correction
-                                LoginRoleId = Convert.ToInt32(reader["loginroleid"]), // Note the column name correction
-                                IsAllocated = Convert.ToBoolean(reader["isallocated"]), // Note the column name correction
-                                Email = reader["email"].ToString(), // Note the column name correction
-                                                                    // Assuming other properties are present in the reader
+                                EmployeeName = reader["employeename"].ToString()!,
+                                EmployeeUserName = reader["employeeusername"].ToString()!,
+                                DepartmentId = Convert.ToInt32(reader["departmentid"]),
+                                SkillsId = reader["skillsid"].ToString()!,
+                                LoginRoleId = Convert.ToInt32(reader["loginroleid"]),
+                                IsAllocated = Convert.ToBoolean(reader["isallocated"]),
+                                Email = reader["email"].ToString()!,
                             };
 
                             return Json(new { success = true, employee = employee });
@@ -156,11 +119,86 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
 
 
-
-
         public IActionResult DeleteEmployee()
         {
             return Ok();
         }
+
+
+        private string generateRandomPassword()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            StringBuilder passwordBuilder = new StringBuilder();
+            Random random = new Random();
+            for (int i = 0; i < 8; i++)
+            {
+                passwordBuilder.Append(chars[random.Next(chars.Length)]);
+            }
+            return passwordBuilder.ToString();
+        }
+
+
+        internal static List<Employee> getEmployeesList(NpgsqlConnection _connection)
+        {
+            List<Employee> employees = new List<Employee>();
+            try
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayemployees()", _connection))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Employee employee = new Employee
+                            {
+                                EmployeeId = Convert.ToInt32(reader["employee_id"]),
+                                EmployeeName = Convert.ToString(reader["employee_name"])!,
+                                DepartmentId = Convert.ToInt32(reader["department_id"]),
+                                SkillsId = Convert.ToString(reader["skills_id"])!,
+                                LoginRoleId = Convert.ToInt32(reader["login_role_id"]),
+                                IsAllocated = Convert.ToBoolean(reader["is_allocated"]),
+                                Email = Convert.ToString(reader["email"])!,
+                                CreatedbyName = Convert.ToString(reader["created_by"])!,
+                                CreatedTime = Convert.ToDateTime(reader["created_time"]),
+                                ModifybyName = Convert.ToString(reader["modify_by"])!,
+                                ModifyTime = Convert.ToDateTime(reader["modify_time"])
+                            };
+
+                            employees.Add(employee);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return employees;
+        }
+
+
+        internal static List<Department> getEmployeeDepartmentList(NpgsqlConnection _connection)
+        {
+            List<Department> employeeDepartment = new List<Department>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayalldepartments();", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Department employeeDepartmentObj = new Department
+                        {
+                            DepartmentId = Convert.ToInt32(reader[0]),
+                            DepartmentName = Convert.ToString(reader[1])!
+                        };
+                        employeeDepartment.Add(employeeDepartmentObj);
+
+                    }
+
+                }
+            }
+            return employeeDepartment;
+        }
+
     }
 }

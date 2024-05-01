@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Npgsql;
-using Amnex_Project_Resource_Mapping_System.Models;
+﻿using Amnex_Project_Resource_Mapping_System.Models;
 using Amnex_Project_Resource_Mapping_System.Repo.Classes;
-using Humanizer;
-using Microsoft.AspNetCore.Http;
-using static System.Net.WebRequestMethods;
-using System.Net.Mail;
+using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using System.Net;
+using System.Net.Mail;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -15,13 +12,17 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         {
             private readonly NpgsqlConnection _connection;
             private readonly Account account = new Account();
+
             public AccountController(NpgsqlConnection connection)
             {
                 _connection = connection;
                 connection.Open();
             }
+
+
             public IActionResult Login()
             {
+                HttpContext.Session.Clear();
                 return View();
             }
 
@@ -29,7 +30,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             [HttpPost]
             public IActionResult Login(Login data)
             {
-
                 using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.Username}', '{data.Password}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
@@ -49,12 +49,15 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
             }
 
+
             [HttpPost]
             public void Logout()
             {
                 HttpContext.Session.Clear();
             }
 
+
+            [HttpPost]
             public IActionResult Profile()
             {
                 UserProfileModel userProfileModel = new UserProfileModel();
@@ -117,6 +120,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
             }
 
+
             [HttpPost]
             public IActionResult SendOTP(string data)
             {
@@ -124,28 +128,27 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 return Ok();
             }
 
+
             [HttpPost]
             public IActionResult checkOTP(string otp)
             {
                 if (HttpContext.Session.GetString("OTP") == otp)
                 {
-                    if (DateTime.Now - DateTime.Parse(HttpContext.Session.GetString("OTPTime")) <= TimeSpan.FromMinutes(2))
+                    if (DateTime.Now - DateTime.Parse(HttpContext.Session.GetString("OTPTime")!) <= TimeSpan.FromMinutes(2))
                     {
-                        Console.WriteLine("Ok....................");
                         return Json(new { success = true });
                     }
                     else
                     {
-                        Console.WriteLine("Expire....................");
                         return Json(new { success = false, message = "OTP Expire..." });
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Oops....................");
                     return Json(new { success = false, message = "Invalid OTP..." });
                 }
             }
+
 
             [HttpPost]
             public IActionResult ForgotPassword(Employee employee)
@@ -184,7 +187,25 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
             }
 
-            public bool SendCredentials(Employee employee)
+
+            [HttpPost]
+            public IActionResult ChangePassword(string currentPassword, string newPassword)
+            {
+                bool result = account.changePassword(currentPassword, newPassword, HttpContext, _connection);
+                Console.WriteLine(result);
+                if (result)
+                {
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false });
+                }
+
+            }
+
+
+            internal static bool SendCredentials(Employee employee)
             {
                 using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
                 {
@@ -205,20 +226,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 return true;
             }
 
-            public IActionResult ChangePassword(string currentPassword, string newPassword)
-            {
-                bool result = account.changePassword(currentPassword, newPassword, HttpContext, _connection);
-                Console.WriteLine(result);
-                if (result)
-                {
-                    return Json(new { success = true });
-                }
-                else
-                {
-                    return Json(new { success = false });
-                }
-
-            }
         }
     }
 }

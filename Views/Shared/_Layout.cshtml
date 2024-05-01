@@ -149,7 +149,13 @@
                     type: 'POST',
                     url: '/Account/Logout',
                     success: function () {
-                        location.reload();
+                        if (window.history && window.history.pushState) {
+                            window.history.pushState(null, null, window.location.href);
+                        } else {
+                            window.location.hash = '';
+                        }
+
+                        window.location.href = '/Account/Login';
                     },
                     error: function () {
                         alert("Unable to logout...");
