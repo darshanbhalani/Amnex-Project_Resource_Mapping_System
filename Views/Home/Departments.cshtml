@@ -1,16 +1,59 @@
-﻿@model Amnex_Project_Resource_Mapping_System.Models.Department
-@{
-    ViewData["Title"] = "Home Page";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@section Style {
+    <style>
+        #dataRows td {
+            text-align: start;
+        }
+
+        #assign .dt-column-order {
+            display: none;
+        }
+
+        .asd {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
+        .page-link {
+            color: black;
+        }
+
+        #example tbody tr td {
+            border-left: 1px solid grey;
+            border-right: 1px solid grey;
+            color: black;
+            text-align: center;
+        }
+
+        #dataRows td:nth-child(2) {
+            text-align: left;
+        }
+
+        #example th {
+            text-align: center;
+        }
+
+        .page-item.active .page-link {
+            background-color: black;
+            border: 1px solid black;
+        }
+    </style>
 }
-<div class="nav-info">
-    <a class="nav-item" asp-controller="Departments" asp-action="Departments">
-        Home
-    </a>
-</div>
-<div class="col-md-12">
-    <div id="grid"></div>
-</div>
+
+<h3>Departments</h3>
+<table id="example" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr class="bg-dark">
+            <th class="text-white">Id</th>
+            <th class="text-white dname">Name</th>
+            <th class="text-white">Update</th>
+            <th class="text-white">Delete</th>
+
+        </tr>
+    </thead>
+    <tbody id="dataRows">
+    </tbody>
+</table>
 
 @* add-modal *@
 <div class="modal fade" id="departmentModal" tabindex="-1" aria-labelledby="departmentModalLabel" aria-hidden="true">
@@ -84,8 +127,193 @@
     </div>
 </div>
 
-<script>
-        var DepartmentData = @Html.Raw(ViewData["DepartmentData"]);
 
-</script>
-<script src="~/js/Department.js"></script>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            // Function to perform DOM manipulations
+            function performDOMManipulations() {
+                document.getElementById('dt-search-0').placeholder = 'Search something...';
+                $('label[for="dt-search-0"]').remove();
+                $('#dt-search-0').parent().parent().removeClass('ms-auto');
+                $('#dt-search-0').css({
+                    'width': '30rem',
+                    'border': '2px solid #dee2e6'
+                });
+                $('#dt-search-0').parent().parent().parent().addClass('d-flex flex-row-reverse');
+                $('#dt-length-0').parent().parent().removeClass('me-auto');
+                $('#dt-search-0').parent().parent().removeClass('ms-auto');
+
+                $('.dt-search button').click(function () {
+                    $("#departmentModal").modal('show');
+                });
+            }
+
+            // Function to fetch and populate data
+            function populateDataTable() {
+                $.ajax({
+                    url: '/Departments/GetDepartments',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(JSON.parse(data));
+                        var departments = JSON.parse(data);
+                        dataTable.clear();
+                        departments.forEach(function (department) {
+                            dataTable.row.add([
+                                department.DepartmentId,
+                                department.DepartmentName,
+                                '<i class="fa fa-edit fa-lg editbtn" style="cursor:pointer;" aria-hidden="true"></i>',
+                                '<i class="fa fa-trash fa-lg delbtn" style="cursor:pointer;" aria-hidden="true"></i>'
+                            ]).draw();
+                        });
+
+                        performDOMManipulations();
+                    }
+                });
+            }
+
+            // Initialize DataTable
+            var dataTable = $('#example').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true
+            });
+            var addButton = $('<button>').text('Add').addClass('btn btn-dark');
+            $('.dt-search').prepend(addButton);
+            populateDataTable();
+
+            // Add Department
+            $("#addsaveChangesBtn").click(function () {
+                var departmentName = $("#department").val();
+                var data = {
+                    DepartmentName: departmentName,
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Departments/Add",
+                    data: data,
+                    success: function (result) {
+                        if (result.success) {
+                            $("#department").val('');
+                            $('#departmentModal').modal('hide');
+                            populateDataTable();
+                            showSnackbar('true', departmentName + ' Added successfully');
+                        }
+                        else {
+                            $('#departmentModal').modal('hide');
+                            showSnackbar('false', 'Department already exist');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        $("#department").val('');
+                        $('#departmentModal').modal('hide');
+
+                        showSnackbar('false', 'Department already exist');
+
+
+                    }
+                });
+            });
+
+            $(document).on("click", ".editbtn", function () {
+                var departmentid = $(this).closest("tr").find('td:eq(0)').text();
+                var department = $(this).closest("tr").find('td:eq(1)').text();
+
+                $("#editDepartment").val(department);
+                $("#editDepartmentModal").modal('show');
+
+                $("#editDepartment").on("input", function () {
+
+                    var newDepartment = $(this).val();
+                    if (newDepartment !== department) {
+                        $("#EditChangesBtn").removeAttr("disabled");
+                        $("#EditChangesBtn").addClass('btn-success');
+                    } else {
+                        // If data is the same, disable the button
+                        $("#EditChangesBtn").attr("disabled", true);
+                        $("#EditChangesBtn").removeClass('btn-success');
+                    }
+                });
+
+                $(document).on("click", "#EditChangesBtn", function () {
+                    var editeddepartmentName = $("#editDepartment").val();
+                    var data = {
+                        DepartmentId: departmentid,
+                        DepartmentName: editeddepartmentName,
+                    };
+                    $.ajax({
+                        type: "PUT",
+                        url: "/Departments/Editdepartment",
+                        data: data,
+                        success: function (result) {
+                            $("#editDepartment").val('');
+                            $('#editDepartmentModal').modal('hide');
+                            populateDataTable();
+                            showSnackbar('true', editeddepartmentName + ' Edited successfully');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                            showSnackbar('false', 'Something went wrong');
+
+                        }
+                    });
+                });
+            });
+
+            $(document).on("click", ".delbtn", function () {
+                var $row = $(this).closest('tr');
+                var department = $(this).closest("tr").find('td:eq(1)').text();
+                var departmentid = $(this).closest("tr").find('td:eq(0)').text();
+
+                $("#departmentNamePlaceholder").text(department);
+                $("#deleteDepartmentconfirm").val('');
+                $("#deleteDepartmentModal").modal('show');
+
+                $("#deleteDepartmentconfirm").on("input", function () {
+                    var newDepartment = $(this).val();
+
+                    if (newDepartment === 'CONFIRM') {
+                        $("#deleteBtn").removeAttr("disabled");
+                        $("#deleteBtn").addClass('btn-danger');
+                        $("#deleteBtn").click(function () {
+                            var data = {
+                                DepartmentId: departmentid,
+                            };
+                            $.ajax({
+                                type: "POST",
+                                url: "/Departments/Deletedepartment",
+                                data: data,
+                                success: function (result) {
+                                    $('#deleteDepartmentModal').modal('hide');
+                                    $row.remove();
+                                    showSnackbar('true', newDepartment + ' Deleted successfully');
+
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error(errorMessage);
+                                    showSnackbar('false', 'Something went wrong');
+
+                                }
+                            });
+                        });
+
+
+                    } else {
+                        $("#deleteBtn").attr("disabled", true);
+                        $("#deleteBtn").removeClass('btn-danger');
+                    }
+                });
+            });
+
+            //Close Modals
+            $("#delclosedModal, #closedModal").click(function () {
+                $(".modal").modal('hide');
+            });
+
+
+        });
+    </script>
+}

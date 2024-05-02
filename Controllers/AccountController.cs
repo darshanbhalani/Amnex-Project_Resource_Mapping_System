@@ -3,7 +3,6 @@ using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.Net;
-using System.Net.Mail;
 using Newtonsoft.Json;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
@@ -38,41 +37,36 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
 
                 // Validate user credentials
-                int isCredentialsValid = ValidateUserCredentials(data);
-                if (isCredentialsValid == 1)
+                bool isCredentialsValid = ValidateUserCredentials(data);
+                if (isCredentialsValid)
                 {
                     return Json(new { success = true });
                 }
-                else if(isCredentialsValid == 2)
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid username or password.");
-                    return Json(new { success = false, message = "Valid username or password but You are User, Cannot login" });
-                }
                 else
                 {
-                    return Json(new { success = false, });
+                    ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                    return Json(new { success = false, message = "Invalid username or password." });
                 }
             }
 
-            private int ValidateUserCredentials(Login data)
+            private bool ValidateUserCredentials(Login data)
             {
-                using (var cmd = new NpgsqlCommand($"SELECT * FROM login('{data.UserName}', '{data.Password}');", _connection))
+                using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.Username}', '{data.Password}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
-                            string uname = HttpContext.Session.GetString("userId")!;
+                            string uname = HttpContext.Session.GetString("userId");
                             Console.WriteLine($"Username stored in session: {uname}");
                             HttpContext.Session.SetString("userName", reader.GetString(1));
-                            var emprole = reader.GetInt32(2);
-
-                            return emprole;
+                            Console.WriteLine();
+                            return true;
                         }
                         else
                         {
-                            return -1;
+                            return false;
                         }
                     }
                 }
@@ -93,8 +87,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Log or handle any exceptions that occur during the reCAPTCHA validation
-                    // For simplicity, return false if an exception occurs
                     Console.WriteLine($"An error occurred during reCAPTCHA validation: {ex.Message}");
                     return false;
                 }
@@ -105,31 +97,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 [JsonProperty("success")]
                 public bool Success { get; set; }
             }
-
-
-            //[HttpPost]
-            //public IActionResult Login(Login data)
-            //{
-            //    using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.UserName}', '{data.Password}');", _connection))
-            //    {
-            //        using (var reader = cmd.ExecuteReader())
-            //        {
-            //            if (reader.Read())
-            //            {
-            //                HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
-            //                HttpContext.Session.SetString("userName", reader.GetString(1));
-            //                return Json(new { success = true });
-            //            }
-            //            else
-            //            {
-            //                return Json(new { success = false });
-            //            }
-            //        }
-
-            //    }
-            //}
-
-
             [HttpPost]
             public void Logout()
             {
