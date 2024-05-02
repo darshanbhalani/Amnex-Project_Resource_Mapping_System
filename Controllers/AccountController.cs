@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using static System.Net.WebRequestMethods;
 using System.Net.Mail;
 using System.Net;
+using Newtonsoft.Json;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -24,12 +25,32 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             {
                 return View();
             }
-
-
             [HttpPost]
-            public IActionResult Login(Login data)
+            public async Task<IActionResult> Login(Login data, string recaptchaResponse)
             {
+                // Validate reCAPTCHA
+                bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
+                if (!isRecaptchaValid)
+                {
+                    ModelState.AddModelError(string.Empty, "reCAPTCHA validation failed.");
+                    return Json(new { success = false, message = "reCAPTCHA validation failed." });
+                }
 
+                // Validate user credentials
+                bool isCredentialsValid = ValidateUserCredentials(data);
+                if (isCredentialsValid)
+                {
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                    return Json(new { success = false, message = "Invalid username or password." });
+                }
+            }
+
+            private bool ValidateUserCredentials(Login data)
+            {
                 using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.Username}', '{data.Password}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
@@ -37,18 +58,45 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                         if (reader.Read())
                         {
                             HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
+                            string uname = HttpContext.Session.GetString("userId");
+                            Console.WriteLine($"Username stored in session: {uname}");
                             HttpContext.Session.SetString("userName", reader.GetString(1));
-                            return Json(new { success = true });
+                            Console.WriteLine();
+                            return true;
                         }
                         else
                         {
-                            return Json(new { success = false });
+                            return false;
                         }
                     }
-
                 }
             }
 
+            private async Task<bool> ValidateRecaptcha(string recaptchaResponse)
+            {
+                try
+                {
+                    var secretKey = "6LeQuMopAAAAAAcqg__Yb-mFVrudx2dR5bj_js8e";
+                    var client = new HttpClient();
+                    var response = await client.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={recaptchaResponse}");
+                    response.EnsureSuccessStatusCode();
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var captchaResponse = JsonConvert.DeserializeObject<CaptchaResponse>(responseBody);
+
+                    return captchaResponse!.Success;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred during reCAPTCHA validation: {ex.Message}");
+                    return false;
+                }
+            }
+
+            public class CaptchaResponse
+            {
+                [JsonProperty("success")]
+                public bool Success { get; set; }
+            }
             [HttpPost]
             public void Logout()
             {
@@ -129,7 +177,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             {
                 if (HttpContext.Session.GetString("OTP") == otp)
                 {
-                    if (DateTime.Now - DateTime.Parse(HttpContext.Session.GetString("OTPTime")) <= TimeSpan.FromMinutes(2))
+                    if (DateTime.Now - DateTime.Parse(HttpContext.Session.GetString("OTPTime")!) <= TimeSpan.FromMinutes(2))
                     {
                         Console.WriteLine("Ok....................");
                         return Json(new { success = true });
