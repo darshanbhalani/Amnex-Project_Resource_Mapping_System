@@ -13,8 +13,8 @@
         }
 
         #skills tbody tr td {
-            border-left: 1px solid grey;
-            border-right: 1px solid grey;
+/*             border-left: 1px solid grey;
+            border-right: 1px solid grey; */
             color: black;
             text-align: center;
         }
@@ -44,9 +44,6 @@
             border: 1px solid black;
         }
 
-        .back-to-top {
-            display: none;
-        }
 
         label[for="dt-length-0"] {
             margin-right: 4%;
@@ -175,7 +172,7 @@
             function getskillData() {
                 $.ajax({
                     url: '/Skills/GetSkills',
-                    type: 'GET',
+                    type: 'POST',
                     success: function (data) {
                         console.log(data);
                         displayskills(data.data);
@@ -306,7 +303,7 @@
                 var updatedSkillName = $('#editSkillName').val();
                 var skillId = $('#editSkillModal').data('skillId');
                 $.ajax({
-                    type: 'PUT',
+                    type: 'POST',
                     url: '/Skills/UpdateSkill',
                     data: { skillId: skillId, updatedSkillName: updatedSkillName },
                     success: function (response) {
@@ -360,7 +357,7 @@
                     return;
                 }
                 $.ajax({
-                    type: 'DELETE',
+                    type: 'POST',
                     url: '/Skills/DeleteSkill',
                     data: { skillId: skillIdToDelete },
                     success: function (response) {

@@ -77,6 +77,18 @@ namespace Amnex_Project_Resource_Mapping_System
                         }
                         return;
                     }
+                    catch(NpgsqlException npgsqlEx)
+                    {
+                        string _connectionString = $"Host={dbConfiguration!.Host};Port={dbConfiguration.Port};Username={dbConfiguration.Username};Password={dbConfiguration.Password};Database={dbConfiguration.Database}";
+                        using (var _connection = new NpgsqlConnection(_connectionString))
+                        {
+                            _connection.Open();
+                            using (var cmd = new NpgsqlCommand($"SELECT recordError('{DateTime.Now}','{npgsqlEx.Message}','{npgsqlEx.StackTrace}','{context.Request.RouteValues["controller"]}','{context.Request.RouteValues["action"]}');", _connection))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
                     catch (Exception ex)
                     {
                         string _connectionString = $"Host={dbConfiguration!.Host};Port={dbConfiguration.Port};Username={dbConfiguration.Username};Password={dbConfiguration.Password};Database={dbConfiguration.Database}";

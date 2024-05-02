@@ -4,7 +4,7 @@
 }
 
 
-@section style{
+@section style {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
     <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
     <style>
@@ -41,11 +41,15 @@
             align-items: center;
             text-align: center;
         }
+
+        #example td {
+            color: black;
+        }
     </style>
 }
 
-<h3 class="pt-2">Employees</h3>
-<div class="container-fluid px-4 py-4">
+<h3 class=" pt-2 ">Employees</h3>
+<div class="container-fluid px-4 pb-2">
     <div class="row g-4 d-flex justify-content-center align-items-center">
         <div class="col-sm-6 col-xl-4 px-4">
             <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
@@ -108,7 +112,6 @@
                     }
                 </td>
 
-
                 <td>
 
                     @if (emp.LoginRoleId == 0)
@@ -152,7 +155,6 @@
 </div>
 
 
-
 @* add-employee-modal *@
 <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -163,47 +165,48 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <form id="asdasd">
+                    <form id="addEmployeeForm">
                         <div class="row mb-3">
-
-                            <div class="col-12">
-                                <label for="employeename">Employee Name</label>
+                            <div class="col-6">
+                                <label for="employeeName">Employee Name</label>
                                 <input type="text" class="form-control" id="employeeName" placeholder="Enter Employee Name">
+                                <div class="text-danger error-message" id="employeeNameError"></div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
-
-                            <div class="col-12">
+                            <div class="col-6">
                                 <label for="employeeUserName">Employee UserName</label>
                                 <input type="text" class="form-control" id="employeeUserName" placeholder="Enter Employee UserName">
+                                <div class="text-danger error-message" id="employeeUserNameError"></div>
                             </div>
                         </div>
                         <div class="row mb-3">
-
                             <div class="col-12">
                                 <label for="employeeEmailId">Employee EmailId</label>
-                                <input type="text" class="form-control" id="employeeEmailId" placeholder="Enter Employee EmailId ">
+                                <input type="text" class="form-control" id="employeeEmailId" placeholder="Enter Employee EmailId">
+                                <div class="text-danger error-message" id="employeeEmailIdError"></div>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label for="department">Department</label>
-                                <select class="form-control" id="department">
+                                <select class="form-control" id="department" style="background-color: transparent;">
                                     <option value="">Select Department</option>
                                     @foreach (var item in Model.EmployeeDepartments)
                                     {
                                         <option value="@item.DepartmentId">@item.DepartmentName</option>
                                     }
                                 </select>
+                                <div class="text-danger error-message" id="departmentError"></div>
 
                             </div>
                             <div class="col-6">
                                 <label for="employeeLoginRole">UserRole</label>
-                                <select class="form-control" id="employeeLoginRole">
+                                <select class="form-control" id="employeeLoginRole" style="background-color: transparent;">
                                     <option value="">Select Role</option>
                                     <option value="0">Admin</option>
                                     <option value="1">User</option>
                                 </select>
+                                <div class="text-danger error-message" id="employeeLoginRoleError"></div>
+
                             </div>
                         </div>
 
@@ -219,20 +222,22 @@
                                         }
                                     </select>
                                 </div>
+                                <div class="text-danger error-message" id="skillsError"></div>
+
                             </div>
                         </div>
 
                     </form>
+                    <div id="errorMessages" class="text-danger"></div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                <button type="button" class="btn btn-primary" id="addEmployeeBtn">Add Employee</button>
+
+                <button type="submit" class="btn btn-primary" id="addEmployeeBtn">Add Employee</button>
             </div>
         </div>
     </div>
 </div>
-
 
 
 @* update-modal *@
@@ -241,7 +246,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="updateModalLabel">Update Employee Information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class=" btn-close-update btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="updateModalForm">
@@ -260,10 +265,12 @@
                         <div class="col">
                             <label for="employeeNameUpdate" class="form-label">Employee Name</label>
                             <input type="text" class="form-control" id="employeeNameUpdate">
+                            <div class="text-danger error-message" id="employeeNameUpdateError"></div>
                         </div>
                         <div class="col">
                             <label for="employeeEmailUpdate" class="form-label">Employee Email Id</label>
                             <input type="text" class="form-control" id="employeeEmailUpdate">
+                            <div class="text-danger error-message" id="employeeEmailIdUpdateError"></div>
                         </div>
                     </div>
 
@@ -277,6 +284,7 @@
                                     <option value="@item.DepartmentId">@item.DepartmentName</option>
                                 }
                             </select>
+
                         </div>
                         <div class="col">
                             <label for="userRoleUpdate" class="form-label">User Role</label>
@@ -284,6 +292,7 @@
                                 <option value="0">Admin</option>
                                 <option value="1">User</option>
                             </select>
+
                         </div>
                     </div>
 
@@ -301,12 +310,14 @@
                                     }
                                 </select>
                             </div>
+                            <div class="text-danger error-message" id="skillsUpdateError"></div>
                         </div>
                     </div>
                 </form>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+
                 <button type="button" class="btn btn-primary" id="updateEmployeeModalBtn">Update</button>
             </div>
         </div>
@@ -327,17 +338,14 @@
     <script>
         $(document).ready(function () {
 
-
             // DataTable initialization
             new DataTable('#example');
-
             // Disable link clicks within table cells
             $('.assign').click(function (event) {
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
             });
-
             // Initialize Choices.js for multi-select dropdowns
             var multipleCancelButton = new Choices('.choices-multiple-remove-button', {
                 removeItemButton: true,
@@ -351,7 +359,7 @@
                 searchResultLimit: 50,
                 renderChoiceLimit: 50
             });
-
+            $("#example").parent().addClass('p-0 ,-0');
             // Customize DataTable search input
             $('#dt-search-0').attr('placeholder', 'Search something');
             $('label[for="dt-search-0"]').remove();
@@ -384,19 +392,21 @@
                 });
 
                 $('#deleteButton').click(function () {
+                    loading();
+                    
                     var confirmValue = $('#confirmInput').val().trim().toUpperCase();
                     if (confirmValue === "CONFIRM") {
+                        var data = { EmployeeId: parseInt(employeeId) }
                         $.ajax({
-                            url: "/Home/employeeDelete",
-                            data: { employeeId: employeeId },
                             type: 'POST',
+                            url: "/Employees/DeleteEmployee",
+                            data: data,
                             success: function (result) {
-                                showSnackbar("true", "Delete Employee successfuly. ");
                                 location.reload();
-
+                                showSnackbar("true", "Delete Employee successfuly. ");
                             },
                             error: function (errorMessage) {
-                                alert('Error deleting project.');
+                                loading();
                                 showSnackbar("false", "Error deleting employee. ");
                             }
                         });
@@ -409,23 +419,24 @@
                 $("#filterEmployeeModal").modal('show');
             });
 
-            // Hide delete modal on button click
+            //  delete modal o
             $('#deleteButton').on('click', function () {
                 $('#deleteModal').modal('hide');
             });
 
 
-            $(document).on("click", ".addEmployeebtn", function () {
-                $("#addEmployeeModal").modal('show');
-            });
+            // Add Modal Jquery
 
             $(document).on("click", ".addEmployeebtn", function () {
                 $("#addEmployeeModal").modal('show');
             });
 
-            // Handle form submission when "Add Employee" button is clicked
-            $('#addEmployeeBtn').click(function () {
-                // Get form data
+
+            $('#addEmployeeBtn').click(function (e) {
+                e.preventDefault();
+                $('#errorMessages').empty();
+
+                var errorMessageHtml = "";
                 var employeeName = $('#employeeName').val().trim();
                 var employeeUserName = $('#employeeUserName').val().trim();
                 var employeeEmailId = $('#employeeEmailId').val().trim();
@@ -433,57 +444,51 @@
                 var userRole = $('#employeeLoginRole').val();
                 var selectedSkills = $('.choices-multiple-remove-button').val();
 
-                // Validate employee name
                 if (employeeName === "") {
-                    showSnackbar("false", "Please enter employee name.");
-
-                    return;
+                    $('#employeeNameError').text("Please enter employee name.");
                 }
 
-                // Validate employee username
                 if (employeeUserName === "") {
-                    showSnackbar("false", "Please enter employee username.");
-
-                    return;
+                    $('#employeeUserNameError').text("Please enter employee username.");
                 }
 
-                // Validate employee email
+
                 if (employeeEmailId === "") {
-                    showSnackbar("false", "Please enter employee email.");
-
-                    return;
+                    $('#employeeEmailIdError').text("Please enter employee email.");
                 }
 
-                // Validate department
+
+
                 if (department === "") {
-                    showSnackbar("false", "Please select department.");
-
-                    return;
+                    $('#departmentError').text("Please select department.");
                 }
 
-                // Validate user role
                 if (userRole === "") {
-                    showSnackbar("false", "Please select user role.");
-
-                    return;
+                    $('#employeeLoginRoleError').text("Please select user role.");
                 }
 
-                // Validate skills
+
                 if (selectedSkills === null || selectedSkills.length === 0) {
-                    showSnackbar("false", "Please select at least one skill.");
+                    $('#skillsError').text("Please select at least one skill.");
+                }
 
+
+                if ($('.error-message').text() !== "") {
+                    $('#errorMessages').text("").css('text-align', 'center');
                     return;
                 }
+
 
                 // Construct employee object
                 var employeeObj = {
                     EmployeeName: employeeName,
                     EmployeeUserName: employeeUserName,
-                    Email: employeeEmailId, 
+                    Email: employeeEmailId,
                     DepartmentId: department,
-                    LoginRoleId: userRole, // Corrected property name
-                    SkillsId: selectedSkills.join(',') // Convert array to comma-separated string
+                    LoginRoleId: userRole,
+                    SkillsId: selectedSkills.join(',')
                 };
+                loading();
 
                 // Send AJAX request to add employee
                 $.ajax({
@@ -491,23 +496,30 @@
                     url: "/Employees/AddEmployee",
                     data: employeeObj,
                     success: function (result) {
-
-                        $('#addEmployeeModal').modal('hide');
-                        showSnackbar("true", "Add New Employee successfuly. ");
                         location.reload();
+                        showSnackbar("true", "Add New Employee successfuly.");
                     },
                     error: function (errormessage) {
+                        loading();
                         showSnackbar("false", errormessage.responseText);
-
                     }
                 });
+            });
+
+            $('.btn-close').click(function () {
+                $('#addEmployeeForm').trigger("reset");
+                $('.error-message').empty();
             });
 
 
 
 
 
+
+            // Update Modal Jquery :--
+
             $(document).on("click", ".updatebtn", function (e) {
+                loading();
                 e.preventDefault();
                 var row = $(this).closest('tr');
                 var employeeId = row.find('td:eq(0)').text().trim();
@@ -517,51 +529,38 @@
                     type: 'POST',
                     data: { EmployeeId: employeeId },
                     success: function (result) {
-                        // Populate modal with employee data
-                        console.log(result);
-                       
-
+                        loading();
                         $('#employeeIdUpdate').val(result.employee.employeeId);
                         $('#employeeNameUpdate').val(result.employee.employeeName);
                         $('#employeeUserNameUpdate').val(result.employee.employeeUserName);
                         $('#employeeEmailUpdate').val(result.employee.email);
                         $('#departmentNameUpdate').val(result.employee.departmentId);
                         $('#userRoleUpdate').val(result.employee.loginRoleId);
-
-
-
-
-
                         var skills = result.employee.skillsId;
                         if (skills) {
                             var skillIds = skills.split(',');
-
-
                             skillIds.forEach(function (skillId) {
-                                console.log("Processing skillId:", skillId);
-
                                 multipleCancelButton.setChoiceByValue(skillId);
                             });
                         } else {
-                            console.error(skills);
-                            console.error("SkillsId is undefined or null.");
+                            showSnackbar("false", "Unable to Update Details.")
                         }
-
-
-
-
 
                         $('#updateModal').modal('show');
                     },
                     error: function (err) {
-                        showSnackbar("false", 'Error fetching employee: ' + err.responseText);
-                        alert();
+                        loading();
+                        showSnackbar("false", "Something went wrong.");
                     }
                 });
             });
 
+
             $('#updateEmployeeModalBtn').click(function (e) {
                 e.preventDefault();
+                $('#updateErrorMessages').empty();
+
+                var errorMessage = "";
 
                 var employeeId = $('#employeeIdUpdate').val().trim();
                 var employeeName = $('#employeeNameUpdate').val().trim();
@@ -572,39 +571,30 @@
                 var selectedSkills = $('#Updated-choices-multiple-remove-button').val();
 
                 if (employeeName === "") {
-                    showSnackbar("false", "Please enter employee name.");
-
-                    return;
+                    $('#employeeNameUpdateError').text("Please enter employee name.");
                 }
 
-                if (employeeUserName === "") {
-                    showSnackbar("false", "Please enter employee username.");
 
-                    return;
-                }
 
+                // Employee Email validation
                 if (employeeEmail === "") {
-                    showSnackbar("false", "Please enter employee email.");
-
-                    return;
+                    $('#employeeEmailIdUpdateError').text("Please enter employee email.");
                 }
 
-                if (departmentId === "") {
-                    showSnackbar("false", "Please enter employee department.");
 
-                    return;
-                }
-                if (!userRole) {
-                    showSnackbar("false", 'User role is required.');
-                    alert('User role is required.');
-                    return;
-                }
-
+                // Skills validation
                 if (selectedSkills === null || selectedSkills.length === 0) {
-                    showSnackbar("false", "Please select at least one skill.");
+                    $('#skillsUpdateError').text("Please select at least one skill.");
+                }
 
+
+                if ($('.error-message').text() !== "") {
+                    $('#errorMessages').text("").css('text-align', 'center');
                     return;
                 }
+
+
+
 
                 var skillId2 = selectedSkills.join(',');
 
@@ -617,27 +607,28 @@
                     SkillsId: skillId2,
                     LoginRoleId: userRole,
                 };
-
-
+                loading();
                 $.ajax({
                     type: "POST",
                     url: "/Employees/UpdateEmployee",
                     data: empUpdateObj,
                     success: function (result) {
-                        $('#updateModal').modal('hide');
-                        showSnackbar("true", "Update Employee Details successfuly. ");
                         location.reload();
+                        showSnackbar("true", "Update Employee Details successfuly.");
                     },
                     error: function (errormessage) {
-                        alert(errormessage.responseText);
+                        loading();
+                        showSnackbar("false", "Something went wrong.")
                     }
                 });
             });
 
-            $("#example").parent().addClass('p-0 ,-0');
+            $('.btn-close-update').click(function () {
 
+                $('#updateModalForm').trigger("reset");
+                $('#updateErrorMessages').empty();
+            });
         });
-
     </script>
-
 }
+

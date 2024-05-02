@@ -2,7 +2,6 @@
 {
     public class ProjectDetails
     {
-        // Main grid data
         public int ProjectId { get; set; }
         public string ProjectName { get; set; }
         public string ProjectDepartment { get; set; }
@@ -12,8 +11,6 @@
         public DateTime EndDate { get; set; }
         public string ProjectStatus { get; set; }
 
-        // working employee data
-        //public int aEmployeeId { get; set; }
         public int WorkingEmployeeId { get; set; }
         public string Employeename { get; set; }
         public string EmployeeSkills { get; set; }

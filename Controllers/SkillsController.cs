@@ -15,7 +15,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
 
         
-        [HttpGet]
+        [HttpPost]
         public IActionResult GetSkills()
         {
             List<Skill> skills = new List<Skill>();
@@ -81,7 +81,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPost]
         public IActionResult UpdateSkill(int skillId, string updatedSkillName)
         {
             string uid = HttpContext.Session.GetString("userId")!;

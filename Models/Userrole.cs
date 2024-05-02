@@ -2,7 +2,7 @@
 
 public partial class Userrole
 {
-    public int Userroleid { get; set; }
+    public int UserroleId { get; set; }
 
-    public string? Rolename { get; set; }
+    public string? RoleName { get; set; }
 }

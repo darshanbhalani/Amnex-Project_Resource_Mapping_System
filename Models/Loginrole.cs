@@ -2,7 +2,7 @@
 
 public partial class Loginrole
 {
-    public int Loginroleid { get; set; }
+    public int LoginroleId { get; set; }
 
-    public string Loginrolename { get; set; } = null!;
+    public string LoginRoleName { get; set; } = null!;
 }

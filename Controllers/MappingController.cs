@@ -1,6 +1,7 @@
 ﻿using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
@@ -21,20 +22,22 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
             using (var command = new NpgsqlCommand("select * from getprojectformapping();", _connection))
             {
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
+                using (var reader = command.ExecuteReader())
                 {
-                    projects.Add(new ProjectDetails
+                    while (reader.Read())
                     {
-                        ProjectId = reader.GetInt32(0),
-                        ProjectName = reader.GetString(1),
-                        ProjectDepartment = reader.GetString(2),
-                        ProjectSkills = reader.IsDBNull(3)! ? null : reader.GetString(3)!,
-                        NumberOfEmployees = reader.GetInt32(4),
-                        StartDate = reader.GetDateTime(5).Date,
-                        EndDate = reader.GetDateTime(6).Date,
-                        ProjectStatus = reader.GetString(7)
-                    });
+                        projects.Add(new ProjectDetails
+                        {
+                            ProjectId = reader.GetInt32(0),
+                            ProjectName = reader.GetString(1),
+                            ProjectDepartment = reader.GetString(2),
+                            ProjectSkills = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            NumberOfEmployees = reader.GetInt32(4),
+                            StartDate = reader.GetDateTime(5).Date,
+                            EndDate = reader.GetDateTime(6).Date,
+                            ProjectStatus = reader.GetString(7)
+                        });
+                    }
                 }
             }
             return Json(new { success = true, data = projects });
@@ -146,54 +149,67 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         [HttpPost]
         public IActionResult RemoveFromProject(int employeeId, int projectId)
         {
-                using (var command = new NpgsqlCommand("SELECT public.removeemployeefromproject(@projectId, @employeeId, @endDate, @userId, @modifyTime)", _connection))
-                {
-                    command.Parameters.AddWithValue("@projectId", projectId);
-                    command.Parameters.AddWithValue("@employeeId", employeeId);
-                    command.Parameters.AddWithValue("@endDate", DateTime.Now.Date);
-                    command.Parameters.AddWithValue("@userId", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                    command.Parameters.AddWithValue("@modifyTime", DateTime.Now);
+            using (var command = new NpgsqlCommand("SELECT public.removeemployeefromproject(@projectId, @employeeId, @endDate, @userId, @modifyTime)", _connection))
+            {
+                command.Parameters.AddWithValue("@projectId", projectId);
+                command.Parameters.AddWithValue("@employeeId", employeeId);
+                command.Parameters.AddWithValue("@endDate", DateTime.Now.Date);
+                command.Parameters.AddWithValue("@userId", Convert.ToInt32(HttpContext.Session.GetString("userId")));
+                command.Parameters.AddWithValue("@modifyTime", DateTime.Now);
 
+                command.ExecuteNonQuery();
 
-                    command.ExecuteNonQuery();
-
-                }
-                return Json(new { success = true });
+            }
+            return Json(new { success = true });
         }
 
 
         [HttpPost]
         public ActionResult AssignEmployees([FromBody] AssignEmployeeModel data)
         {
-            
-                Console.WriteLine("Received data:");
-                Console.WriteLine($"ProjectId: {data.ProjectId}");
+            using (var command = new NpgsqlCommand("select public.karaninsertemployeeproject(@in_employeeids,@in_projectroleid,@in_startdate,@in_enddate,@in_createdby,@in_createdtime,@in_projectid)", _connection))
+            {
+                command.Parameters.Add(new NpgsqlParameter("in_employeeids", NpgsqlDbType.Array | NpgsqlDbType.Integer) { Value = data.EmployeesId });
+                command.Parameters.Add(new NpgsqlParameter("in_projectroleid", NpgsqlDbType.Array | NpgsqlDbType.Integer) { Value = data.ProjectRoleId });
+                command.Parameters.Add(new NpgsqlParameter("in_startdate", NpgsqlDbType.Array | NpgsqlDbType.Date) { Value = data.StartDate });
+                command.Parameters.Add(new NpgsqlParameter("in_enddate", NpgsqlDbType.Array | NpgsqlDbType.Date) { Value = data.EndDate });
+                command.Parameters.Add(new NpgsqlParameter("in_createdby", NpgsqlDbType.Integer) { Value = Convert.ToInt32(HttpContext.Session.GetString("userId")) });
+                command.Parameters.Add(new NpgsqlParameter("in_createdtime", NpgsqlDbType.Timestamp) { Value = DateTime.Now });
+                command.Parameters.Add(new NpgsqlParameter("in_projectid", NpgsqlDbType.Integer) { Value = data.ProjectId });
 
-                for (int i = 0; i < data.EmployeesId.Count; i++)
+                command.ExecuteNonQuery();
+            }
+
+
+            return Json(new { success = true, message = "Data saved successfully" });
+        }
+
+
+        [HttpPost]
+        public IActionResult UpdateAllocatedEmployeesData([FromBody] List<ProjectDetails> updatedData)
+        {
+            try
+            {
+                foreach (var editedEmployee in updatedData)
                 {
-                    int employeeId = data.EmployeesId[i];
-                    int projectRoleId = data.ProjectRoleId[i];
-                    DateOnly? startDate = data.StartDate[i];
-                    DateOnly? endDate = data.EndDate[i];
-
-                    using (var command = new NpgsqlCommand("select public.karaninsertemployeeproject(@in_employeeids,@in_projectroleid,@in_startdate,@in_enddate,@in_createdby,@in_createdtime,@in_projectid)", _connection))
+                    using (var command = new NpgsqlCommand("UPDATE mapping SET employeestartdate = @StartDate, employeeenddate = @EndDate WHERE employeeid = @EmployeeId AND isworking=true; ", _connection))
                     {
-                        command.Parameters.AddWithValue("in_employeeids", new[] { employeeId });
-                        command.Parameters.AddWithValue("in_projectroleid", new[] { projectRoleId });
-                        command.Parameters.AddWithValue("in_startdate", new[] { startDate });
-                        command.Parameters.AddWithValue("in_enddate", new[] { endDate });
-                        command.Parameters.AddWithValue("in_createdby", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                        command.Parameters.AddWithValue("in_createdtime", DateTime.Now);
-                        command.Parameters.AddWithValue("in_projectid", data.ProjectId);
+                        command.Parameters.AddWithValue("@EmployeeId", editedEmployee.WorkingEmployeeId);
+                        command.Parameters.AddWithValue("@StartDate", editedEmployee.EmployeeStartDate);
+                        command.Parameters.AddWithValue("@EndDate", editedEmployee.EmployeeEndDate);
 
                         command.ExecuteNonQuery();
                     }
-
-                    Console.WriteLine($"EmployeeId: {employeeId}, ProjectRoleId: {projectRoleId}, StartDate: {startDate}, EndDate: {endDate}");
                 }
-
-                return Json(new { success = true, message = "Data saved successfully" });
+                return Json(new { success = true });
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating employee dates: " + ex.Message);
+                return Json(new { success = false, message = "Error updating employee dates" });
+            }
+        }
     }
+
 }
+

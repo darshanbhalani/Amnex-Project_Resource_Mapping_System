@@ -1,5 +1,5 @@
-﻿using Amnex_Project_Resource_Mapping_System.Models;
-using Amnex_Project_Resource_Mapping_System.Repo.Classes;
+﻿using Amnex_Project_Resource_Mapping_System.Repo.Classes;
+using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.Net;
@@ -30,7 +30,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             [HttpPost]
             public IActionResult Login(Login data)
             {
-                using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.Username}', '{data.Password}');", _connection))
+                using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.UserName}', '{data.Password}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -57,7 +57,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
 
 
-            [HttpPost]
             public IActionResult Profile()
             {
                 UserProfileModel userProfileModel = new UserProfileModel();

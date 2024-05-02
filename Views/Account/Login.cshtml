@@ -55,9 +55,9 @@
                     <form id="login-form" asp-controller="Account" asp-action="Login" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="mb-3 form-group">
-                            <label asp-for="Username" class="control-label">User Name</label>
-                            <input asp-for="Username" class="form-control" id="Username" />
-                            <span asp-validation-for="Username" class="text-danger"></span>
+                            <label asp-for="UserName" class="control-label">User Name</label>
+                            <input asp-for="UserName" class="form-control" id="Username" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
                         <div class="mb-1 form-group">
                             <label asp-for="Password" class="control-label">Password</label>
@@ -110,6 +110,16 @@
 <div id="snackbar" class="text-white text-center position-absolute bottom-0 start-50 translate-middle-x p-2 rounded-3 mx-5 mb-4" style="display: none; z-index:1; width:50%">
 </div>
 
+@* loading spiner *@
+<div class="modal" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen">
+        <div class="modal-content d-flex justify-content-center align-items-center" style="background-color:rgba(0, 0, 0, 0.5);">
+            <div class="spinner-border text-light" role="status" style="max-height:20vh; max-width:20vh; min-height:40px; min-width:40px;">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script> <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -117,8 +127,9 @@
 
 <script>
     $(document).ready(function () {
-       
+
         $('#loginbtn').click(function (e) {
+            
             e.preventDefault();
 
             var username = $('#Username').val();
@@ -153,7 +164,7 @@
 
     $("#submitBTN").click(function (e) {
         e.preventDefault();
-        if ($("#userName").val().length < 1 & $("#email").val().length < 1 ) {
+        if ($("#userName").val().length < 1 & $("#email").val().length < 1) {
             $("#errorMessage").text("Enter User Name and Email");
             return;
         }
@@ -171,7 +182,7 @@
             Email: $("#email").val()
         };
         $.ajax({
-            type:'POST',
+            type: 'POST',
             url: '/Account/ForgotPassword',
             data: data,
             success: function (res) {
@@ -191,7 +202,7 @@
         });
     });
 
-    $("#forgot-password-btn").click(function () { 
+    $("#forgot-password-btn").click(function () {
         $("#loginModal").modal('hide');
         $('.modal-backdrop').remove();
         $("#forgotPassword").modal('show');

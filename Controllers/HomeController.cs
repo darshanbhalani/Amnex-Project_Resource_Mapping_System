@@ -180,9 +180,9 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     {
                         projects.Add(new Project
                         {
-                            projectId = Convert.ToInt32(reader.GetValue(0).ToString()),
-                            projectName = reader.GetValue(1).ToString()!,
-                            status = reader.GetValue(6).ToString()!
+                            ProjectId = Convert.ToInt32(reader.GetValue(0).ToString()),
+                            ProjectName = reader.GetValue(1).ToString()!,
+                            Status = reader.GetValue(6).ToString()!
                         });
                     }
                 }

@@ -2,25 +2,28 @@
 
 public partial class Emppromappingdetail
 {
-    public int Projectid { get; set; }
+    public int ProjectId { get; set; }
 
-    public int Employeeid { get; set; }
+    public string ProjectName { get; set; }
 
-    public int? Projectrolesid { get; set; }
+    public int EmployeeId { get; set; }
 
-    public DateOnly Employeestartdate { get; set; }
+    public string EmployeeName { get; set; }
 
-    public DateOnly? Employeeenddate { get; set; }
+    public int? ProjectrolesId { get; set; }
 
-    public bool Isactive { get; set; }
+    public DateOnly EmployeStartDate { get; set; }
 
-    public string? Createdby { get; set; }
+    public DateOnly? EmployeeEndDate { get; set; }
 
-    public DateTime? Createdtime { get; set; }
+    public bool IsWorking { get; set; }
 
-    public string? Modifyby { get; set; }
+    public string? CreatedBy { get; set; }
 
-    public DateTime? Modifytime { get; set; }
+    public DateTime? CreatedTime { get; set; }
 
-    public string Logaction { get; set; } = null!;
+    public string? ModifyBy { get; set; }
+
+    public DateTime? ModifyTime { get; set; }
+
 }

@@ -34,9 +34,9 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 command.Parameters.AddWithValue("@in_employeeloginroleid", empObj.LoginRoleId);
                 command.Parameters.AddWithValue("@in_email", empObj.Email);
                 command.Parameters.AddWithValue("@in_password", password);
-                command.Parameters.AddWithValue("@in_createdby", 1); 
+                command.Parameters.AddWithValue("@in_createdby", Convert.ToInt32(HttpContext.Session.GetString("userId")!)); 
                 command.Parameters.AddWithValue("@in_createdtime", DateTime.Now); 
-                command.Parameters.AddWithValue("@in_modifyby", 1);
+                command.Parameters.AddWithValue("@in_modifyby", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
                 command.Parameters.AddWithValue("@in_modifytime", DateTime.Now);
                 command.ExecuteNonQuery();
             }
@@ -109,7 +109,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 command.Parameters.AddWithValue("@Email", empUpdateObj.Email);
                 command.Parameters.AddWithValue("@SkillsId", empUpdateObj.SkillsId);
                 command.Parameters.AddWithValue("@LoginRoleId", empUpdateObj.LoginRoleId);
-                command.Parameters.AddWithValue("@ModifyBy", 1); // Assuming a default value for modify by
+                command.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!)); 
                 command.Parameters.AddWithValue("@ModifyTime", DateTime.Now); // Current timestamp
 
                 command.ExecuteNonQuery();
@@ -119,9 +119,17 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
 
 
-        public IActionResult DeleteEmployee()
+        public IActionResult DeleteEmployee(Employee employee)
         {
-            return Ok();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("select public.deleteemployee(:employeeId,:modifyBy,:modifyTime );", _connection))
+            {
+                cmd.Parameters.AddWithValue("employeeId", employee.EmployeeId);
+                cmd.Parameters.AddWithValue("modifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
+                cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
+                cmd.ExecuteNonQuery();
+            }
+
+            return Json(new { success = true });
         }
 
 
