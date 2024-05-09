@@ -31,7 +31,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                             ProjectId = reader.GetInt32(0),
                             ProjectName = reader.GetString(1),
                             ProjectDepartment = reader.GetString(2),
-                            ProjectSkills = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            ProjectSkills = reader.GetString(3),
                             NumberOfEmployees = reader.GetInt32(4),
                             StartDate = reader.GetDateTime(5).Date,
                             EndDate = reader.GetDateTime(6).Date,
@@ -62,6 +62,33 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                             EmployeeStartDate = reader.GetDateTime(3).Date,
                             EmployeeEndDate = reader.GetDateTime(4).Date,
                             EmployeeSkills = skills,
+                            EmployeeRole = reader.GetString(6)
+                        };
+                        empData.Add(assignEmpData);
+                    }
+
+                }
+            }
+            return Json(new { success = true, data = empData });
+        }
+        [HttpPost]
+        public IActionResult demoGetAllocatedEmployeesData(int ProjectId, string skills)
+        {
+            List<ProjectDetails> empData = new List<ProjectDetails>();
+
+            using (var command = new NpgsqlCommand($"SELECT * from kkarangetemployeeprojectdata({ProjectId});", _connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var assignEmpData = new ProjectDetails
+                        {
+                            WorkingEmployeeId = reader.GetInt32(0),
+                            Employeename = reader.GetString(1),
+                            EmployeeStartDate = reader.GetDateTime(3).Date,
+                            EmployeeEndDate = reader.GetDateTime(4).Date,
+                            EmployeeSkills = reader.GetString(5),
                             EmployeeRole = reader.GetString(6)
                         };
                         empData.Add(assignEmpData);
@@ -181,6 +208,24 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
 
 
+            return Json(new { success = true, message = "Data saved successfully" });
+        }
+        [HttpPost]
+        public ActionResult DemoAssignEmployees([FromBody] AssignEmployeeModel data)
+        {
+            using (var command = new NpgsqlCommand("select public.KARANkaraninsertemployeeproject(@in_employeeids, @in_projectroleid, @in_startdate, @in_enddate, @in_createdby, @in_createdtime, @in_projectid, @in_skillnames)", _connection))
+            {
+                command.Parameters.Add(new NpgsqlParameter("in_employeeids", NpgsqlDbType.Array | NpgsqlDbType.Integer) { Value = data.EmployeesId });
+                command.Parameters.Add(new NpgsqlParameter("in_projectroleid", NpgsqlDbType.Array | NpgsqlDbType.Integer) { Value = data.ProjectRoleId });
+                command.Parameters.Add(new NpgsqlParameter("in_startdate", NpgsqlDbType.Array | NpgsqlDbType.Date) { Value = data.StartDate });
+                command.Parameters.Add(new NpgsqlParameter("in_enddate", NpgsqlDbType.Array | NpgsqlDbType.Date) { Value = data.EndDate });
+                command.Parameters.Add(new NpgsqlParameter("in_createdby", NpgsqlDbType.Integer) { Value = Convert.ToInt32(HttpContext.Session.GetString("userId")) });
+                command.Parameters.Add(new NpgsqlParameter("in_createdtime", NpgsqlDbType.Timestamp) { Value = DateTime.Now });
+                command.Parameters.Add(new NpgsqlParameter("in_projectid", NpgsqlDbType.Integer) { Value = data.ProjectId });
+                command.Parameters.Add(new NpgsqlParameter("in_skillnames", NpgsqlDbType.Array | NpgsqlDbType.Text) { Value = data.EmpSkills });
+
+                command.ExecuteNonQuery();
+            }
             return Json(new { success = true, message = "Data saved successfully" });
         }
 

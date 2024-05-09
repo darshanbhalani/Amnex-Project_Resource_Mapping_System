@@ -68,17 +68,43 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         [HttpPost]
         public IActionResult DeleteProject(int projectId)
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("select public.deleteproject(:projectId,:modifyTime ,:modifyBy);", _connection))
+            try
             {
-                cmd.Parameters.AddWithValue("projectId", projectId);
-                cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
-                cmd.Parameters.AddWithValue("modifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                cmd.ExecuteNonQuery();
+
+                bool isDeletable = IsProjectDeletable(projectId);
+
+                if (isDeletable == false)
+                {
+                    return BadRequest();
+                    //return Json(new { success = false ,message = "Unable to delete project."});
+                }
+                using (NpgsqlCommand cmd = new NpgsqlCommand("select public.deleteproject(:projectId,:modifyTime ,:modifyBy);", _connection))
+                {
+                    cmd.Parameters.AddWithValue("projectId", projectId);
+                    cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
+                    cmd.Parameters.AddWithValue("modifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
+                    cmd.ExecuteNonQuery();
+                }
+
+                return Json(new { success = true });
+
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
 
-            return Json(new { success = true });
+                return Json(new { success = false, message = "An error occurred while deleting the Project." });
+            }
         }
-
+        public bool IsProjectDeletable(int ProjectId)
+        {
+            using (NpgsqlCommand command = new NpgsqlCommand("SELECT public.checkisprojectdeleteable(@projectId)", _connection))
+            {
+                command.Parameters.AddWithValue("@projectId", ProjectId);
+                bool isDeletable = (bool)command.ExecuteScalar();
+                return isDeletable;
+            }
+        }
 
         [HttpPost]
         public IActionResult GetEmployeeById(int projectId)
@@ -160,6 +186,51 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
             return Ok("Employee ratings updated successfully");
         }
+
+
+
+        [HttpPost]
+        public IActionResult EmpDetatilByProjectId(int projectId)
+        {
+            List<object> employeeDetails = new List<object>();
+
+            using (NpgsqlCommand cmd = new NpgsqlCommand($"SELECT * FROM public.getEmpByProjectIds({projectId})", _connection))
+            {
+                using (NpgsqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string empName = reader.GetString(0);
+                        DateTime startDate = reader.GetDateTime(1).Date;
+                        DateTime endDate = reader.GetDateTime(2).Date;
+                        string projectRole = reader.GetString(3);
+                        string[] skills = (string[])reader["skills"]; 
+                        int rating = reader.GetInt32(5);
+                        DateTime projectStartDate = reader.GetDateTime(6).Date;
+                        DateTime projectEndDate = reader.GetDateTime(7).Date;
+                        string departmentName = reader.GetString(8);
+
+                        var employeeDetail = new
+                        {
+                            EmpName = empName,
+                            StartDate = startDate.ToShortDateString(),
+                            EndDate = endDate.ToShortDateString(),
+                            ProjectRole = projectRole,
+                            Skills = skills,
+                            Rating = rating,
+                            ProjectStartDate = projectStartDate.ToShortDateString(),
+                            ProjectEndDate = projectEndDate.ToShortDateString(),
+                            DepartmentName = departmentName
+                        };
+
+                        employeeDetails.Add(employeeDetail);
+                    }
+                }
+            }
+
+            return Json(employeeDetails);
+        }
+
 
     }
 }

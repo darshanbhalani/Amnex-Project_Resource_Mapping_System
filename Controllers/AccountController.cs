@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.Net;
 using System.Net.Mail;
+using Newtonsoft.Json;
+using static Amnex_Project_Resource_Mapping_System.Controllers.Amnex_Project_Resource_Mapping_System.Controllers.AccountController;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -12,9 +14,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         {
             private readonly NpgsqlConnection _connection;
             private readonly Account account = new Account();
+            private IConfiguration _configuration;
 
-            public AccountController(NpgsqlConnection connection)
+            public AccountController(NpgsqlConnection connection, IConfiguration configuration)
             {
+                _configuration = configuration;
                 _connection = connection;
                 connection.Open();
             }
@@ -25,11 +29,17 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 HttpContext.Session.Clear();
                 return View();
             }
-
-
             [HttpPost]
-            public IActionResult Login(Login data)
+            public async Task<IActionResult> Login(Login data, string recaptchaResponse)
             {
+                 //Validate reCAPTCHA
+                bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
+                if (!isRecaptchaValid)
+                {
+                    ModelState.AddModelError(string.Empty, "reCAPTCHA validation failed.");
+                    return Json(new { success = false, message = "reCAPTCHA validation failed." });
+                }
+
                 using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.UserName}', '{data.Password}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
@@ -42,13 +52,37 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                         }
                         else
                         {
-                            return Json(new { success = false });
+                            ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                            return Json(new { success = false, message = "Invalid username or password." });
                         }
                     }
+                }
+            }
+            
 
+            private async Task<bool> ValidateRecaptcha(string recaptchaResponse)
+            {
+                try
+                {
+                    var secretKey = _configuration["GoogleRecaptcha:SecretKey"];
+                    var client = new HttpClient();
+                    var response = await client.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={recaptchaResponse}");
+                    response.EnsureSuccessStatusCode();
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var captchaResponse = JsonConvert.DeserializeObject<CaptchaResponse>(responseBody);
+                    return captchaResponse!.Success;
+                }
+                catch (Exception ex)
+                {
+                    return false;
                 }
             }
 
+            public class CaptchaResponse
+            {
+                [JsonProperty("success")]
+                public bool Success { get; set; }
+            }
 
             [HttpPost]
             public void Logout()
@@ -150,26 +184,30 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
 
             [HttpPost]
-            public IActionResult ForgotPassword(Employee employee)
+            public async Task<IActionResult> ForgotPassword(string EmployeeUserName,string Email, string recaptchaResponse)
             {
-                using (var cmd = new NpgsqlCommand($"select * from GetPassword('{employee.EmployeeUserName}','{employee.Email}');", _connection))
+                bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
+                if (!isRecaptchaValid)
+                {
+                    return Json(new { success = false, message = "reCAPTCHA validation failed." });
+                }
+                using (var cmd = new NpgsqlCommand($"select * from GetPassword('{EmployeeUserName}','{Email}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
+                            using (SmtpClient smtpClient = new SmtpClient(_configuration["SMTPConfiguration:Server"]))
                             {
-                                smtpClient.Port = 587;
-                                smtpClient.Credentials = new NetworkCredential("connect.nextgentechnology@gmail.com", "tcllfvvxodcydksv");
+                                smtpClient.Port = Convert.ToInt32(_configuration["SMTPConfiguration:Port"]);
+                                smtpClient.Credentials = new NetworkCredential(_configuration["SMTPConfiguration:HostName"], _configuration["SMTPConfiguration:Password"]);
                                 smtpClient.EnableSsl = true;
-
                                 MailMessage mailMessage = new MailMessage();
-                                mailMessage.From = new MailAddress("connect.nextgentechnology@gmail.com");
-                                mailMessage.To.Add(employee.Email);
+                                mailMessage.From = new MailAddress(_configuration["SMTPConfiguration:HostName"]!);
+                                mailMessage.To.Add(Email);
                                 mailMessage.Subject = "PRMS Account Credentials";
                                 mailMessage.IsBodyHtml = true;
-                                mailMessage.Body = $"<h3>Hello {reader.GetString(1)},</h3></br><p>Your PRMS UserName is \"<b>{employee.EmployeeUserName}</b>\" and Password is \"<b>{reader.GetString(0)}</b>\".";
+                                mailMessage.Body = $"<h3>Hello {reader.GetString(1)},</h3></br><p>Your PRMS UserName is \"<b>{EmployeeUserName}</b>\" and Password is \"<b>{reader.GetString(0)}</b>\".";
 
                                 smtpClient.Send(mailMessage);
 
@@ -178,7 +216,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                         }
                         else
                         {
-                            return Json(new { success = false });
+                            return Json(new { success = false , message = "Invalid User Name or Email." });
                         }
 
 
@@ -204,21 +242,19 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
 
 
-            internal static bool SendCredentials(Employee employee)
+            internal static bool SendCredentials(Employee employee, IConfiguration configuration)
             {
-                using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
+                using (SmtpClient smtpClient = new SmtpClient(configuration["SMTPConfiguration:Server"]))
                 {
-                    smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential("connect.nextgentechnology@gmail.com", "tcllfvvxodcydksv");
+                    smtpClient.Port = Convert.ToInt32(configuration["SMTPConfiguration:Port"]);
+                    smtpClient.Credentials = new NetworkCredential(configuration["SMTPConfiguration:HostName"], configuration["SMTPConfiguration:Password"]);
                     smtpClient.EnableSsl = true;
-
                     MailMessage mailMessage = new MailMessage();
-                    mailMessage.From = new MailAddress("connect.nextgentechnology@gmail.com");
+                    mailMessage.From = new MailAddress(configuration["SMTPConfiguration:HostName"]!);
                     mailMessage.To.Add(employee.Email);
                     mailMessage.Subject = "PRMS Account Credentials";
                     mailMessage.IsBodyHtml = true;
                     mailMessage.Body = $"<h3>Hello {employee.EmployeeName},</h3></br><p>Your PRMS account is created. your UserName is \"<b>{employee.EmployeeUserName}</b>\" and Password is \"<b>{employee.Password}</b>\".";
-
                     smtpClient.Send(mailMessage);
 
                 }

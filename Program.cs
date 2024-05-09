@@ -16,7 +16,6 @@ namespace Amnex_Project_Resource_Mapping_System
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-
             builder.Services.AddHttpContextAccessor();
 
             var configuration = builder.Configuration;

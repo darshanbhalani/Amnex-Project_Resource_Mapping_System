@@ -11,55 +11,90 @@
     <tbody id="dataRows">
         @foreach (var x in Model)
         {
-
-            @if (x.Action == "INSERT")
+            @if (x.EntityType != "Mapping")
             {
-                <tr>
-                    <td>
-                        <span>New</span>
-                        <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
-                        <b><span>&nbsp;@x.EntityName</span></b>
-                        <span>&nbsp;add by</span>
-                        <b><span>&nbsp;@x.LogBy</span></b>
-                    </td>
-                    <td>@x.CreateTime</td>
-                </tr>
+                @if (x.Action == "INSERT")
+                {
+                    <tr>
+                        <td>
+                            <span>New</span>
+                            <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
+                            <b><span>&nbsp;@x.EntityName</span></b>
+                            <span>&nbsp;added by</span>
+                            <b><span>&nbsp;@x.LogBy</span></b>
+                        </td>
+                        <td>@x.CreateTime</td>
+                    </tr>
+                }
+                else if (x.Action == "UPDATE")
+                {
+                    <tr>
+                        <td>
+                            <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
+                            <b><span>&nbsp;@x.EntityName</span></b>
+                            <span>'s&nbsp;details updated by</span>
+                            <b><span>&nbsp;@x.LogBy</span></b>
+                        </td>
+                        <td>@x.CreateTime</td>
+                    </tr>
+                }
+                else if (x.Action == "DELETE")
+                {
+                    <tr>
+                        <td>
+                            <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
+                            <b><span>&nbsp;@x.EntityName</span></b>
+                            <span>&nbsp;deleted by</span>
+                            <b><span>&nbsp;@x.LogBy</span></b>
+                        </td>
+                        <td>@x.CreateTime</td>
+                    </tr>
+                }
             }
-            else if (x.Action == "UPDATE")
+            else
             {
-                <tr>
-                    <td>
-                        <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
-                        <b><span>&nbsp;@x.EntityName</span></b>
-                        <span>'s&nbsp;Details update by</span>
-                        <b><span>&nbsp;@x.LogBy</span></b>
-                    </td>
-                    <td>@x.CreateTime</td>
-                </tr>
-            }
-            else if (x.Action == "DELETE")
-            {
-                <tr>
-                    <td>
-                        <span>&nbsp;@(x.EntityType.Substring(0, x.EntityType.Length - 1))</span>
-                        <b><span>&nbsp;@x.EntityName</span></b>
-                        <span>&nbsp;delete by</span>
-                        <b><span>&nbsp;@x.LogBy</span></b>
-                    </td>
-                    <td>@x.CreateTime</td>
-                </tr>
+                @if (x.Action == "INSERT")
+                {
+                    <tr>
+                        <td>
+                            <span><b>&nbsp;@x.EntityName</b> allocated to project by</span>
+                            <b><span>&nbsp;@x.LogBy</span></b>
+                        </td>
+                        <td>@x.CreateTime</td>
+                    </tr>
+                }
+                else if (x.Action == "UPDATE")
+                {
+                    <tr>
+                        <td>
+                            <span><b>&nbsp;@x.EntityName</b>'s allocation details updated by</span>
+                            <b><span>&nbsp;@x.LogBy</span></b>
+                        </td>
+                        <td>@x.CreateTime</td>
+                    </tr>
+                }
+                else if (x.Action == "DELETE")
+                {
+                    <tr>
+                        <td>
+                            <span><b>&nbsp;@x.EntityName<b> removed from project by</span>
+                            <b><span>&nbsp;@x.LogBy</span></b>
+                        </td>
+                        <td>@x.CreateTime</td>
+                    </tr>
+                }
             }
         }
     </tbody>
 </table>
+
+
 @section Scripts {
     <script>
         var addButtonAppend = false;
-
         $(document).ready(function () {
-
             $('#example').DataTable({
-                "order": [[1, "desc"]]
+                "order": []
             });
             $('#dt-search-0').css({ 'width': '30rem' });
             $('#dt-search-0').css({ 'margin': '0px' });
@@ -71,7 +106,6 @@
             $('#dt-search-0').parent().parent().parent().addClass('d-flex flex-row-reverse');
             $('#dt-length-0').parent().parent().removeClass('me-auto');
             $('#dt-search-0').parent().parent().removeClass('ms-auto');
-
         });
     </script>
 }

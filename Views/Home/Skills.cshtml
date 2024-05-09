@@ -13,11 +13,24 @@
         }
 
         #skills tbody tr td {
-/*             border-left: 1px solid grey;
-            border-right: 1px solid grey; */
+            /*             border-left: 1px solid grey;
+                    border-right: 1px solid grey; */
             color: black;
             text-align: center;
         }
+
+        #skills th:first-child, #skills tr td:first-child {
+            text-align: start !important;
+        }
+
+        .icon-container {
+            text-align: center;
+        }
+
+            .icon-container i {
+                margin-right: 10px;
+                margin-left: 10px;
+            }
 
         #dataRows td:nth-child(2) {
             text-align: left;
@@ -79,10 +92,9 @@
 <table id="skills" class="table table-striped" style="width:100%">
     <thead class="">
         <tr>
-            <th>Skill Id</th>
-            <th>Skill's Name</th>
-            <th class="assign">Update</th>
-            <th class="assign">Delete</th>
+
+            <th width="80%">Skill's Name</th>
+            <th class="assign">Actions</th>
         </tr>
     </thead>
     <tbody id="dataRows">
@@ -170,6 +182,7 @@
             //DISPLAY SKILL
             getskillData();
             function getskillData() {
+                loading();
                 $.ajax({
                     url: '/Skills/GetSkills',
                     type: 'POST',
@@ -179,16 +192,18 @@
 
                     }
                 });
+                loading();
             }
             function displayskills(Data) {
                 var table = $('#skills').DataTable();
                 table.clear().draw();
                 $.each(Data, function (index, data) {
                     table.row.add([
-                        data.skillid,
                         data.skillname,
-                        '<i class="fa fa-edit fa-lg edit-icon" style="cursor:pointer;" aria-hidden="true"></i>',
-                        '<i class="fa fa-trash fa-lg delete-icon" style="cursor:pointer;" aria-hidden="true"></i>'
+                        '<div class="icon-container">' +
+                        '<i class="fa fa-edit fa-lg edit-icon" style="cursor:pointer;" aria-hidden="true" data-skillid="' + data.skillid + '"></i>' + '|' +
+                        '<i class="fa fa-trash fa-lg delete-icon" style="cursor:pointer;" aria-hidden="true" data-skillid="' + data.skillid + '"></i>' +
+                        '</div>'
                     ]).draw();
                 });
                 if (!addButtonAppend) {
@@ -236,7 +251,7 @@
             function checkAndSaveSkill(skillName) {
                 var lowercaseSkillName = skillName.toLowerCase();
                 // Check if the skill already exists in the displayed skills
-                var existingSkill = $('#dataRows td:nth-child(2)').filter(function () {
+                var existingSkill = $('#dataRows td:nth-child(1)').filter(function () {
                     return $(this).text().toLowerCase() === lowercaseSkillName;
                 }).length > 0;
 
@@ -244,7 +259,7 @@
                     $('#skillName').val('');
                     $('#addSkillModal').modal('hide');
                     showSnackbar('false', skillName + ' already exists')
-                    
+
                     return;
                 }
                 saveSkill(skillName);
@@ -253,11 +268,13 @@
                 var data = {
                     skillname: skillName,
                 };
+                loading();
                 $.ajax({
                     type: 'POST',
                     url: '/Skills/AddSkill',
                     data: data,
                     success: function (response) {
+                        loading();
                         if (response.success) {
                             $('#addSkillModal').modal('hide');
                             getskillData();
@@ -271,6 +288,7 @@
                         }
                     },
                     error: function (xhr, status, error) {
+                        loading();
                         console.error(error);
                         showSnackbar('false', error);
 
@@ -280,14 +298,16 @@
 
             //EDIT SKILLS
             $('#skills').on('click', '.edit-icon', function () {
-                var skillId = $(this).closest('tr').find('td:nth-child(1)').text();
-                var skillName = $(this).closest('tr').find('td:nth-child(2)').text();
+                // var skillId = $(this).closest('tr').find('td:nth-child(1)').text();
+                var skillId = $(this).data('skillid');
+                console.log(skillId);
+                var skillName = $(this).closest('tr').find('td:nth-child(1)').text();
                 $('#editSkillName').val(skillName);
                 $('#editSkillName').val(skillName).data('originalSkillName', skillName);
                 $('#editSkillModal').data('skillId', skillId);
                 $('#editSkillModal').modal('show');
                 $('#editSkillName').on('input', function () {
-                    var editedSkillName = $(this).val();
+                    var editedSkillName = $(this).val().trim();
                     var originalSkillName = $(this).data('originalSkillName');
                     console.log(originalSkillName);
                     console.log(editedSkillName);
@@ -302,11 +322,13 @@
             $('#saveEditSkillButton').on('click', function () {
                 var updatedSkillName = $('#editSkillName').val();
                 var skillId = $('#editSkillModal').data('skillId');
+                loading();
                 $.ajax({
                     type: 'POST',
                     url: '/Skills/UpdateSkill',
                     data: { skillId: skillId, updatedSkillName: updatedSkillName },
                     success: function (response) {
+                        loading();
                         if (response.success) {
                             $('#editSkillModal').modal('hide');
                             getskillData();
@@ -318,6 +340,7 @@
                         }
                     },
                     error: function (xhr, status, error) {
+                        loading();
                         console.error(error);
                         showSnackbar('false', 'An error occurred while updating the skill. Please try again later.');
 
@@ -327,8 +350,9 @@
 
             //DELETE SKILL
             $('#skills').on('click', '.delete-icon', function () {
-                var skillId = $(this).closest('tr').find('td:nth-child(1)').text();
-                var skillName = $(this).closest('tr').find('td:nth-child(2)').text();
+                // var skillId = $(this).closest('tr').find('td:nth-child(1)').text();
+                var skillId = $(this).data('skillid');
+                var skillName = $(this).closest('tr').find('td:nth-child(1)').text();
                 $('#deleteSkillName').val(skillName);
                 $('#deleteSkillName').text(skillName);
                 $('#deleteSkillModal').data('skillId', skillId);
@@ -336,6 +360,7 @@
                 $('#deleteSkillModal').modal('show');
                 $('#deleteSkillModal').on('hidden.bs.modal', function () {
                     $('#confirmInput').val('');
+                    $('#confirmDeleteButton').prop('disabled', true);
                 });
 
             });
@@ -356,11 +381,13 @@
                 if (confirmInputValue !== 'CONFIRM') {
                     return;
                 }
+                loading();
                 $.ajax({
                     type: 'POST',
                     url: '/Skills/DeleteSkill',
                     data: { skillId: skillIdToDelete },
                     success: function (response) {
+                        loading();
                         if (response.success) {
                             getskillData();
                             $('#deleteSkillModal').modal('hide');
@@ -372,6 +399,7 @@
                         }
                     },
                     error: function (xhr, status, error) {
+                        loading();
                         console.error(error);
                         showSnackbar('false', 'An error occurred while deleting the skill. Please try again later.');
 

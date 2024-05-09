@@ -58,7 +58,7 @@
 
 
 
-<h1>Project-Employee mapping section</h1>
+<h3>Project-Employee mapping section</h3>
 
 @* grid to display data *@
 <table id="dataTable1" class="table table-striped table-bordered tcenter" style="width:100%">
@@ -285,7 +285,6 @@
                 <div class="row justify-content-center my-4">
                     <!-- Show employees data -->
                     <div class="col-md-12">
-                        <span id="validationMsg" style="color:red"></span>       @* karan *@
                         <h5>Choose Employees</h5>
                         <div class="table-responsive" id="dataTable3" style="max-height: 70vh; overflow-y: auto;">
                             <table id="empModal" class="table table-striped table-bordered dataTable3 tcenter" style="width:100%">
@@ -323,6 +322,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <div id="validationMsg" class="text-danger"></div>
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div><span style="color:red">Note: You can save changes only after assigning atleast one employee</span></div>
@@ -517,7 +519,7 @@
                     $('#xlModalErrorMsg').text('');
 
                     $.ajax({
-                        url: '/Mapping/getAllocatedEmployeesData',
+                        url: '/Mapping/demoGetAllocatedEmployeesData',
                         type: 'POST',
                         data: { ProjectId: projectId, skills: skills },
                         dataType: 'json',
@@ -673,15 +675,15 @@
                             $button.closest('tr').remove();
                             // Fetch updated data and update the table
                             $.ajax({
-                                url: '/Mapping/getAllocatedEmployeesData',
+                                url: '/Mapping/demoGetAllocatedEmployeesData',
                                 type: 'POST',
                                 data: { ProjectId: projectId },
                                 dataType: 'json',
                                 success: function (data) {
                                     // Update the table with new data
+                                    location.reload();
                                     getData();
                                     populateEmployeeData(data.data);
-                                    location.reload();
                                 },
                                 error: function (error) {
                                     console.log('Error fetching data:', error);
@@ -699,12 +701,17 @@
                 $('#confirmationModal').modal('hide');
             })
 
+            let projectStartDate;
+            let projectEndDate;
             // Event listener for click events on icons within the "Assign" column
             $('#dataTable1').on('click', '.mapEmp', function () {
                 $('#validationMsg').text('');
                 let $row = $(this).closest('tr');
                 let projectId = $row.find('td:eq(0)').text();
                 let departmentName = $row.find('td:eq(2)').text();
+                projectStartDate = $row.find('td:eq(5)').text();
+                projectEndDate = $row.find('td:eq(6)').text();
+                // alert(projectStartDate + "========" + projectEndDate);
                 $.ajax({
                     url: '/Mapping/FetchNotAllocatedEmployees',
                     type: 'POST',
@@ -730,7 +737,8 @@
                     EmployeesId: [],
                     ProjectRoleId: [],
                     StartDate: [],
-                    EndDate: []
+                    EndDate: [],
+                    EmpSkills: []
                 };
                 let allDatesValid = true;
 
@@ -742,20 +750,31 @@
                     let endDate = row.find('td:eq(6) input').val();
                     let startDateObj = new Date(startDate);
                     let endDateObj = new Date(endDate);
+                    let empSkills = row.find('td:eq(2)').text();
+                    // alert(employeeSkills);
+                    // alert(projectStartDate + "=======" + startDate + "+++++++++++++++" + startDateObj.toLocaleDateString());
+                    // alert(projectEndDate + "=======" + endDate + "+++++++++++++++" + endDateObj);
                     if (endDateObj < startDateObj) {            // karan
-                        $('#validationMsg').text('**End date should not be before start date');     // karan
+                        $('#validationMsg').text('End date should not be before start date');     // karan
                         allDatesValid = false;          // karan
-                        return false;                   // karan
-                    } else {                            // karan
+                        return;                   // karan
+                    } 
+                    // else if (startDateObj.toLocaleDateString() < projectStartDate || endDateObj.toLocaleDateString() > projectEndDate) {
+                    //     $('#validationMsg').text('Employee dates must be within the project range');
+                    //     allDatesValid = false;
+                    //     return;
+                    // } 
+                    else {                            // karan
                         data.EmployeesId.push(employeeId);
                         data.ProjectRoleId.push(projectRole);
                         data.StartDate.push(startDate);
                         data.EndDate.push(endDate);
+                        data.EmpSkills.push(empSkills);
                     }
                 });
                 if (allDatesValid) {
                     $.ajax({
-                        url: '/Mapping/AssignEmployees',
+                        url: '/Mapping/DemoAssignEmployees',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(data),

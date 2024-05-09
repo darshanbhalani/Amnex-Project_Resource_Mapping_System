@@ -115,29 +115,37 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         [HttpPost]
         public IActionResult Deletedepartment(Department model)
         {
-            string uid = HttpContext.Session.GetString("userId")!;
-
             try
             {
-
-                var sql = "select public.deletedepartment(@in_department_id,@in_modify_time,@in_modify_by)";
-
-                using (var cmd = new NpgsqlCommand(sql, _connection))
+                bool isDeleteable;
+                using (var cmd1 = new NpgsqlCommand("SELECT public.checkisdepartmentdeleteable(@in_department_id)", _connection))
                 {
-                    cmd.Parameters.AddWithValue("in_department_id", model.DepartmentId);
-                    cmd.Parameters.AddWithValue("in_modify_by", Convert.ToInt32(uid));
-                    cmd.Parameters.AddWithValue("in_modify_time", DateTime.Now);
-                    cmd.ExecuteNonQuery();
+                    cmd1.Parameters.AddWithValue("in_department_id", model.DepartmentId);
+                    isDeleteable = (bool)cmd1.ExecuteScalar()!;
                 }
+                if (isDeleteable)
+                {
+                    var sql = "SELECT public.deletedepartment(@in_department_id, @in_modify_time, @in_modify_by)";
+                    using (var cmd2 = new NpgsqlCommand(sql, _connection))
+                    {
+                        cmd2.Parameters.AddWithValue("in_department_id", model.DepartmentId);
+                        cmd2.Parameters.AddWithValue("in_modify_by", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
+                        cmd2.Parameters.AddWithValue("in_modify_time", DateTime.Now);
+                        cmd2.ExecuteNonQuery();
+                    }
 
-
-                return Json(new { success = true });
+                    return new JsonResult(new { success = true });
+                }
+                else
+                {
+                    return new JsonResult(new { success = false, message = "Department coud not be deleted because it has running project or employees." });
+                }
             }
             catch (Exception ex)
             {
-                // Handle exception
-                return Json(new { success = false, error = ex.Message });
+                return new JsonResult(new { success = false, message = ex.Message });
             }
+
         }
 
 

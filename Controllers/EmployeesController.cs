@@ -2,8 +2,6 @@
 using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -11,9 +9,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
     public class EmployeesController : Controller
     {
         private readonly NpgsqlConnection _connection;
+        private IConfiguration _configuration;
 
-        public EmployeesController(NpgsqlConnection connection)
+        public EmployeesController(NpgsqlConnection connection,IConfiguration configuration)
         {
+            _configuration = configuration;
             _connection = connection;
             _connection.Open();
         }
@@ -46,7 +46,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 Password = password,
                 Email = empObj.Email,
             };
-            AccountController.SendCredentials(employee);
+            AccountController.SendCredentials(employee,_configuration);
             return Json(new { success = true });
         }
 
@@ -89,8 +89,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             catch (Exception ex)
             {
 
-                Console.WriteLine("Error: " + ex.Message);
-
                 return Json(new { success = false, message = "An error occurred while fetching employee data." });
             }
         }
@@ -110,7 +108,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 command.Parameters.AddWithValue("@SkillsId", empUpdateObj.SkillsId);
                 command.Parameters.AddWithValue("@LoginRoleId", empUpdateObj.LoginRoleId);
                 command.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!)); 
-                command.Parameters.AddWithValue("@ModifyTime", DateTime.Now); // Current timestamp
+                command.Parameters.AddWithValue("@ModifyTime", DateTime.Now);
 
                 command.ExecuteNonQuery();
             }
@@ -121,17 +119,79 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
         public IActionResult DeleteEmployee(Employee employee)
         {
-            using (NpgsqlCommand cmd = new NpgsqlCommand("select public.deleteemployee(:employeeId,:modifyBy,:modifyTime );", _connection))
+            bool isDeletable = false;
+            try
             {
-                cmd.Parameters.AddWithValue("employeeId", employee.EmployeeId);
-                cmd.Parameters.AddWithValue("modifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
-                cmd.ExecuteNonQuery();
-            }
+                using (NpgsqlCommand command = new NpgsqlCommand("SELECT public.checkisemployeedeleteable(@employeeId)", _connection))
+                {
+                    command.Parameters.AddWithValue("@employeeId", employee.EmployeeId);
+                    isDeletable = (bool)command.ExecuteScalar()!;
+                }
 
-            return Json(new { success = true });
+                if (isDeletable == false)
+                {
+                    return Json(new { success = false, message = "Employee could not be deleted because it is assigned to project." });
+                }
+                else
+                {
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT public.deleteemployee(:employeeId,:modifyBy,:modifyTime );", _connection))
+                    {
+                        cmd.Parameters.AddWithValue("employeeId", employee.EmployeeId);
+                        cmd.Parameters.AddWithValue("modifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
+                        cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+                    }
+                    return Json(new { success = true });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
+
+        [HttpPost]
+        public IActionResult GetEmployeeRecords(int employeeId)
+        {
+            try
+            {
+                using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM public.fatchemployeerecord(@employeeId)", _connection))
+                {
+                    command.Parameters.AddWithValue("@employeeId", employeeId);
+
+                    List<EmployeeRecord> employeesRecord = new List<EmployeeRecord>();
+
+                    using (NpgsqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            EmployeeRecord employeeRecord = new EmployeeRecord
+                            {
+                                ProjectName = reader.IsDBNull(0) ? "Not Found" : reader.GetString(0),
+                                ProjectRoleName = reader.IsDBNull(1) ? "Not Found" : reader.GetString(1),
+                                StartDate = reader.IsDBNull(2) ? DateTime.Now.Date : reader.GetDateTime(2),
+                                EndDate = reader.IsDBNull(3) ? DateTime.Now.Date : reader.GetDateTime(3),
+                                SkillsName = reader.IsDBNull(4) ? "Not Found" : reader.GetString(4),
+                                Rating = reader.IsDBNull(5) ? 0 : reader.GetInt32(5),
+                                IsWorking = reader.IsDBNull(6) ? false : reader.GetBoolean(6)
+                            };
+
+                            employeesRecord.Add(employeeRecord);
+                        }
+                            return Json(new { success = true, data = employeesRecord });
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error: " + ex.Message);
+
+                return Json(new { success = false, message = "An error occurred while fetching employee data." });
+            }
+        }
 
         private string generateRandomPassword()
         {
