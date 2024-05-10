@@ -166,10 +166,11 @@
     <script>
         $(document).ready(function () {
             var addButtonAppend = false;
-
+            
             //DISPLAY SKILL
             getskillData();
             function getskillData() {
+                loading();
                 $.ajax({
                     url: '/Skills/GetSkills',
                     type: 'POST',
@@ -179,6 +180,7 @@
 
                     }
                 });
+                loading();
             }
             function displayskills(Data) {
                 var table = $('#skills').DataTable();
@@ -253,11 +255,13 @@
                 var data = {
                     skillname: skillName,
                 };
+                loading();
                 $.ajax({
                     type: 'POST',
                     url: '/Skills/AddSkill',
                     data: data,
                     success: function (response) {
+                        loading();
                         if (response.success) {
                             $('#addSkillModal').modal('hide');
                             getskillData();
@@ -271,6 +275,7 @@
                         }
                     },
                     error: function (xhr, status, error) {
+                        loading();
                         console.error(error);
                         showSnackbar('false', error);
 
@@ -302,11 +307,13 @@
             $('#saveEditSkillButton').on('click', function () {
                 var updatedSkillName = $('#editSkillName').val();
                 var skillId = $('#editSkillModal').data('skillId');
+                loading();
                 $.ajax({
                     type: 'POST',
                     url: '/Skills/UpdateSkill',
                     data: { skillId: skillId, updatedSkillName: updatedSkillName },
                     success: function (response) {
+                        loading();
                         if (response.success) {
                             $('#editSkillModal').modal('hide');
                             getskillData();
@@ -318,6 +325,7 @@
                         }
                     },
                     error: function (xhr, status, error) {
+                        loading();
                         console.error(error);
                         showSnackbar('false', 'An error occurred while updating the skill. Please try again later.');
 
@@ -356,11 +364,13 @@
                 if (confirmInputValue !== 'CONFIRM') {
                     return;
                 }
+                loading();
                 $.ajax({
                     type: 'POST',
                     url: '/Skills/DeleteSkill',
                     data: { skillId: skillIdToDelete },
                     success: function (response) {
+                        loading();
                         if (response.success) {
                             getskillData();
                             $('#deleteSkillModal').modal('hide');
@@ -372,6 +382,7 @@
                         }
                     },
                     error: function (xhr, status, error) {
+                        loading();
                         console.error(error);
                         showSnackbar('false', 'An error occurred while deleting the skill. Please try again later.');
 

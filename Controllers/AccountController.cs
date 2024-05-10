@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.Net;
 using System.Net.Mail;
+using Newtonsoft.Json;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -25,29 +26,108 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 HttpContext.Session.Clear();
                 return View();
             }
-
-
             [HttpPost]
-            public IActionResult Login(Login data)
+            public async Task<IActionResult> Login(Login data, string recaptchaResponse)
             {
-                using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.UserName}', '{data.Password}');", _connection))
+                // Validate reCAPTCHA
+                bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
+                if (!isRecaptchaValid)
+                {
+                    ModelState.AddModelError(string.Empty, "reCAPTCHA validation failed.");
+                    return Json(new { success = false, message = "reCAPTCHA validation failed." });
+                }
+
+                // Validate user credentials
+                int isCredentialsValid = ValidateUserCredentials(data);
+                if (isCredentialsValid == 1)
+                {
+                    return Json(new { success = true });
+                }
+                else if(isCredentialsValid == 2)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                    return Json(new { success = false, message = "Valid username or password but You are User, Cannot login" });
+                }
+                else
+                {
+                    return Json(new { success = false, });
+                }
+            }
+
+            private int ValidateUserCredentials(Login data)
+            {
+                using (var cmd = new NpgsqlCommand($"SELECT * FROM login('{data.UserName}', '{data.Password}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
+                            string uname = HttpContext.Session.GetString("userId")!;
+                            Console.WriteLine($"Username stored in session: {uname}");
                             HttpContext.Session.SetString("userName", reader.GetString(1));
-                            return Json(new { success = true });
+                            var emprole = reader.GetInt32(2);
+
+                            return emprole;
                         }
                         else
                         {
-                            return Json(new { success = false });
+                            return -1;
                         }
                     }
-
                 }
             }
+
+            private async Task<bool> ValidateRecaptcha(string recaptchaResponse)
+            {
+                try
+                {
+                    var secretKey = "6LeQuMopAAAAAAcqg__Yb-mFVrudx2dR5bj_js8e";
+                    var client = new HttpClient();
+                    var response = await client.GetAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={recaptchaResponse}");
+                    response.EnsureSuccessStatusCode();
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    var captchaResponse = JsonConvert.DeserializeObject<CaptchaResponse>(responseBody);
+
+                    return captchaResponse!.Success;
+                }
+                catch (Exception ex)
+                {
+                    // Log or handle any exceptions that occur during the reCAPTCHA validation
+                    // For simplicity, return false if an exception occurs
+                    Console.WriteLine($"An error occurred during reCAPTCHA validation: {ex.Message}");
+                    return false;
+                }
+            }
+
+            public class CaptchaResponse
+            {
+                [JsonProperty("success")]
+                public bool Success { get; set; }
+            }
+
+
+            //[HttpPost]
+            //public IActionResult Login(Login data)
+            //{
+            //    using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.UserName}', '{data.Password}');", _connection))
+            //    {
+            //        using (var reader = cmd.ExecuteReader())
+            //        {
+            //            if (reader.Read())
+            //            {
+            //                HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
+            //                HttpContext.Session.SetString("userName", reader.GetString(1));
+            //                return Json(new { success = true });
+            //            }
+            //            else
+            //            {
+            //                return Json(new { success = false });
+            //            }
+            //        }
+
+            //    }
+            //}
 
 
             [HttpPost]
@@ -161,11 +241,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                             using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
                             {
                                 smtpClient.Port = 587;
-                                smtpClient.Credentials = new NetworkCredential("connect.nextgentechnology@gmail.com", "tcllfvvxodcydksv");
+                                smtpClient.Credentials = new NetworkCredential("connect.prms@gmail.com", "rexuafculeynoxov");
                                 smtpClient.EnableSsl = true;
 
                                 MailMessage mailMessage = new MailMessage();
-                                mailMessage.From = new MailAddress("connect.nextgentechnology@gmail.com");
+                                mailMessage.From = new MailAddress("connect.prms@gmail.com");
                                 mailMessage.To.Add(employee.Email);
                                 mailMessage.Subject = "PRMS Account Credentials";
                                 mailMessage.IsBodyHtml = true;
@@ -209,11 +289,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
                 {
                     smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential("connect.nextgentechnology@gmail.com", "tcllfvvxodcydksv");
+                    smtpClient.Credentials = new NetworkCredential("connect.prms@gmail.com", "rexuafculeynoxov");
                     smtpClient.EnableSsl = true;
 
                     MailMessage mailMessage = new MailMessage();
-                    mailMessage.From = new MailAddress("connect.nextgentechnology@gmail.com");
+                    mailMessage.From = new MailAddress("connect.prms@gmail.com");
                     mailMessage.To.Add(employee.Email);
                     mailMessage.Subject = "PRMS Account Credentials";
                     mailMessage.IsBodyHtml = true;

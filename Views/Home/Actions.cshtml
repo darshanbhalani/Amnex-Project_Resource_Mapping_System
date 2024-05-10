@@ -57,9 +57,8 @@
         var addButtonAppend = false;
 
         $(document).ready(function () {
-
             $('#example').DataTable({
-                "order": [[1, "desc"]]
+                "order": []
             });
             $('#dt-search-0').css({ 'width': '30rem' });
             $('#dt-search-0').css({ 'margin': '0px' });
@@ -71,7 +70,6 @@
             $('#dt-search-0').parent().parent().parent().addClass('d-flex flex-row-reverse');
             $('#dt-length-0').parent().parent().removeClass('me-auto');
             $('#dt-search-0').parent().parent().removeClass('ms-auto');
-
         });
     </script>
 }

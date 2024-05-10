@@ -1,0 +1,28 @@
+﻿@model  Department
+
+@{
+    ViewData["Title"] = "deptProjects";
+}
+
+<style>
+    .btn-primary {
+        background-color: #4a4e69;
+        border-color: #4a4e69;
+    }
+</style>
+<p>Department ID: @ViewData["DepartmentId"]</p>
+
+<div class="nav-info  mt-3 mb-4">
+    <div class="nav-item">
+        <a asp-controller="Departments" asp-action="Departments">Home</a> >
+        <a id="departmentDetailsLink" href="#">Department Details</a> >
+        <a asp-controller="Departments" asp-action="deptProjects">Department Projects</a>
+
+    </div>
+</div>
+<div class="mb-5 mt-3">
+    <button id="detailsbtn" class="btn btn-primary">Details</button>
+    <button id="deptprojects" class="btn btn-primary active">Projects</button>
+    <button id="deptemployees" class="btn btn-primary">Employees</button>
+</div>
+<script src="~/js/deptProjects.js"></script>

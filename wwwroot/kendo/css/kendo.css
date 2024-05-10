@@ -1,0 +1,123 @@
+﻿
+.k-grid {
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+}
+
+    .k-grid tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .k-grid th {
+        /* background-color: var(--pink); */
+        background-color: var(--blue);
+        /* background-color: #4CAF50; */
+        color: white;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: center !important;
+    }
+
+.k-column-title {
+    display: inline-block;
+    text-align: center !important;
+    width: 100%;
+}
+
+.k-grid td {
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+    .k-grid td:first-child {
+        border-left: 1px solid #ddd;
+    }
+
+    .k-grid td:last-child {
+        border-right: 1px solid #ddd;
+    }
+
+.k-grid-toolbar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    padding-right: 17px;
+}
+
+    .k-grid-toolbar .k-button {
+        color: white;
+        width: 12% !important;
+        height: 40px;
+        background-color: var(--blue);
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        border-width: 1px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        display: inline-flex;
+        align-items: center;
+        vertical-align: middle;
+        -ms-flex-flow: row nowrap;
+        flex-flow: row nowrap;
+        position: relative;
+        overflow: hidden;
+        background-clip: padding-box;
+    }
+
+    .k-grid-toolbar .k-input {
+        width: 20% !important;
+        margin-left: auto !important;
+        padding-left: 10px;
+    }
+
+    .k-grid-toolbar .k-input-inner {
+        padding: 15px;
+        height: 45px !important;
+    }
+
+    .k-grid-toolbar .k-spacer {
+        display: none;
+    }
+
+.k-icon.k-i-sort-asc-sm,
+.k-icon.k-i-sort-desc-sm {
+    color: white;
+}
+
+.k-pager-numbers .k-link.k-state-selected {
+    color: white;
+    background-color: var(--blue);
+}
+
+.k-item.k-state-selected {
+    color: white;
+    background-color: var(--blue);
+}
+
+.k-menu:not(.k-context-menu) > .k-item {
+    color: var(--blue);
+}
+
+.k-column-menu .k-menu:not(.k-context-menu) .k-item.k-state-selected {
+    color: white;
+    background-color: var(--blue);
+}
+
+.k-checkbox.k-checked, .k-checkbox:checked {
+    color: white;
+    background-color: var(--blue);
+    border-color: var(--blue);
+}
+
+.k-button-solid-primary {
+    border-color: var(--blue);
+    color: white;
+    background-color: var(--blue);
+    /*background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .02));*/
+}
+
+/*    .k-button-solid-primary:hover {
+        background-color: var(--blue);
+        border-color: var(--blue);
+        color: white;
+    }
+*/

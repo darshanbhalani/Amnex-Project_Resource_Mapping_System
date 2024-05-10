@@ -1,0 +1,84 @@
+﻿@model Department
+<link href="~/css/GetDetails.css" rel="stylesheet" />
+<div class="nav-info  mt-3 mb-4">
+    <div class="nav-item">
+        <a asp-controller="Departments" asp-action="Departments">Home</a> >
+        <a asp-controller="Departments" asp-action="Get Details">Department Details</a>
+    </div>
+</div>
+<div class="mb-5 mt-3">
+    <button id="detailsbtn" class="btn btn-primary active">Details</button>
+    <button id="deptprojects" class="btn btn-primary">Projects</button>
+    <button id="deptemployees" class="btn btn-primary">Employees</button>
+</div>
+<div id="detailsdept">
+
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DepartmentId">Department ID</label>
+                <input type="text" class="form-control" asp-for="DepartmentId" id="deptid" disabled>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DepartmentName">Department Name </label>
+                <input type="text" class="form-control" asp-for="DepartmentName" id="deptname" disabled>
+            </div>
+        </div>
+    </div>
+    <p><h5><b>Projects</b></h5></p>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="totalprojects">Total Projects</label>
+                <input type="text" class="form-control" asp-for="totalprojects" id="deptid" disabled>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="completedprojects">Completed projects</label>
+                <input type="text" class="form-control" asp-for="completedprojects" id="deptname" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="runningprojects">Running Projects</label>
+                <input type="text" class="form-control" asp-for="runningprojects" id="deptid" disabled>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="pendingprojects">Pending Projects</label>
+                <input type="text" class="form-control" asp-for="pendingprojects" id="deptname" disabled>
+            </div>
+        </div>
+    </div>
+    <p><h5><b>Employees</b></h5></p>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="totalemployees">Total Employees</label>
+                <input type="text" class="form-control" asp-for="totalemployees" id="deptid" disabled>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="allocatedemployees">Allocated Employees</label>
+                <input type="text" class="form-control" asp-for="allocatedemployees" id="deptname" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="unallocatedemployees">Unallocated Employees</label>
+                <input type="text" class="form-control" asp-for="unallocatedemployees" id="deptid" disabled>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="~/js/GetDetails.js"></script>

@@ -393,7 +393,6 @@
 
                 $('#deleteButton').click(function () {
                     loading();
-                    
                     var confirmValue = $('#confirmInput').val().trim().toUpperCase();
                     if (confirmValue === "CONFIRM") {
                         var data = { EmployeeId: parseInt(employeeId) }
@@ -403,7 +402,7 @@
                             data: data,
                             success: function (result) {
                                 location.reload();
-                                showSnackbar("true", "Delete Employee successfuly. ");
+                                    showSnackbar("true", "Delete Employee successfuly. ");
                             },
                             error: function (errorMessage) {
                                 loading();
