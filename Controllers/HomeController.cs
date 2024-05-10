@@ -138,20 +138,20 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
             }
             
-            using (var command = new NpgsqlCommand($"SELECT * FROM getdepartmentemployeecounts();", _connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        departmentEmployeeLable.Add(reader.GetString(0));
-                        departmentEmployeeData.Add(reader.GetInt32(1));
-                    }
+            //using (var command = new NpgsqlCommand($"SELECT * FROM getdepartmentemployeecounts();", _connection))
+            //{
+            //    using (var reader = command.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            departmentEmployeeLable.Add(reader.GetString(0));
+            //            departmentEmployeeData.Add(reader.GetInt32(1));
+            //        }
 
-                    departmentEmployee.Data = departmentEmployeeData;
-                    departmentEmployee.Label = departmentEmployeeLable;
-                }
-            }
+            //        departmentEmployee.Data = departmentEmployeeData;
+            //        departmentEmployee.Label = departmentEmployeeLable;
+            //    }
+            //}
 
             using (var command = new NpgsqlCommand($"SELECT * FROM getLogCountsLast7Days();", _connection))
             {
@@ -173,42 +173,42 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
             }
 
-            using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentProjectStatus();", _connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        departmentLabel.Add(reader.GetString(1));
-                        runningProjectData.Add(reader.GetInt32(2));
-                        pendingProjectData.Add(reader.GetInt32(3));
-                        completedProjectData.Add(reader.GetInt32(4));
-                    }
-                    departmentPendingProjects.Label = departmentLabel;
-                    departmentPendingProjects.Data = pendingProjectData;
-                    departmentRunningProjects.Label = departmentLabel;
-                    departmentRunningProjects.Data = runningProjectData;
-                    departmentCompletedProjects.Label = departmentLabel;
-                    departmentCompletedProjects.Data = completedProjectData;
-                }
-            }
+            //using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentProjectStatus();", _connection))
+            //{
+            //    using (var reader = command.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            departmentLabel.Add(reader.GetString(1));
+            //            runningProjectData.Add(reader.GetInt32(2));
+            //            pendingProjectData.Add(reader.GetInt32(3));
+            //            completedProjectData.Add(reader.GetInt32(4));
+            //        }
+            //        departmentPendingProjects.Label = departmentLabel;
+            //        departmentPendingProjects.Data = pendingProjectData;
+            //        departmentRunningProjects.Label = departmentLabel;
+            //        departmentRunningProjects.Data = runningProjectData;
+            //        departmentCompletedProjects.Label = departmentLabel;
+            //        departmentCompletedProjects.Data = completedProjectData;
+            //    }
+            //}
 
-            using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentEmployeeStatus();", _connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        employeeDepartmentLable.Add(reader.GetString(1));
-                        allocatedEmployeeData.Add(reader.GetInt32(2));
-                        unAllocatedEmployeeData.Add(reader.GetInt32(3));
-                    }
-                    allocatedEmployees.Label = employeeDepartmentLable;
-                    allocatedEmployees.Data = allocatedEmployeeData;
-                    unAllocatedEmployees.Label = employeeDepartmentLable;
-                    unAllocatedEmployees.Data = unAllocatedEmployeeData;
-                }
-            }
+            //using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentEmployeeStatus();", _connection))
+            //{
+            //    using (var reader = command.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            employeeDepartmentLable.Add(reader.GetString(1));
+            //            allocatedEmployeeData.Add(reader.GetInt32(2));
+            //            unAllocatedEmployeeData.Add(reader.GetInt32(3));
+            //        }
+            //        allocatedEmployees.Label = employeeDepartmentLable;
+            //        allocatedEmployees.Data = allocatedEmployeeData;
+            //        unAllocatedEmployees.Label = employeeDepartmentLable;
+            //        unAllocatedEmployees.Data = unAllocatedEmployeeData;
+            //    }
+            //}
 
             DashboardModal dashboardGraphs = new DashboardModal()
             {

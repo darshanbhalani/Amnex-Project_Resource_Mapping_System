@@ -5,7 +5,6 @@ using Npgsql;
 using System.Net;
 using System.Net.Mail;
 using Newtonsoft.Json;
-using static Amnex_Project_Resource_Mapping_System.Controllers.Amnex_Project_Resource_Mapping_System.Controllers.AccountController;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -32,7 +31,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             [HttpPost]
             public async Task<IActionResult> Login(Login data, string recaptchaResponse)
             {
-                 //Validate reCAPTCHA
                 bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
                 if (!isRecaptchaValid)
                 {
@@ -40,15 +38,23 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     return Json(new { success = false, message = "reCAPTCHA validation failed." });
                 }
 
-                using (var cmd = new NpgsqlCommand($"SELECT * FROM validateusercredentials('{data.UserName}', '{data.Password}');", _connection))
+                using (var cmd = new NpgsqlCommand($"SELECT * FROM LOGIN('{data.UserName}', '{data.Password}');", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
-                            HttpContext.Session.SetString("userName", reader.GetString(1));
-                            return Json(new { success = true });
+                            if (reader.GetInt32(2) == 1)
+                            {
+                                HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
+                                HttpContext.Session.SetString("userName", reader.GetString(1));
+                                return Json(new { success = true });
+                            }
+                            else
+                            {
+                                return Json(new { success = false,message = "Only admins are allowed to login this portal." });
+                            }
+
                         }
                         else
                         {
@@ -58,7 +64,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     }
                 }
             }
-            
+
 
             private async Task<bool> ValidateRecaptcha(string recaptchaResponse)
             {
@@ -184,7 +190,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
 
             [HttpPost]
-            public async Task<IActionResult> ForgotPassword(string EmployeeUserName,string Email, string recaptchaResponse)
+            public async Task<IActionResult> ForgotPassword(string EmployeeUserName, string Email, string recaptchaResponse)
             {
                 bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
                 if (!isRecaptchaValid)
@@ -216,7 +222,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                         }
                         else
                         {
-                            return Json(new { success = false , message = "Invalid User Name or Email." });
+                            return Json(new { success = false, message = "Invalid User Name or Email." });
                         }
 
 
