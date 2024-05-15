@@ -17,7 +17,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         public IActionResult Dashboard()
         {
             Graph employees = new Graph();
-            List<string> employeesLable = new List<string>();
+            List<string> yearLable = new List<string>();
             List<int> employeesData = new List<int>();
 
             Graph projects = new Graph();
@@ -64,63 +64,40 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
             int currentYear = DateTime.Now.Year;
 
-            using (var command = new NpgsqlCommand($"SELECT * FROM countEmployeesByYear({currentYear - 4});", _connection))
+            using (var command = new NpgsqlCommand($"SELECT * FROM countentitiesbyyear({currentYear - 7});", _connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        employeesLable.Add(reader.GetInt32(0).ToString());
-                        employeesData.Add(reader.GetInt32(1));
+                        yearLable.Add(reader.GetInt32(0).ToString());
+                        projectsData.Add(reader.GetInt32(1));
+                        departmentsData.Add(reader.GetInt32(2));
+                        employeesData.Add(reader.GetInt32(3));
                     }
                     for (int i = 0; i < employeesData.Count; i++)
                     {
                         employeesSum += employeesData[i];
                         employeesData[i] = employeesSum;
                     }
-                    employees.Data = employeesData;
-                    employees.Label = employeesLable;
-                }
-
-            }
-
-            using (var command = new NpgsqlCommand($"SELECT * FROM countProjectsByYear({currentYear - 4});", _connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        projectsLable.Add(reader.GetInt32(0).ToString());
-                        projectsData.Add(reader.GetInt32(1));
-                    }
-
                     for (int i = 0; i < projectsData.Count; i++)
                     {
                         projectsSum += projectsData[i];
                         projectsData[i] = projectsSum;
-                    }
-                    projects.Data = projectsData;
-                    projects.Label = projectsLable;
-                }
-            }
-
-            using (var command = new NpgsqlCommand($"SELECT * FROM countDepartmentsByYear({currentYear - 4});", _connection))
-            {
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        departmentsLable.Add(reader.GetInt32(0).ToString());
-                        departmentsData.Add(reader.GetInt32(1));
                     }
                     for (int i = 0; i < departmentsData.Count; i++)
                     {
                         departmentsSum += departmentsData[i];
                         departmentsData[i] = departmentsSum;
                     }
+                    employees.Data = employeesData;
+                    employees.Label = yearLable;
+                    projects.Data = projectsData;
+                    projects.Label = yearLable;
                     departments.Data = departmentsData;
-                    departments.Label = departmentsLable;
+                    departments.Label = yearLable;
                 }
+
             }
 
             using (var command = new NpgsqlCommand($"SELECT * FROM getDepartmentProjectCounts();", _connection))
@@ -137,41 +114,41 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     departmentProject.Label = departmentProjecLable;
                 }
             }
-            
-            //using (var command = new NpgsqlCommand($"SELECT * FROM getdepartmentemployeecounts();", _connection))
-            //{
-            //    using (var reader = command.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            departmentEmployeeLable.Add(reader.GetString(0));
-            //            departmentEmployeeData.Add(reader.GetInt32(1));
-            //        }
 
-            //        departmentEmployee.Data = departmentEmployeeData;
-            //        departmentEmployee.Label = departmentEmployeeLable;
-            //    }
-            //}
-
-            using (var command = new NpgsqlCommand($"SELECT * FROM getLogCountsLast7Days();", _connection))
+            using (var command = new NpgsqlCommand($"SELECT * FROM getdepartmentemployeecounts();", _connection))
             {
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        date.Add(reader.GetDateTime(0).ToString().Split(" ")[0]);
-                        insert.Add(reader.GetInt32(1));
-                        update.Add(reader.GetInt32(2));
-                        delete.Add(reader.GetInt32(3));
+                        departmentEmployeeLable.Add(reader.GetString(0));
+                        departmentEmployeeData.Add(reader.GetInt32(1));
                     }
-                    inserts.Label = date;
-                    inserts.Data = insert;
-                    updates.Label = date;
-                    updates.Data = update;
-                    deletes.Label = date;
-                    deletes.Data = delete;
+
+                    departmentEmployee.Data = departmentEmployeeData;
+                    departmentEmployee.Label = departmentEmployeeLable;
                 }
             }
+
+            //using (var command = new NpgsqlCommand($"SELECT * FROM getLogCountsLast7Days();", _connection))
+            //{
+            //    using (var reader = command.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            date.Add(reader.GetDateTime(0).ToString().Split(" ")[0]);
+            //            insert.Add(reader.GetInt32(1));
+            //            update.Add(reader.GetInt32(2));
+            //            delete.Add(reader.GetInt32(3));
+            //        }
+            //        inserts.Label = date;
+            //        inserts.Data = insert;
+            //        updates.Label = date;
+            //        updates.Data = update;
+            //        deletes.Label = date;
+            //        deletes.Data = delete;
+            //    }
+            //}
 
             //using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentProjectStatus();", _connection))
             //{
