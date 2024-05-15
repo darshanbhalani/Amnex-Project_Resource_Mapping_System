@@ -35,7 +35,7 @@
             text-align: center;
         }
 
-        #logsChart, #employeeStatusChart, #projectStatusChart, #logsChart {
+        #combineChart, #logsChart, #employeeStatusChart, #projectStatusChart, #logsChart {
             max-height: 320px !important;
         }
 
@@ -90,13 +90,13 @@
 <div class="container-fluid pt-5">
     <h6 style="text-align:center;">Explore insightful charts to visualize resource allocation and optimize project planning.</h6>
     <div class="row g-4 pt-1">
-        <div class="col-sm-12 col-xl-6">
+        <div class="col-sm-12 col-xl-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Project Resource Mapping System</h6>
                 <canvas id="combineChart"></canvas>
             </div>
         </div>
-        <div class="col-sm-12 col-xl-6">
+        @* <div class="col-sm-12 col-xl-6">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Projects</h6>
                 <canvas id="projectsChart"></canvas>
@@ -113,7 +113,7 @@
                 <h6 class="mb-4">Departments</h6>
                 <canvas id="departmentsChart"></canvas>
             </div>
-        </div>
+        </div> *@
         <div class="col-sm-12 col-xl-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Projects Status</h6>
@@ -345,9 +345,9 @@
                 departmentEmployee.labels[index] = label + " (" + percentage + ")";
             });
 
-            var employeesCtx = document.getElementById("employeesChart").getContext("2d");
-            var projectsCtx = document.getElementById("projectsChart").getContext("2d");
-            var departmentsCtx = document.getElementById("departmentsChart").getContext("2d");
+            // var employeesCtx = document.getElementById("employeesChart").getContext("2d");
+            // var projectsCtx = document.getElementById("projectsChart").getContext("2d");
+            // var departmentsCtx = document.getElementById("departmentsChart").getContext("2d");
             var combineCtx = document.getElementById("combineChart").getContext("2d");
             var logsCtx = document.getElementById("logsChart").getContext("2d");
             var departmentProjectCtx = document.getElementById("departmentProjectChart").getContext("2d");
@@ -356,18 +356,18 @@
             var employeeStatusCtx = document.getElementById("employeeStatusChart").getContext("2d");
 
             // Create different types of charts
-            var employeesChart = new Chart(employeesCtx, {
-                type: "line",
-                data: employees
-            });
-            var projectsChart = new Chart(projectsCtx, {
-                type: "line",
-                data: projects
-            });
-            var departmentsChart = new Chart(departmentsCtx, {
-                type: "line",
-                data: departments
-            });
+            // var employeesChart = new Chart(employeesCtx, {
+            //     type: "line",
+            //     data: employees
+            // });
+            // var projectsChart = new Chart(projectsCtx, {
+            //     type: "line",
+            //     data: projects
+            // });
+            // var departmentsChart = new Chart(departmentsCtx, {
+            //     type: "line",
+            //     data: departments
+            // });
             var combineChart = new Chart(combineCtx, {
                 type: "line",
                 data: combine

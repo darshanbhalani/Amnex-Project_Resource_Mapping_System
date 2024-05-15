@@ -150,25 +150,25 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             //    }
             //}
 
-            //using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentProjectStatus();", _connection))
-            //{
-            //    using (var reader = command.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            departmentLabel.Add(reader.GetString(1));
-            //            runningProjectData.Add(reader.GetInt32(2));
-            //            pendingProjectData.Add(reader.GetInt32(3));
-            //            completedProjectData.Add(reader.GetInt32(4));
-            //        }
-            //        departmentPendingProjects.Label = departmentLabel;
-            //        departmentPendingProjects.Data = pendingProjectData;
-            //        departmentRunningProjects.Label = departmentLabel;
-            //        departmentRunningProjects.Data = runningProjectData;
-            //        departmentCompletedProjects.Label = departmentLabel;
-            //        departmentCompletedProjects.Data = completedProjectData;
-            //    }
-            //}
+            using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentProjectStatus();", _connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        departmentLabel.Add(reader.GetString(0));
+                        pendingProjectData.Add(reader.GetInt32(1));
+                        runningProjectData.Add(reader.GetInt32(2));
+                        completedProjectData.Add(reader.GetInt32(3));
+                    }
+                    departmentPendingProjects.Label = departmentLabel;
+                    departmentPendingProjects.Data = pendingProjectData;
+                    departmentRunningProjects.Label = departmentLabel;
+                    departmentRunningProjects.Data = runningProjectData;
+                    departmentCompletedProjects.Label = departmentLabel;
+                    departmentCompletedProjects.Data = completedProjectData;
+                }
+            }
 
             //using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentEmployeeStatus();", _connection))
             //{
