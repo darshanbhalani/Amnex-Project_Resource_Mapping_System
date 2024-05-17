@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Project Details</title>
+    <style>
+        /* CSS for the progress bar */
+        .progress-bar {
+            width: 100%;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .progress {
+            width: 50%; 
+            height: 20px;
+            background-color: #4caf50;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress"></div>
+    </div>
+</body>
+</html>
+<script>
+    var projectDetails = {
+            startDate: '@Model.StartDate.ToShortDateString()',
+            endDate: '@Model.EndDate.ToShortDateString()'
+        };
+</script>
+
+<script src="~/js/UserProjectDetails.js"></script>
+

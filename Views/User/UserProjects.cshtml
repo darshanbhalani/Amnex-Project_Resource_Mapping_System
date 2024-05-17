@@ -1,0 +1,79 @@
+﻿@*@model List<Amnex_Project_Resource_Mapping_System.Models.Project>*@
+@model Project
+@{
+    ViewData["Title"] = "UserProjects";
+}
+<style>
+        .progress-container {
+            position: relative;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #007bff;
+            text-align: center;
+            color: white;
+            width: 0%; /* Initial width 0% for animation */
+            transition: width 1s ease; /* Add transition for smooth animation */
+        }
+
+        .progress-container {
+    position: relative;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #007bff;
+    text-align: center;
+    color: white;
+    line-height: 20px; /* Vertically center the text */
+    white-space: nowrap;
+    overflow: hidden;
+    animation: progressAnimation 2s ease-in-out forwards;
+}
+
+    @@keyframes progressAnimation {
+        from {
+            width: 0;
+        }
+
+        to {
+            width: 100%;
+        }
+    }
+
+
+</style>
+<link href="~/css/kendo.css" rel="stylesheet" />
+<div class="mt-4 mb-3">
+    <h4>Projects</h4>
+
+</div>
+<div id="workingProjectsGridContainer" class="kendo-grid-container mb-5">
+    <div id="workingProjectsGrid"></div>
+</div>
+
+<div id="notWorkingProjectsGridContainer" class="kendo-grid-container">
+    <div id="notWorkingProjectsGrid"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+
+<script>
+    var workingProjects = @Html.Raw(Json.Serialize(ViewBag.WorkingProjects));
+    var notWorkingProjects = @Html.Raw(Json.Serialize(ViewBag.NotWorkingProjects));
+    console.log(workingProjects);
+    console.log(notWorkingProjects);
+</script>
+
+<script src="~/js/UserEmpProject.js"></script>
+<script src="~/js/UserProjectDetails.js"></script>
