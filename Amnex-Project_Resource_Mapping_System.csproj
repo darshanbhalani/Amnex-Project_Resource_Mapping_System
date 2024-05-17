@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\UserEmpProject.js~RFb6c27f.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.41.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />

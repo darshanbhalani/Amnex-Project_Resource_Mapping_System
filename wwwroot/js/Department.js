@@ -8,18 +8,17 @@
 
         columns: [
             {
-                field: "DepartmentName", title: "Name", width: 60, editable: false,
-                template: '<a href="javascript:void(0)" class="department-link">#= DepartmentName #</a>'
+                field: "DepartmentName", title: "Name", width: 500, editable: false
+            //    template: '<a href="javascript:void(0)" class="department-link">#= DepartmentName #</a>'
             },
             {
                 command: [
-                    {
-                        name: "edit", text: "", click: openEditModal
-                    },
-                    {
-                        name: "delete", text: "", iconClass: "k-icon k-i-delete", click: openDeleteModal
-                    }
-                ], title: "Actions", width: "10px"
+                    { name: "View", text: "", iconClass: "k-icon k-i-info-circle", click: openGetDetails },
+                    { name: "edit", text: "", iconClass: "k-icon k-i-edit", click: openEditModal },
+                    { name: "delete", text: "", iconClass: "k-icon k-i-delete", click: openDeleteModal }
+                ],
+                title: "Action",
+                width: "80px"
             }
         ],
         editable: false,
@@ -33,38 +32,22 @@
             "search",
             "pdf",
         ],
-        dataBound: function () {
-            $('.department-link').click(function (e) {
-                e.preventDefault();
-                console.log("HELO");
-                var grid = $('#grid').data("kendoGrid");
-                var dataItem = grid.dataItem($(this).closest("tr"));
-                console.log(dataItem);
-                var departmentName = $(this).text();
-                console.log(departmentName);
-                //$('#deptid').val(dataItem.DepartmentId);
-                //$('#deptname').val(departmentName);
-                var data = {
-                    DepartmentId: dataItem.DepartmentId
-                }
-                window.location.href = "/Departments/GetDetails?departmentId=" + dataItem.DepartmentId;
-
-
-            });
-        }
     });
-
-
-
-
-
-
     function openEditModal(e) {
         e.preventDefault();
-        $('#editDepartmentModal').modal('show');
+        $('#addsaveChangesBtn').addClass('k-hidden');
+        $('#EditChangesBtn').removeClass('k-hidden');
+        $('#deleteBtn').addClass('k-hidden');
+
+        $('#departmentlabel').removeClass('k-hidden');
+        $('#deletedeptlabel').addClass('k-hidden');
+        $('#departmentModalLabel').text('Edit Department');
+        //$('#department').removeAttr('placeholder');
+
+        $('#departmentModal').modal('show');
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        $('#editDepartment').val(dataItem.DepartmentName);
-        $("#editDepartment").on("input", function () {
+        $('#department').val(dataItem.DepartmentName);
+        $("#department").on("input", function () {
 
             var newDepartment = $(this).val();
             if (newDepartment !== dataItem.DepartmentName) {
@@ -76,7 +59,7 @@
             }
         });
         $(document).on("click", "#EditChangesBtn", function () {
-            var editeddepartmentName = $("#editDepartment").val();
+            var editeddepartmentName = $("#department").val();
             var data = {
                 DepartmentId: dataItem.DepartmentId,
                 DepartmentName: editeddepartmentName,
@@ -86,8 +69,8 @@
                 url: "/Departments/Editdepartment",
                 data: data,
                 success: function (result) {
-                    $("#editDepartment").val('');
-                    $('#editDepartmentModal').modal('hide');
+                    $("#department").val('');
+                    $('#departmentModal').modal('hide');
                     location.reload();
                 },
                 error: function (xhr, status, error) {
@@ -97,16 +80,26 @@
             });
         });
     }
-
     function openDeleteModal(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        console.log("In delete fun" + dataItem);
         $("#departmentNamePlaceholder").text(dataItem.DepartmentName);
-        $("#deleteDepartmentconfirm").val('');
-        $("#deleteDepartmentModal").modal('show');
+        $('#departmentModalLabel').text('Delete Department');
 
-        $("#deleteDepartmentconfirm").on("input", function () {
+        $("#deleteDepartmentconfirm").val('');
+
+        $('#departmentlabel').addClass('k-hidden');
+        $('#deletedeptlabel').removeClass('k-hidden');
+
+        $('#EditChangesBtn').addClass('k-hidden');
+        $('#addsaveChangesBtn').addClass('k-hidden');
+        $('#deleteBtn').removeClass('k-hidden');
+        $('#department').val('');
+        $('#department').attr('placeholder', 'Type Confirm');
+
+        $("#departmentModal").modal('show');
+
+        $("#department").on("input", function () {
             var newDepartment = $(this).val();
 
             if (newDepartment === 'CONFIRM') {
@@ -145,35 +138,60 @@
         });
     }
     $('#AddDepartment').click(function () {
+        $('#EditChangesBtn').addClass('k-hidden');
+        $('#addsaveChangesBtn').removeClass('k-hidden');
+        $('#deleteBtn').addClass('k-hidden');
+
+        $('#departmentlabel').removeClass('k-hidden');
+        $('#deletedeptlabel').addClass('k-hidden');
+        $('#departmentModalLabel').text('Add Department');
+        $('#department').removeAttr('placeholder');
+
+        $('#department').attr('placeholder', 'Enter Department');
+        $('#department').val('');
+
+        
         $('#departmentModal').modal('show');
-    });
-    $('#addsaveChangesBtn').click(function () {
-        var departmentName = $("#department").val();
-        var data = {
-            DepartmentName: departmentName,
-        };
-        $.ajax({
-            type: "POST",
-            url: "/Departments/AddDepartment",
-            data: data,
-            success: function (result) {
-                if (result.success) {
+        $('#addsaveChangesBtn').click(function () {
+            var departmentName = $("#department").val();
+
+            var data = {
+                DepartmentName: departmentName,
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Departments/AddDepartment",
+                data: data,
+                success: function (result) {
+                    if (result.success) {
+                        $("#department").val('');
+                        $('#departmentModal').modal('hide');
+                        location.reload();
+                    }
+                    else {
+                        $('#departmentModal').modal('hide');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
                     $("#department").val('');
                     $('#departmentModal').modal('hide');
-                    location.reload();
-                }
-                else {
-                    $('#departmentModal').modal('hide');
-                }
-            },
-            error: function (xhr, status, error) {
-                // Handle error
-                $("#department").val('');
-                $('#departmentModal').modal('hide');
 
 
-            }
+                }
+            });
         });
     });
-
+   
+    function openGetDetails(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        console.log(dataItem);
+        var departmentName = dataItem.DepartmentId;
+        console.log(departmentName);
+        var data = {
+            DepartmentId: dataItem.DepartmentId
+        }
+        window.location.href = "/Departments/GetDetails?departmentId=" + dataItem.DepartmentId;
+    }
 });

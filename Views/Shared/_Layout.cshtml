@@ -1,4 +1,8 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{ 
+    var httpcontext = HttpContextAccessor.HttpContext;
+    var loginrole = httpcontext.Session.GetString("Loginrole");
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,13 +73,23 @@
                     </h3>
                 </a>
                 <div class="navbar-nav w-100 ">
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Dashboard" id="Dashboard"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Projects" id="Projects"><i class="fa fa-th-large me-2"></i>Projects</a>
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Employees" id="Employees"><i class="fa fa-users me-2"></i>Employees</a>
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="ProjectEmployeeMapping" id="ProjectEmployeeMapping"><i class="fa fa-american-sign-language-interpreting me-2"></i>Mapping</a>
-                    <a class="nav-item nav-link" asp-controller="Departments" asp-action="Departments" id="Departments"><i class="fa fa-braille me-2"></i>Departments</a>
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Skills" id="Skills"><i class="fa fa-bolt me-2"></i>Skills</a>
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Actions" id="Actions"><i class="fa fa-chart-bar me-2"></i>Actions</a>
+                    @if (Convert.ToInt32(loginrole) == 1)
+                    {
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="Dashboard" id="Dashboard"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="Projects" id="Projects"><i class="fa fa-th-large me-2"></i>Projects</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="Employees" id="Employees"><i class="fa fa-users me-2"></i>Employees</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="ProjectEmployeeMapping" id="ProjectEmployeeMapping"><i class="fa fa-american-sign-language-interpreting me-2"></i>Mapping</a>
+                        <a class="nav-item nav-link" asp-controller="Departments" asp-action="Departments" id="Departments"><i class="fa fa-braille me-2"></i>Departments</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="Skills" id="Skills"><i class="fa fa-bolt me-2"></i>Skills</a>
+                        <a class="nav-item nav-link" asp-controller="Home" asp-action="Actions" id="Actions"><i class="fa fa-chart-bar me-2"></i>Actions</a>
+                    }
+                    else
+                    {
+                        <a class="nav-item nav-link" asp-controller="User" asp-action="UserDashboard" id="UserDashboard"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                        <a class="nav-item nav-link" asp-controller="User" asp-action="UserProjects" id="UserProjects"><i class="fa fa-th-large me-2"></i>Projects</a>
+                        <a class="nav-item nav-link" asp-controller="User" asp-action="UserAnalysis" id="UserAnalysis"><i class="fa fa-chart-bar me-2"></i>Analysis</a>
+                    };
+
                 </div>
             </nav>
         </div>

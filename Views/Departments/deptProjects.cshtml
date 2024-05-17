@@ -1,23 +1,16 @@
-﻿@model  Department
+﻿@*@model Department*@
+@model List<Amnex_Project_Resource_Mapping_System.Models.Project>
 
 @{
     ViewData["Title"] = "deptProjects";
 }
-
-<style>
-    .btn-primary {
-        background-color: #4a4e69;
-        border-color: #4a4e69;
-    }
-</style>
-<p>Department ID: @ViewData["DepartmentId"]</p>
+<link href="~/css/kendo.css" rel="stylesheet" />
 
 <div class="nav-info  mt-3 mb-4">
     <div class="nav-item">
-        <a asp-controller="Departments" asp-action="Departments">Home</a> >
-        <a id="departmentDetailsLink" href="#">Department Details</a> >
-        <a asp-controller="Departments" asp-action="deptProjects">Department Projects</a>
-
+        <a asp-controller="Departments" asp-action="Departments">Departments</a> >
+        <a id="departmentDetailsLink" href="#">Details</a> >
+        <a>Projects</a>
     </div>
 </div>
 <div class="mb-5 mt-3">
@@ -25,4 +18,14 @@
     <button id="deptprojects" class="btn btn-primary active">Projects</button>
     <button id="deptemployees" class="btn btn-primary">Employees</button>
 </div>
+
+<div id="deptprojectgrid">
+
+</div>
+<script>
+    console.log("aaaaa");
+    var deptid = @ViewData["DepartmentId"];
+    console.log("In PRojects" + deptid);
+    var dataSource = @Html.Raw(Json.Serialize(Model));
+</script>
 <script src="~/js/deptProjects.js"></script>

@@ -103,7 +103,6 @@ namespace Amnex_Project_Resource_Mapping_System
                     }
 
                 }
-
                 context.Response.Redirect("/Account/Login");
             });
 

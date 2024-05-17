@@ -5,8 +5,8 @@ public class Department
     public int DepartmentId { get; set; }
     public string DepartmentName { get; set; }
     public DateTime CreateTime { get; set; }
-    public string CreatedBy { get; set; }
-    public string ModifyBy { get; set; }
+    public int CreatedBy { get; set; }
+    public int ModifyBy { get; set; }
     public DateTime ModifyTime { get; set; }
     public Boolean IsDeleted { get; set; }
     public int totalprojects { get; set; }

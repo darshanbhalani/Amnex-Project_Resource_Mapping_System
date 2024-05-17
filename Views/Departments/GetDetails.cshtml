@@ -2,8 +2,8 @@
 <link href="~/css/GetDetails.css" rel="stylesheet" />
 <div class="nav-info  mt-3 mb-4">
     <div class="nav-item">
-        <a asp-controller="Departments" asp-action="Departments">Home</a> >
-        <a asp-controller="Departments" asp-action="Get Details">Department Details</a>
+        <a asp-controller="Departments" asp-action="Departments">Departments</a> >
+        <a>Details</a>
     </div>
 </div>
 <div class="mb-5 mt-3">
@@ -16,14 +16,14 @@
     <div class="row mb-2">
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="DepartmentId">Department ID</label>
-                <input type="text" class="form-control" asp-for="DepartmentId" id="deptid" disabled>
+                <label asp-for="DepartmentName">Department Name </label>
+                <input type="text" class="form-control" asp-for="DepartmentName" id="deptname" disabled>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="form-group">
-                <label asp-for="DepartmentName">Department Name </label>
-                <input type="text" class="form-control" asp-for="DepartmentName" id="deptname" disabled>
+            <div class="form-group" style="display: none;">
+                <label asp-for="DepartmentId">Department ID</label>
+                <input type="text" class="form-control" asp-for="DepartmentId" id="deptid" disabled>
             </div>
         </div>
     </div>
@@ -81,4 +81,11 @@
     </div>
 
 </div>
+
+<div>
+    <button class="btn btn-success" id="editbtn"> Edit </button>
+    <button class="btn btn-danger" id="deletebtn"> Delete </button>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script src="~/js/GetDetails.js"></script>

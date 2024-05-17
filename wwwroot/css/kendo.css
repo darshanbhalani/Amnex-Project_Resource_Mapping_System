@@ -65,11 +65,9 @@ type=submit]:not(:disabled), button:not(:disabled) {
 .k-grid-header .k-i-sort-asc-sm, .k-grid-header .k-i-sort-desc-sm, .k-grid-header .k-sort-order {
     color: #9FA8E1 !important; 
 }
-#backbtn, #deptprojects, #deptemployees {
-    background-color: #4a4e69 !important;
+#backbtn, #deptprojects, #deptemployees, #detailsbtn {
+    background-color: #4a4e69;
 }
-
-
 .btn-primary.active {
-    background-color: #ff0000 !important;
+    background-color: #009CFF !important;
 }

@@ -6,7 +6,7 @@
 <link href="~/css/kendo.css" rel="stylesheet"/>
 <div class="nav-info mt-3 mb-4">
     <a class="nav-item" asp-controller="Departments" asp-action="Departments">
-        Home
+        Departments
     </a>
 </div>
 <div class="col-md-12">
@@ -25,40 +25,23 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        <label for="department">Department</label>
+                        <label for="department" id="departmentlabel">Department</label>
+                        <label for="deleteDepartment" id="deletedeptlabel" class="k-hidden">Are you sure you want to delete <b><span id="departmentNamePlaceholder"></span>?</b></label>
+
                         <input type="text" class="form-control" id="department" placeholder="Enter department">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="addsaveChangesBtn">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-@* edit-modal *@
-<div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editDepartmentModalLabel">Edit Department</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn btn-secondary" id="EditChangesBtn" disabled>Save changes</button>
+                <button type="button" class="btn btn-secondary" id="deleteBtn" disabled>DELETE</button>
 
             </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="editDepartment">Department</label>
-                        <input type="text" class="form-control" id="editDepartment" placeholder="Enter department">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="EditChangesBtn" disabled>Save changes</button>
-            </div>
         </div>
     </div>
 </div>
+
 @*delete modal*@
 <div class="modal fade" id="deleteDepartmentModal" tabindex="-1" aria-labelledby="deleteDepartmentModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered">

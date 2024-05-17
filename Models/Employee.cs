@@ -3,8 +3,12 @@
 public partial class Employee
 {
     public int EmployeeId { get; set; }
+    public string EmployeeAipl { get; set; }
     public string EmployeeName { get; set; }
+    public string EmployeeDesignation { get; set; }
     public string EmployeeUserName { get; set; }
+    public string? EmployeeSkills { get; set; }
+
     public string Email { get; set; }
     public int DepartmentId { get; set; }
     public string DepartmentName { get; set; }
@@ -24,4 +28,5 @@ public partial class Employee
     public DateTime ModifyTime { get; set; }
     public bool IsDeleted { get; set; }
     public string Password { get; set; }
+
 }

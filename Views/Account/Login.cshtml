@@ -295,8 +295,15 @@
                 success: function (response) {
                     loading();
                     if (response.success) {
+                        console.log(response.isCredentialsValid);
                         // Redirect to dashboard
-                        window.location.href = '/Departments/Departments';
+                        if (response.isCredentialsValid == 1) {
+                            window.location.href = '/Departments/Departments';
+                        }
+                        else {
+                            window.location.href = '/User/UserDashboard';
+                        }
+
                     } else {
                         $('#Errormsg').text(response.message);
                         // $('#Username').val('')

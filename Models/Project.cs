@@ -4,7 +4,7 @@ namespace Amnex_Project_Resource_Mapping_System.Models;
 
 public partial class Project
 {
-    public int ProjectId { get; set; }
+    public long? ProjectId { get; set; }
     public string ProjectName { get; set; }
     public string Status { get; set; }
     public Timestamp ModifyTime { get; set; }
