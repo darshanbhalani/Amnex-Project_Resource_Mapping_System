@@ -170,22 +170,22 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
             }
 
-            //using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentEmployeeStatus();", _connection))
-            //{
-            //    using (var reader = command.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            employeeDepartmentLable.Add(reader.GetString(1));
-            //            allocatedEmployeeData.Add(reader.GetInt32(2));
-            //            unAllocatedEmployeeData.Add(reader.GetInt32(3));
-            //        }
-            //        allocatedEmployees.Label = employeeDepartmentLable;
-            //        allocatedEmployees.Data = allocatedEmployeeData;
-            //        unAllocatedEmployees.Label = employeeDepartmentLable;
-            //        unAllocatedEmployees.Data = unAllocatedEmployeeData;
-            //    }
-            //}
+            using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentEmployeeStatus();", _connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        employeeDepartmentLable.Add(reader.GetString(0));
+                        allocatedEmployeeData.Add(reader.GetInt32(1));
+                        unAllocatedEmployeeData.Add(reader.GetInt32(2));
+                    }
+                    allocatedEmployees.Label = employeeDepartmentLable;
+                    allocatedEmployees.Data = allocatedEmployeeData;
+                    unAllocatedEmployees.Label = employeeDepartmentLable;
+                    unAllocatedEmployees.Data = unAllocatedEmployeeData;
+                }
+            }
 
             DashboardModal dashboardGraphs = new DashboardModal()
             {

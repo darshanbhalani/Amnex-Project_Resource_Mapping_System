@@ -23,6 +23,9 @@
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
     <link href="~/custom-css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/custom-css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/kendo/css/kendo.css" />
+    <link href="~/kendo/css/kendo.default-v2.min.css" rel="stylesheet" />
+    
     @await RenderSectionAsync("Style", required: false)
 
 
@@ -66,7 +69,7 @@
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="Employees" id="Employees"><i class="fa fa-users me-2"></i>Employees</a>
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="ProjectEmployeeMapping" id="ProjectEmployeeMapping"><i class="fa fa-american-sign-language-interpreting me-2"></i>Mapping</a>
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="Departments" id="Departments"><i class="fa fa-braille me-2"></i>Departments</a>
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Skills" id="Skills"><i class="fa fa-bolt me-2"></i>Skills</a>
+                    <a class="nav-item nav-link" asp-controller="Skills" asp-action="Skills" id="Skills"><i class="fa fa-bolt me-2"></i>Skills</a>
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="Actions" id="Actions"><i class="fa fa-chart-bar me-2"></i>Actions</a>
                 </div>
             </nav>
@@ -118,6 +121,10 @@
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/kendo/js/jszip.min.js"></script>
+    <script src="~/kendo/js/kendo.all.min.js"></script>
+    <script src="~/kendo/js/kendo.aspnetmvc.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 
 

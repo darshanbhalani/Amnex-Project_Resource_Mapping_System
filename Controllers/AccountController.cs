@@ -5,6 +5,8 @@ using Npgsql;
 using System.Net;
 using System.Net.Mail;
 using Newtonsoft.Json;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -192,42 +194,86 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             [HttpPost]
             public async Task<IActionResult> ForgotPassword(string EmployeeUserName, string Email, string recaptchaResponse)
             {
+                bool flag = false;
                 bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
                 if (!isRecaptchaValid)
                 {
                     return Json(new { success = false, message = "reCAPTCHA validation failed." });
                 }
-                using (var cmd = new NpgsqlCommand($"select * from GetPassword('{EmployeeUserName}','{Email}');", _connection))
+                using (var cmd = new NpgsqlCommand($"select * from validate('{EmployeeUserName}','{Email}');",_connection))
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    using(var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            using (SmtpClient smtpClient = new SmtpClient(_configuration["SMTPConfiguration:Server"]))
-                            {
-                                smtpClient.Port = Convert.ToInt32(_configuration["SMTPConfiguration:Port"]);
-                                smtpClient.Credentials = new NetworkCredential(_configuration["SMTPConfiguration:HostName"], _configuration["SMTPConfiguration:Password"]);
-                                smtpClient.EnableSsl = true;
-                                MailMessage mailMessage = new MailMessage();
-                                mailMessage.From = new MailAddress(_configuration["SMTPConfiguration:HostName"]!);
-                                mailMessage.To.Add(Email);
-                                mailMessage.Subject = "PRMS Account Credentials";
-                                mailMessage.IsBodyHtml = true;
-                                mailMessage.Body = $"<h3>Hello {reader.GetString(1)},</h3></br><p>Your PRMS UserName is \"<b>{EmployeeUserName}</b>\" and Password is \"<b>{reader.GetString(0)}</b>\".";
-
-                                smtpClient.Send(mailMessage);
-
-                            }
-                            return Json(new { success = true });
+                            flag = reader.GetBoolean(0);
                         }
                         else
                         {
                             return Json(new { success = false, message = "Invalid User Name or Email." });
                         }
-
-
+                        
                     }
                 }
+
+                if (flag)
+                {
+                    string resetToken = Guid.NewGuid().ToString();
+                    SaveResetToken(Email, resetToken);
+                    string resetPasswordLink = Url.Action("ResetPassword", "Home", new { email = Email!, token = resetToken }, protocol: HttpContext.Request.Scheme)!;
+
+                    using (SmtpClient smtpClient = new SmtpClient(_configuration["SMTPConfiguration:Server"]))
+                    {
+                        smtpClient.Port = Convert.ToInt32(_configuration["SMTPConfiguration:Port"]);
+                        smtpClient.Credentials = new NetworkCredential(_configuration["SMTPConfiguration:HostName"], _configuration["SMTPConfiguration:Password"]);
+                        smtpClient.EnableSsl = true;
+                        MailMessage mailMessage = new MailMessage();
+                        mailMessage.From = new MailAddress(_configuration["SMTPConfiguration:HostName"]!);
+                        mailMessage.To.Add(Email);
+                        mailMessage.Subject = "PRMS Account Credentials";
+                        mailMessage.IsBodyHtml = true;
+                        mailMessage.Body = $"<a href='{resetPasswordLink}'>{resetPasswordLink}</a>";
+
+                        smtpClient.Send(mailMessage);
+
+                        return Json(new { success = true, message = "Reset password link sended." });
+                    }
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Invalid User Name or Email." });
+                }
+                //using (var cmd = new NpgsqlCommand($"select * from GetPassword('{EmployeeUserName}','{Email}');", _connection))
+                //{
+                //    using (var reader = cmd.ExecuteReader())
+                //    {
+                //        if (reader.Read())
+                //        {
+                //            using (SmtpClient smtpClient = new SmtpClient(_configuration["SMTPConfiguration:Server"]))
+                //            {
+                //                smtpClient.Port = Convert.ToInt32(_configuration["SMTPConfiguration:Port"]);
+                //                smtpClient.Credentials = new NetworkCredential(_configuration["SMTPConfiguration:HostName"], _configuration["SMTPConfiguration:Password"]);
+                //                smtpClient.EnableSsl = true;
+                //                MailMessage mailMessage = new MailMessage();
+                //                mailMessage.From = new MailAddress(_configuration["SMTPConfiguration:HostName"]!);
+                //                mailMessage.To.Add(Email);
+                //                mailMessage.Subject = "PRMS Account Credentials";
+                //                mailMessage.IsBodyHtml = true;
+                //                mailMessage.Body = $"<h3>Hello {reader.GetString(1)},</h3></br><p>Your PRMS UserName is \"<b>{EmployeeUserName}</b>\" and Password is \"<b>{reader.GetString(0)}</b>\".";
+
+                //                smtpClient.Send(mailMessage);
+
+                //            }
+                //            return Json(new { success = true });
+                //        }
+                //        else
+                //        {
+                //            return Json(new { success = false, message = "Invalid User Name or Email." });
+                //        }
+
+
+                //    }
+                //}
             }
 
 
@@ -266,6 +312,31 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
                 return true;
             }
+
+
+            private void SaveResetToken(string email, string token)
+            {
+                try
+                {
+
+                    using (var cmd = new NpgsqlCommand("select saveresettoken(@Email, @Token);", _connection))
+                    {
+                        cmd.Parameters.AddWithValue("Email", email);
+                        cmd.Parameters.AddWithValue("Token", token);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (NpgsqlException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                {
+
+                }
+                
+            }
+
+
 
         }
     }

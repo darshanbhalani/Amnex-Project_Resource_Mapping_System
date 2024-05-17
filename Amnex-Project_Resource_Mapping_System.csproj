@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\assets\videos\" />
+    <Folder Include="wwwroot\custom-scripts\Home\" />
   </ItemGroup>
 
 </Project>
