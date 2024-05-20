@@ -1,46 +1,15 @@
-﻿@model DashboardGraphs;
+﻿@model DashboardModal;
 
 @{
     ViewData["Title"] = "Dashboard";
 }
 
-<head>
-    <style>
-        .box {
-            min-height: 140px;
-            height: 20vh;
-            max-height: 200px;
-            max-width: 320px;
-            width: 20vw;
-            min-width: 250px;
-        }
+@section Style{
+    <link href="~/custom-css/Dashboard.css" rel="stylesheet" />
+}
 
-        .box {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
 
-            .box i {
-                color: #009cff;
-            }
-
-            .box:hover, .box:hover h4, .box:hover i {
-                background-color: #009cff !important;
-                color: aliceblue !important;
-            }
-
-        .flex-center {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            text-align: center;
-        }
-
-        #logsChart{
-            max-height:320px !important;
-        }
-    </style>
-</head>
-
+@* welcome message *@
 <div class="container-fluid pt-3">
     <h3>Welcome, Admin! </h3>
     <h6>
@@ -48,6 +17,8 @@
     </h6>
 </div>
 
+
+@* cards *@
 <div class="container-fluid pt-4">
     <div class="row g-4 d-flex align-items-center justify-content-evenly">
         <div class="col-sm-6 col-xl-3 px-0">
@@ -80,16 +51,18 @@
     </div>
 </div>
 
+
+@* charts *@
 <div class="container-fluid pt-5">
     <h6 style="text-align:center;">Explore insightful charts to visualize resource allocation and optimize project planning.</h6>
     <div class="row g-4 pt-1">
-        <div class="col-sm-12 col-xl-6">
+        <div class="col-sm-12 col-xl-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Project Resource Mapping System</h6>
                 <canvas id="combineChart"></canvas>
             </div>
         </div>
-        <div class="col-sm-12 col-xl-6">
+        @* <div class="col-sm-12 col-xl-6">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Projects</h6>
                 <canvas id="projectsChart"></canvas>
@@ -106,181 +79,64 @@
                 <h6 class="mb-4">Departments</h6>
                 <canvas id="departmentsChart"></canvas>
             </div>
+        </div> *@
+        <div class="col-sm-12 col-xl-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Projects Status</h6>
+                <canvas id="projectStatusChart"></canvas>
+            </div>
         </div>
         <div class="col-sm-12 col-xl-12">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Project Resource Mapping System</h6>
-                <canvas id="logsChart"></canvas>
+                <h6 class="mb-4">Employees Status</h6>
+                <canvas id="employeeStatusChart"></canvas>
             </div>
         </div>
         <div class="col-sm-12 col-xl-6">
             <div class="bg-light rounded h-100 p-4">
-                <h6 class="mb-4">Project-Department</h6>
+                <h6 class="mb-4">Department wise Projects</h6>
                 <canvas id="departmentProjectChart"></canvas>
             </div>
         </div>
-        
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Department wise Employees</h6>
+                <canvas id="departmentEmployeeChart"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Actions </h6>
+                <canvas id="logsChart"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
 
-@section scripts {
+@section Scripts{
     <script>
-        $(document).ready(function () {
-            var employeesLabel = @Html.Raw(Json.Serialize(Model.Employees.Label));
-            var employeesData = @Html.Raw(Json.Serialize(Model.Employees.Data));
-            var projectsLabel = @Html.Raw(Json.Serialize(Model.Projects.Label));
-            var projectsData = @Html.Raw(Json.Serialize(Model.Projects.Data));
-            var departmentsLabel = @Html.Raw(Json.Serialize(Model.Departments.Label));
-            var departmentsData = @Html.Raw(Json.Serialize(Model.Departments.Data));
-            var departmentProjecLable = @Html.Raw(Json.Serialize(Model.DepartmentProject.Label));
-            var departmentProjectData = @Html.Raw(Json.Serialize(Model.DepartmentProject.Data));
-            var dateLable = @Html.Raw(Json.Serialize(Model.Inserts.Label));
-            var insertData = @Html.Raw(Json.Serialize(Model.Inserts.Data));
-            var updatetData = @Html.Raw(Json.Serialize(Model.Updates.Data));
-            var deleteData = @Html.Raw(Json.Serialize(Model.Deletes.Data));
-
-            var employees = {
-                labels: employeesLabel,
-                datasets: [{
-                    label: "Employees",
-                    data: employeesData,
-                    backgroundColor: ["rgba(255, 0, 0, 0.2)"],
-                    borderColor: ["rgba(255, 0, 0, 1)"],
-                    borderWidth: 1
-                }]
-            };
-
-            var projects = {
-                labels: projectsLabel,
-                datasets: [{
-                    label: "Projects",
-                    data: projectsData,
-                    backgroundColor: ["rgba(0, 255, 0, 0.2)"],
-                    borderColor: ["rgba(0, 255, 0, 1)"],
-                    borderWidth: 1
-                }]
-            };
-
-            var departments = {
-                labels: departmentsLabel,
-                datasets: [{
-                    label: "Departments",
-                    data: departmentsData,
-                    backgroundColor: ["rgba(0, 0, 255, 0.2)"],
-                    borderColor: ["rgba(0, 0, 255, 1)"],
-                    borderWidth: 1
-                }]
-            };
-
-            var combine = {
-                labels: departmentsLabel,
-                datasets: [{
-                    label: "Employees",
-                    data: employeesData,
-                    backgroundColor: ["rgba(255, 0, 0, 0.2)"],
-                    borderColor: ["rgba(255, 0, 0, 1)"],
-                    borderWidth: 1
-                }, {
-                    label: "Projects",
-                    data: projectsData,
-                    backgroundColor: ["rgba(0, 255, 0, 0.2)"],
-                    borderColor: ["rgba(0, 255, 0, 1)"],
-                    borderWidth: 1
-                }, {
-                    label: "Departments",
-                    data: departmentsData,
-                    backgroundColor: ["rgba(0, 0, 255, 0.2)"],
-                    borderColor: ["rgba(0, 0, 255, 1)"],
-                    borderWidth: 1
-                }]
-            };
-
-            var logs = {
-                labels: dateLable,
-                datasets: [{
-                    label: "Inserts",
-                    data: insertData,
-                    backgroundColor: ["rgba(0, 255, 0, 0.2)"],
-                    borderColor: ["rgba(0, 255, 0, 1)"],
-                    borderWidth: 1
-                }, {
-                    label: "Updates",
-                    data: updatetData,
-                    backgroundColor: ["rgba(0, 0, 255, 0.2)"],
-                    borderColor: ["rgba(0, 0, 255, 1)"],
-                    borderWidth: 1
-                }, {
-                    label: "Deletes",
-                    data: deleteData,
-                    backgroundColor: ["rgba(255, 0, 0, 0.2)"],
-                    borderColor: ["rgba(255, 0, 0, 1)"],
-                    borderWidth: 1
-                }]
-            };
-
-            function getRandomColor() {
-                var letters = '0123456789ABCDEF';
-                var color = '#';
-                for (var i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 6)];
-                }
-                return color;
-            }
-
-            var departmentProject = {
-                labels: departmentProjecLable,
-                datasets: [{
-                    label: "Data",
-                    data: departmentProjectData,
-                    backgroundColor: [],
-                    borderColor: [],
-                    borderWidth: 0
-                }]
-            };
-
-            departmentProject.labels.forEach(function (label, index) {
-                departmentProject.datasets[0].backgroundColor.push(getRandomColor());
-                departmentProject.datasets[0].borderColor.push(getRandomColor());
-            });
-
-
-
-            var employeesCtx = document.getElementById("employeesChart").getContext("2d");
-            var projectsCtx = document.getElementById("projectsChart").getContext("2d");
-            var departmentsCtx = document.getElementById("departmentsChart").getContext("2d");
-            var combineCtx = document.getElementById("combineChart").getContext("2d");
-            var logsCtx = document.getElementById("logsChart").getContext("2d");
-
-            var departmentProjectCtx = document.getElementById("departmentProjectChart").getContext("2d");
-
-            // Create different types of charts
-            var employeesChart = new Chart(employeesCtx, {
-                type: "line",
-                data: employees
-            });
-            var projectsChart = new Chart(projectsCtx, {
-                type: "line",
-                data: projects
-            });
-            var departmentsChart = new Chart(departmentsCtx, {
-                type: "line",
-                data: departments
-            });
-            var combineChart = new Chart(combineCtx, {
-                type: "line",
-                data: combine
-            });
-
-            var departmentProjectChart = new Chart(departmentProjectCtx, {
-                type: "doughnut",
-                data: departmentProject
-            });
-
-            var logsChart = new Chart(logsCtx, {
-                type: "bar",
-                data: logs
-            });
-        });
+        var employeesLabel = @Html.Raw(Json.Serialize(Model.Employees.Label));
+        var employeesData = @Html.Raw(Json.Serialize(Model.Employees.Data));
+        var projectsLabel = @Html.Raw(Json.Serialize(Model.Projects.Label));
+        var projectsData = @Html.Raw(Json.Serialize(Model.Projects.Data));
+        var departmentsLabel = @Html.Raw(Json.Serialize(Model.Departments.Label));
+        var departmentsData = @Html.Raw(Json.Serialize(Model.Departments.Data));
+        var departmentProjecLable = @Html.Raw(Json.Serialize(Model.DepartmentProject.Label));
+        var departmentProjectData = @Html.Raw(Json.Serialize(Model.DepartmentProject.Data));
+        var departmentEmployeeLable = @Html.Raw(Json.Serialize(Model.DepartmentEmployee.Label));
+        var departmentEmployeeData = @Html.Raw(Json.Serialize(Model.DepartmentEmployee.Data));
+        var dateLable = @Html.Raw(Json.Serialize(Model.Inserts.Label));
+        var insertData = @Html.Raw(Json.Serialize(Model.Inserts.Data));
+        var updatetData = @Html.Raw(Json.Serialize(Model.Updates.Data));
+        var deleteData = @Html.Raw(Json.Serialize(Model.Deletes.Data));
+        var DepartmentLable = @Html.Raw(Json.Serialize(Model.RunningProjects.Label));
+        var runningProjects = @Html.Raw(Json.Serialize(Model.RunningProjects.Data));
+        var pendingProjects = @Html.Raw(Json.Serialize(Model.PendingProjects.Data));
+        var completedProjects = @Html.Raw(Json.Serialize(Model.CompletedProjects.Data));
+        var DepartmentLable2 = @Html.Raw(Json.Serialize(Model.AllocatdeEmployees.Label));
+        var allocatedEmployees = @Html.Raw(Json.Serialize(Model.AllocatdeEmployees.Data));
+        var unAllocatedEmployees = @Html.Raw(Json.Serialize(Model.UnallocatedEmployees.Data));
     </script>
+    <script src="~/custom-scripts/Home/Dashboard.js"></script>
 }

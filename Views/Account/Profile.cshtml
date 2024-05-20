@@ -8,6 +8,20 @@
         .profile-container {
             min-height: 80vh;
         }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
     </style>
 }
 
@@ -16,10 +30,10 @@
 <div class="container-fluid p-0 m-0 profile-container pt-4">
     <div class="row">
         <h4 class="col">Profile</h4>
-        <div class="col d-flex justify-content-end">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal" id="edit-profile"><i class="text-light fa fa-pencil text-black p-1"></i>&ensp; Edit Profile</button>
-            <button class="btn d-none btn-success" id="save-profile"><i class="text-light fa fa-save text-black p-1"></i>&ensp; Save Details</button>
-        </div>
+        @* <div class="col d-flex justify-content-end">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal" id="edit-profile"><i class="text-light fa fa-pencil text-black p-1"></i>&ensp; Edit Profile</button>
+        <button class="btn d-none btn-success" id="save-profile"><i class="text-light fa fa-save text-black p-1"></i>&ensp; Save Details</button>
+        </div> *@
     </div>
     <div class="row mb-2">
         <div class="col-md-6">
@@ -82,7 +96,6 @@
     <div class="row pt-3">
         <div class="col-md-6">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password</button>
         </div>
     </div>
 </div>
@@ -90,12 +103,39 @@
 @section scripts {
     <script>
 
+
         // check input field value in checkPassword password
         // const password1 = document.getElementById('Fr-newPassword');
         // const password2 = document.getElementById('Fr-confirmPassword');
 
         // password1.addEventListener('input', checkPassword);
         // password2.addEventListener('input', checkPassword);
+
+        const p1 = document.getElementById('toggleCurrentPassword');
+        const i1 = document.getElementById('currentPassword');
+        const p2 = document.getElementById('toggleNewPassword');
+        const i2 = document.getElementById('newPassword');
+        const p3 = document.getElementById('toggleConfirmPassword');
+        const i3 = document.getElementById('confirmPassword');
+
+        p1.addEventListener('click', function () {
+            const type = i1.getAttribute('type') === 'password' ? 'text' : 'password';
+            i1.setAttribute('type', type);
+        });
+        p2.addEventListener('click', function () {
+            const type = i2.getAttribute('type') === 'password' ? 'text' : 'password';
+            i2.setAttribute('type', type);
+        });
+        p3.addEventListener('click', function () {
+            const type = i3.getAttribute('type') === 'password' ? 'text' : 'password';
+            i3.setAttribute('type', type);
+        });
+
+
+        $("#changePasswordModal").on('hide.bs.modal',function(){
+            $("#currentPassword,#newPassword,#confirmPassword").val('');
+        });
+
 
         function checkPassword() {
             const value1 = password1.value.trim();
@@ -264,6 +304,7 @@
                 loading();
                 return;
             }
+
             var data = {
                 currentPassword: currentPassword,
                 newPassword: newPassword
@@ -351,6 +392,8 @@
             });
             console.log(data);
         });
+
+
     </script>
 
 }
@@ -367,16 +410,38 @@
                 <form id="changePassword-form">
                     <div class="mb-2">
                         <label for="currentPassword" class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="currentPassword">
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="currentPassword">
+                            <div class="password-toggle" id="toggleCurrentPassword">
+                                <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-2">
                         <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword">
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="newPassword">
+                            <div class="password-toggle" id="toggleNewPassword">
+                                <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" id="confirmPassword">
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" id="confirmPassword">
+                            <div class="password-toggle" id="toggleConfirmPassword">
+                                <svg viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="d-flex justify-content-center pb-3">
                         <div id="changePassword-error" class="text-danger text-center"></div>
                     </div>

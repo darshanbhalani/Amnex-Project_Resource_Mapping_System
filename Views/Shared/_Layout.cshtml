@@ -23,7 +23,11 @@
     <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
     <link href="~/custom-css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/custom-css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/kendo/css/kendo.css" />
+    <link href="~/kendo/css/kendo.default-v2.min.css" rel="stylesheet" />
+    
     @await RenderSectionAsync("Style", required: false)
+
 
     <style>
         .brand-logo {
@@ -64,7 +68,7 @@
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="Projects" id="Projects"><i class="fa fa-th-large me-2"></i>Projects</a>
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="Employees" id="Employees"><i class="fa fa-users me-2"></i>Employees</a>
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="ProjectEmployeeMapping" id="ProjectEmployeeMapping"><i class="fa fa-american-sign-language-interpreting me-2"></i>Mapping</a>
-                    <a class="nav-item nav-link" asp-controller="Home" asp-action="Departments" id="Departments"><i class="fa fa-braille me-2"></i>Departments</a>
+                    <a class="nav-item nav-link" asp-controller="Departments" asp-action="Departments" id="Departments"><i class="fa fa-braille me-2"></i>Departments</a>
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="Skills" id="Skills"><i class="fa fa-bolt me-2"></i>Skills</a>
                     <a class="nav-item nav-link" asp-controller="Home" asp-action="Actions" id="Actions"><i class="fa fa-chart-bar me-2"></i>Actions</a>
                 </div>
@@ -84,13 +88,13 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a class="dropdown-item" asp-controller="Account" asp-action="Profile" id="Profile"><i class="fa fa-user me-2"></i>Profile</a>
-                            <a class="dropdown-item pe-auto" style="cursor:pointer;" id="logout"><i class="fa fa-sign-out me-2"></i>Log Out</a>
+                            <a class="dropdown-item pe-auto" style="cursor:pointer;" id="logout"><i class="bi bi-box-arrow-left me-2" style="font-weight: bold;"></i>Log Out</a>
                         </div>
                     </div>
                 </div>
             </nav>
             @* main-content *@
-            <main role="main" class="container-fluid px-5 m-0 p-0 pt-2" id="main-window">
+            <main role="main" class="container-fluid px-5 m-0 p-0 pt-2" id="main-window" style="min-height:550px;">
                 @RenderBody()
             </main>
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
@@ -117,6 +121,10 @@
     <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/kendo/js/jszip.min.js"></script>
+    <script src="~/kendo/js/kendo.all.min.js"></script>
+    <script src="~/kendo/js/kendo.aspnetmvc.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 
 
@@ -149,7 +157,13 @@
                     type: 'POST',
                     url: '/Account/Logout',
                     success: function () {
-                        location.reload();
+                        if (window.history && window.history.pushState) {
+                            window.history.pushState(null, null, window.location.href);
+                        } else {
+                            window.location.hash = '';
+                        }
+
+                        window.location.href = '/Account/Login';
                     },
                     error: function () {
                         alert("Unable to logout...");

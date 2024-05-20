@@ -1,96 +1,14 @@
-﻿@section Style {
-    <style>
-        body {
-            color: black;
-        }
+﻿@{
+    ViewData["Title"] = "Skills Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
-        #skills thead tr th {
-            background-color: black;
-            color: white;
-            text-align: center;
-            border-right: 1px solid grey;
-            border-left: 1px solid grey;
-        }
-
-        #skills tbody tr td {
-            border-left: 1px solid grey;
-            border-right: 1px solid grey;
-            color: black;
-            text-align: center;
-        }
-
-        #dataRows td:nth-child(2) {
-            text-align: left;
-        }
-
-        .icon {
-            text-align: center;
-        }
-
-        table.dataTable td.dt-type-numeric {
-            text-align: center;
-        }
-
-        #addSkillButton {
-            width: auto;
-        }
-
-        .page-link {
-            color: black;
-        }
-
-        .page-item.active .page-link {
-            background-color: black;
-            border: 1px solid black;
-        }
-
-        .back-to-top {
-            display: none;
-        }
-
-        label[for="dt-length-0"] {
-            margin-right: 4%;
-        }
-
-        .assign .dt-column-order {
-            display: none;
-        }
-
-        #dt-search-0 {
-            width: 30rem;
-            margin-left: 1rem;
-        }
-
-        div.dt-container div.dt-search label {
-            padding: 0.5rem;
-            text-align: center;
-            margin-left: 1rem;
-        }
-
-        div.dt-container div.dt-length label {
-            margin-top: 0.5rem;
-        }
-
-        div.dt-container div.dt-length select {
-            margin-top: 0.3rem;
-        }
-    </style>
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+<link rel="stylesheet" href="~/css/skills.css" />
+<link rel="stylesheet" href="~/css/kendo.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-
-<h3>Skills</h3>
-<table id="skills" class="table table-striped" style="width:100%">
-    <thead class="">
-        <tr>
-            <th>Skill Id</th>
-            <th>Skill's Name</th>
-            <th class="assign">Update</th>
-            <th class="assign">Delete</th>
-        </tr>
-    </thead>
-    <tbody id="dataRows">
-    </tbody>
-</table>
+<div id="grid"></div>
 
 <!-- Modal for adding skills -->
 <div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillsModalLabel" aria-hidden="true">
@@ -109,7 +27,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success save-btn" id="saveAddSkillButton">Save Skill</button>
+                <button type="button" class="btn btn-success save-btn" id="saveAddSkillButton" disabled>Save Skill</button>
             </div>
         </div>
     </div>
@@ -163,229 +81,44 @@
     </div>
 </div>
 
+<!--modal for employee skills-->
+<div class="modal fade" id="empSkillModal" tabindex="-1" role="dialog" aria-labelledby="empSkillsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="empSkillsModalLabel">Employee Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div id="empgrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--modal for project skills-->
+<div class="modal fade" id="projectSkillModal" tabindex="-1" role="dialog" aria-labelledby="projectSkillsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="projectSkillsModalLabel">Project Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <div id="projgrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 @section scripts {
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script>
-        $(document).ready(function () {
-            var addButtonAppend = false;
-
-            //DISPLAY SKILL
-            getskillData();
-            function getskillData() {
-                $.ajax({
-                    url: '/Skills/GetSkills',
-                    type: 'GET',
-                    success: function (data) {
-                        console.log(data);
-                        displayskills(data.data);
-
-                    }
-                });
-            }
-            function displayskills(Data) {
-                var table = $('#skills').DataTable();
-                table.clear().draw();
-                $.each(Data, function (index, data) {
-                    table.row.add([
-                        data.skillid,
-                        data.skillname,
-                        '<i class="fa fa-edit fa-lg edit-icon" style="cursor:pointer;" aria-hidden="true"></i>',
-                        '<i class="fa fa-trash fa-lg delete-icon" style="cursor:pointer;" aria-hidden="true"></i>'
-                    ]).draw();
-                });
-                if (!addButtonAppend) {
-                    var addButton = $('<button>').text('Add').attr('id', 'addSkillButton');
-                    $('.dt-search').prepend(addButton);
-                    changesToDataTable();
-                    addButton.click(function () {
-                        $("#addSkillModal").modal('show');
-                    })
-                    addButtonAppend = true;
-                }
-            }
-            function changesToDataTable() {
-                $('.dt-search button').addClass('btn btn-dark');
-                $('.dt-search').addClass('d-flex');
-
-
-                document.getElementById('dt-search-0').placeholder = 'Search Skills...';
-                $('#dt-length-0').parent().parent().parent().addClass('d-flex flex-row-reverse');
-                $('#dt-length-0').parent().addClass('d-flex flex-row-reverse');
-
-                $('#dt-search-0').parent().parent().removeClass('ms-auto');
-                $('#dt-search-0').parent().parent().addClass('searchSkill');
-
-
-                $('#dt-length-0').parent().parent().removeClass('me-auto');
-                $('#dt-length-0').parent().parent().addClass('ms-auto');
-                $("label[for='dt-search-0']").remove();
-                $('.close-btn').on('click', function () {
-                    $('#addSkillModal').modal('hide');
-                    $('#deleteSkillModal').modal('hide');
-                    $('#editSkillModal').modal('hide');
-                });
-            }
-
-            //ADD SKILL
-            $('#saveAddSkillButton').on('click', function () {
-                var skillName = $('#skillName').val();
-                if (skillName.trim() === '') {
-                    alert('Skill name cannot be empty');
-                    return;
-                }
-                checkAndSaveSkill(skillName);
-            });
-            function checkAndSaveSkill(skillName) {
-                var lowercaseSkillName = skillName.toLowerCase();
-                // Check if the skill already exists in the displayed skills
-                var existingSkill = $('#dataRows td:nth-child(2)').filter(function () {
-                    return $(this).text().toLowerCase() === lowercaseSkillName;
-                }).length > 0;
-
-                if (existingSkill) {
-                    $('#skillName').val('');
-                    $('#addSkillModal').modal('hide');
-                    showSnackbar('false', skillName + ' already exists')
-                    
-                    return;
-                }
-                saveSkill(skillName);
-            }
-            function saveSkill(skillName) {
-                var data = {
-                    skillname: skillName,
-                };
-                $.ajax({
-                    type: 'POST',
-                    url: '/Skills/AddSkill',
-                    data: data,
-                    success: function (response) {
-                        if (response.success) {
-                            $('#addSkillModal').modal('hide');
-                            getskillData();
-                            showSnackbar('true', skillName + ' added successfully');
-                            $('#skillName').val('');
-
-                        } else {
-                            $('#addSkillModal').modal('hide');
-                            showSnackbar('false', response.message);
-
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                        showSnackbar('false', error);
-
-                    }
-                });
-            }
-
-            //EDIT SKILLS
-            $('#skills').on('click', '.edit-icon', function () {
-                var skillId = $(this).closest('tr').find('td:nth-child(1)').text();
-                var skillName = $(this).closest('tr').find('td:nth-child(2)').text();
-                $('#editSkillName').val(skillName);
-                $('#editSkillName').val(skillName).data('originalSkillName', skillName);
-                $('#editSkillModal').data('skillId', skillId);
-                $('#editSkillModal').modal('show');
-                $('#editSkillName').on('input', function () {
-                    var editedSkillName = $(this).val();
-                    var originalSkillName = $(this).data('originalSkillName');
-                    console.log(originalSkillName);
-                    console.log(editedSkillName);
-                    if (editedSkillName !== originalSkillName) {
-                        $('#saveEditSkillButton').prop('disabled', false);
-                    } else {
-                        $('#saveEditSkillButton').prop('disabled', true);
-                    }
-                });
-            });
-
-            $('#saveEditSkillButton').on('click', function () {
-                var updatedSkillName = $('#editSkillName').val();
-                var skillId = $('#editSkillModal').data('skillId');
-                $.ajax({
-                    type: 'PUT',
-                    url: '/Skills/UpdateSkill',
-                    data: { skillId: skillId, updatedSkillName: updatedSkillName },
-                    success: function (response) {
-                        if (response.success) {
-                            $('#editSkillModal').modal('hide');
-                            getskillData();
-                            showSnackbar('true', updatedSkillName + ' updated successfully');
-
-                        } else {
-                            showSnackbar('false', response.error);
-
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                        showSnackbar('false', 'An error occurred while updating the skill. Please try again later.');
-
-                    }
-                });
-            });
-
-            //DELETE SKILL
-            $('#skills').on('click', '.delete-icon', function () {
-                var skillId = $(this).closest('tr').find('td:nth-child(1)').text();
-                var skillName = $(this).closest('tr').find('td:nth-child(2)').text();
-                $('#deleteSkillName').val(skillName);
-                $('#deleteSkillName').text(skillName);
-                $('#deleteSkillModal').data('skillId', skillId);
-                $('#deleteSkillModal').data('skillName', skillName);
-                $('#deleteSkillModal').modal('show');
-                $('#deleteSkillModal').on('hidden.bs.modal', function () {
-                    $('#confirmInput').val('');
-                });
-
-            });
-            $('#confirmInput').on('input', function () {
-                var confirmInputValue = $(this).val().trim();
-                var confirmButton = $('#confirmDeleteButton');
-                if (confirmInputValue === 'CONFIRM') {
-                    confirmButton.prop('disabled', false);
-                } else {
-                    confirmButton.prop('disabled', true);
-                }
-            });
-            $('#confirmDeleteButton').on('click', function () {
-                var skillIdToDelete = $('#deleteSkillModal').data('skillId');
-                var skillNameToDelete = $('#deleteSkillModal').data('skillName');
-                var confirmInputValue = $('#confirmInput').val().trim();
-                // Check if the input value matches the confirmation text
-                if (confirmInputValue !== 'CONFIRM') {
-                    return;
-                }
-                $.ajax({
-                    type: 'DELETE',
-                    url: '/Skills/DeleteSkill',
-                    data: { skillId: skillIdToDelete },
-                    success: function (response) {
-                        if (response.success) {
-                            getskillData();
-                            $('#deleteSkillModal').modal('hide');
-                            showSnackbar('true', skillNameToDelete + ' deleted successfully');
-
-                        } else {
-                            showSnackbar('false', response.message);
-
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                        showSnackbar('false', 'An error occurred while deleting the skill. Please try again later.');
-
-                    }
-                });
-            });
-            $('.assign').click(function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                return false;
-            });
-        });
+        var Skills = @Html.Raw(ViewData["SkillsData"]);
     </script>
+    <script src="~/custom-scripts/Home/Skills.js"></script>
 }

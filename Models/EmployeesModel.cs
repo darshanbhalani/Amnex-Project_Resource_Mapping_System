@@ -2,10 +2,12 @@
 {
     public class EmployeesModel
     {
-        public List<Employee> employees { get; set; }
-        public List<Skill> employeeSkills { get; set; }
-        public List<Department> employeeDepartments { get; set; }
-        public int allocatedEmployees { get; set; }
-        public int unallocatedEmployees { get; set; }
+        public List<Employee> Employees { get; set; }
+        public List<Skill> EmployeeSkills { get; set; }
+        public List<Department> EmployeeDepartments { get; set; }
+        public List<Designation> EmployeeDesignations { get; set; }
+        public List<LoginRole> EmployeeLoginRoles { get; set; }
+        public int AllocatedEmployees { get; set; }
+        public int UnallocatedEmployees { get; set; }
     }
 }

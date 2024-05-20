@@ -1,16 +1,10 @@
-﻿using Amnex_Project_Resource_Mapping_System.Models;
-using Humanizer;
-using Microsoft.AspNetCore.Mvc;
-using Npgsql;
-using System.Net.Mail;
+﻿using Npgsql;
 using System.Net;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using CSharpFunctionalExtensions;
+using System.Net.Mail;
 
 namespace Amnex_Project_Resource_Mapping_System.Repo.Classes
 {
-    public class Account 
+    public class Account
     {
         public void logout()
         {
@@ -29,7 +23,8 @@ namespace Amnex_Project_Resource_Mapping_System.Repo.Classes
             return new string(otp);
         }
 
-        internal void sendOTP(string to, HttpContext httpContext) {
+        internal void sendOTP(string to, HttpContext httpContext)
+        {
             string otp = GenerateOTP();
             using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
             {
@@ -49,11 +44,12 @@ namespace Amnex_Project_Resource_Mapping_System.Repo.Classes
             }
         }
 
-        private void storeOTP(string otp, HttpContext httpContext) {
+        private void storeOTP(string otp, HttpContext httpContext)
+        {
             httpContext.Session.SetString("OTP", otp);
             httpContext.Session.SetString("OTPTime", DateTime.Now.ToString());
         }
-        public void forgotPassword(string password ,HttpContext httpContext, NpgsqlConnection connection)
+        public void forgotPassword(string password, HttpContext httpContext, NpgsqlConnection connection)
         {
             using (var cmd = new NpgsqlCommand($"select changePassword({Convert.ToInt32(httpContext.Session.GetString("userId"))},'{password}')", connection))
             {
@@ -70,9 +66,9 @@ namespace Amnex_Project_Resource_Mapping_System.Repo.Classes
         {
             using (var cmd = new NpgsqlCommand($"SELECT changePassword({Convert.ToInt32(httpContext.Session.GetString("userId"))},'{currentPassword}','{newPassword}');", connection))
             {
-                using(var reader = cmd.ExecuteReader())
+                using (var reader = cmd.ExecuteReader())
                 {
-                    if(reader.Read())
+                    if (reader.Read())
                     {
                         return reader.GetBoolean(0);
 

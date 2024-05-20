@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Amnex_Project_Resource_Mapping_System.Models;
+﻿using Amnex_Project_Resource_Mapping_System.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Newtonsoft.Json;
 using Npgsql;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
@@ -13,61 +16,77 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             _connection = connection;
             _connection.Open();
         }
-        public IActionResult Skills()
+
+        [HttpGet]
+        public IActionResult GetEmployeeDetails(int skillId)
         {
-            return View();
+            List<Employee> employeeNames = new List<Employee>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM get_employee_skill(@employeeSkillId)", _connection))
+            {
+                cmd.Parameters.AddWithValue("@employeeSkillId", skillId);
+
+                using (NpgsqlDataReader reader = cmd.ExecuteReader())
+                {
+                    // Read the data and add employee names to the list
+                    while (reader.Read())
+                    {
+                        employeeNames.Add(new Employee
+                        {
+                            EmployeeName = reader.GetString(0)
+                        });
+
+                    }
+                }
+            }
+            return Json(new { success = true, data = employeeNames });
         }
         [HttpGet]
-        public IActionResult GetSkills()
+        public IActionResult GetProjectDetails(int skillId)
         {
-            List<Skill> skills = new List<Skill>();
-            using (var cmd = new NpgsqlCommand("SELECT s.skillid, s.skillname FROM skills s WHERE isdeleted=false ORDER BY s.skillid;", _connection))
+            List<Project> projectNames = new List<Project>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM  get_projects_by_skill(@employeeSkillId)", _connection))
             {
-                using (var reader = cmd.ExecuteReader())
+                cmd.Parameters.AddWithValue("@employeeSkillId", skillId);
+
+                using (NpgsqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        skills.Add(new Skill
+                        projectNames.Add(new Project
                         {
-                            Skillid = reader.GetInt32(0),
-                            Skillname = reader.GetString(1)
+                            ProjectName = reader.GetString(0)
                         });
                     }
                 }
             }
-            return Json(new { success = true, data = skills });
+            return Json(new { succes = true, data = projectNames });
         }
 
         [HttpPost]
         public IActionResult AddSkill(Skill model)
         {
-            string uid = HttpContext.Session.GetString("userId");
+            string uid = HttpContext.Session.GetString("userId")!;
             var skillname = model.Skillname;
             try
             {
-                using (var command = new NpgsqlCommand("SELECT public.insertskill(@SkillName,@CreatedBy,@ModifyBy,@CreateTime,@ModifyTime,@in_is_deleted);", _connection))
+                using (var command = new NpgsqlCommand("SELECT public.addskill(@SkillName,@CreatedBy);", _connection))
                 {
                     command.Parameters.AddWithValue("@SkillName", model.Skillname);
                     command.Parameters.AddWithValue("@CreatedBy", Convert.ToInt32(uid));
-                    command.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(uid));
-                    command.Parameters.AddWithValue("@CreateTime", DateTime.Now);
-                    command.Parameters.AddWithValue("@ModifyTime", DateTime.Now);
-                    command.Parameters.AddWithValue("@in_is_deleted", false);
                     command.ExecuteNonQuery();
-                    return Json(new { success = true });
-
+                    var skillId = getSkillId(skillname);
+                    return Json(new { success = true, data = new { Skillname = model.Skillname, Skillid = model.Skillid, } });
                 }
             }
             catch (NpgsqlException ex)
             {
-                if (ex.SqlState == "23505") // Unique constraint violation error code
+                if (ex.SqlState == "23505")
                 {
-                    var isDeleted = CheckIfSkillIsDeleted(skillname);
-                    int skillId = GetSkillId(skillname);
+                    var isDeleted = checkIfSkillIsDeleted(skillname);
+                    int skillId = getSkillId(skillname);
                     if (isDeleted)
                     {
-                        // Update the skill to mark it as not deleted
-                        UpdateSkillToNotDeleted(skillname, uid);
+                        updateSkillToNotDeleted(skillname);
                         return Json(new { success = true, skillId = skillId });
                     }
                     else
@@ -82,14 +101,14 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
         }
 
-        private bool CheckIfSkillIsDeleted(string skillName)
+        private bool checkIfSkillIsDeleted(string skillName)
         {
             try
             {
                 using (var command = new NpgsqlCommand("SELECT isdeleted FROM skills WHERE skillname = @SkillName;", _connection))
                 {
                     command.Parameters.AddWithValue("@SkillName", skillName);
-                    var isDeleted = (bool)command.ExecuteScalar();
+                    var isDeleted = (bool)command.ExecuteScalar()!;
                     return isDeleted;
                 }
             }
@@ -99,7 +118,9 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 return false;
             }
         }
-        private int GetSkillId(string skillName)
+
+
+        private int getSkillId(string skillName)
         {
             try
             {
@@ -112,81 +133,91 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
             catch (NpgsqlException ex)
             {
-                // Handle the exception if necessary
                 Console.WriteLine("Error getting skill ID: " + ex.Message);
                 return -1;
             }
         }
-        private void UpdateSkillToNotDeleted(string skillName, string uid)
+        private void updateSkillToNotDeleted(string skillName)
         {
+            string uid = HttpContext.Session.GetString("userId")!;
             try
             {
-                using (var command = new NpgsqlCommand("UPDATE skills SET isdeleted = false, modifyby = @ModifyBy, modifytime = @ModifyTime WHERE skillname = @SkillName;", _connection))
+                using (var command = new NpgsqlCommand("UPDATE skills SET isdeleted = false, modifiedby = @ModifyBy, modifiedtime = @ModifyTime WHERE skillname = @SkillName;", _connection))
                 {
                     command.Parameters.AddWithValue("@SkillName", skillName);
-                    command.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(uid));
-                    command.Parameters.AddWithValue("@ModifyTime", DateTime.Now);
+                    command.Parameters.AddWithValue("@ModifyBy", 1);
                     command.ExecuteNonQuery();
                 }
             }
             catch (NpgsqlException ex)
             {
-                // Handle the exception if necessary
                 Console.WriteLine("Error updating skill to not deleted: " + ex.Message);
             }
         }
-
-        [HttpPut]
+        [HttpPost]
         public IActionResult UpdateSkill(int skillId, string updatedSkillName)
         {
-            string uid = HttpContext.Session.GetString("userId");
+            string uid = HttpContext.Session.GetString("userId")!;
             try
             {
-                using (var cmd = new NpgsqlCommand("SELECT public.updateskill(@SkillId,@SkillName,@ModifyTime,@ModifyBy);", _connection))
+                using (var cmd = new NpgsqlCommand("SELECT public.updatetheskill(@SkillId,@SkillName,@ModifyBy);", _connection))
                 {
                     cmd.Parameters.AddWithValue("@SkillId", skillId);
                     cmd.Parameters.AddWithValue("@SkillName", updatedSkillName);
-                    cmd.Parameters.AddWithValue("@ModifyTime", DateTime.Now); // Assuming ModifyTime is a timestamp
-                    cmd.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(uid)); // ModifyBy could be the user who is updating the skill
-
-                    // Execute the SQL command
+                    cmd.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(uid));
                     cmd.ExecuteNonQuery();
                 }
                 return Json(new { success = true, data = updatedSkillName });
             }
             catch (Exception ex)
             {
-                // Log the error
                 Console.WriteLine("Error: " + ex.Message);
 
-                // Return an error response
                 return Json(new { success = false, message = "An error occurred while updating the skill" });
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult DeleteSkill(int skillId)
         {
-            string uid = HttpContext.Session.GetString("userId");
-
-            try
+            using (var deletecmd = new NpgsqlCommand("SELECT isskilldeletable(@SkillId);", _connection))
             {
-                using (var command = new NpgsqlCommand("select deleteskill(@SkillId,@ModifyTime,@ModifyBy);", _connection))
+                deletecmd.Parameters.AddWithValue("@SkillId", skillId);
+                var isDeletable = (bool)deletecmd.ExecuteScalar();
+                if (isDeletable)
                 {
-                    command.Parameters.AddWithValue("@SkillId", skillId); // Assuming skillId is the ID of the skill to delete
-                    command.Parameters.AddWithValue("@ModifyTime", DateTime.Now); // Assuming ModifyTime is the current time
-                    command.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(uid)); // Assuming modifyBy is the ID of the user performing the modification
-
-                    // Execute the command
-                    command.ExecuteNonQuery();
+                    using (var command = new NpgsqlCommand("select deleteskill(@SkillId,@ModifyBy);", _connection))
+                    {
+                        command.Parameters.AddWithValue("@SkillId", skillId);
+                        command.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
+                        command.ExecuteNonQuery();
+                    }
+                    return Json(new { success = true });
                 }
-                return Json(new { success = true });
+                else
+                {
+                    return Json(new { success = false, message = "Skill cannot be deleted." });
+                }
             }
+        }
 
-            catch (Exception ex)
+        internal static List<dynamic> getSkillList(NpgsqlConnection _connection)
+        {
+            List<dynamic> skills = [];
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallskills();", _connection))
             {
-                return Json(new { success = false, error = ex.Message });
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        List<dynamic> x = [];
+                        x.Add(Convert.ToInt32(reader.GetValue(0)));
+                        x.Add(reader.GetValue(1));
+                        skills.Add(x);
+                    }
+                }
             }
+            return skills;
         }
 
     }

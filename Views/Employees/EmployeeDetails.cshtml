@@ -1,0 +1,246 @@
+﻿@model Amnex_Project_Resource_Mapping_System.Models.Employee;
+
+@section style {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+
+
+    <link rel="stylesheet" href="~/kendo/css/kendo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/kendo/css/kendo.default-v2.min.css" asp-append-version="true" />
+
+
+
+
+
+}
+
+
+@{
+    ViewData["Title"] = "EmployeeDetails";
+    var employees = ViewBag.Employees as List<Employee>;
+    var employeeDepartments = ViewBag.EmployeeDepartments as List<Department>;
+    var employeeDesignations = ViewBag.EmployeeDesignations as List<Designation>;
+    var employeeLoginRoles = ViewBag.EmployeeLoginRoles as List<LoginRole>;
+    var employeeSkills = ViewBag.EmployeeSkills as List<Skill>;
+    var employeeProjectDetails = ViewBag.EmployeeProjectDetails as List<EmployeeRecord>;
+}
+
+
+<!-- Use the data as needed in your HTML markup -->
+
+
+<body>
+    <div class="container-fluid">
+        <div class="row mt-3 mb-5">
+            <div class="col-md-12">
+                <button id="EmployeeDetailsBtn" class="btn btn-primary  btn-block">Employee Details</button>
+                <button id="projectDetailsBtn" class="btn btn-primary  btn-block">Project Details</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid p-0" id=" employeeDetailsContainer">
+
+        <form id="updateEmployeeForm" method="get">
+            <input type="hidden" id="employeeId" value="@Model.EmployeeId" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="employeeAipl">Employee AIPL:</label>
+                        <input type="text" class="form-control" id="employeeAipl" value="@Model.EmployeeAipl" disabled />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="employeeName">Employee Name:</label>
+                        <input type="text" class="form-control" id="employeeName" value="@Model.EmployeeName" disabled />
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="loginRole">Login Role:</label>
+
+                        <select class="form-control" id="loginRole" disabled>
+
+                            <option value="" selected>@Model.LoginRole</option>
+
+
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="designation">Designation:</label>
+
+
+                        <select class="form-control" id="designation" disabled>
+                            <option value="" selected>@Model.DesignationName</option>
+
+                        </select>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="department">Department:</label>
+                        <select class="form-control" id="department" disabled>
+                            <option value="" selected>@Model.DepartmentName</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="skills">Skills:</label>
+                        <select id="choices-multiple-remove-button" multiple disabled>
+                            @foreach (var skill in Model.SkillsName.Split(','))
+                            {
+                                <option value="@skill" selected> @skill.</option>
+                            }
+
+
+
+                        </select>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" value="@Model.Email" disabled />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="totalCompletedProjects">Total Completed Projects:</label>
+                        <input type="text" class="form-control" id="totalCompletedProjects" value="@Model.TotalCompletedProjects" disabled />
+                    </div>
+                </div>
+
+
+            </div>
+
+        </form>
+    </div>
+
+    <div class="container-fluid p-0" id="projectDetailsContainer" style="display: none;">
+        <h3>Project Details</h3>
+        <div id="grid2"></div>
+    </div>
+
+
+
+
+</body>
+
+
+
+
+@section Scripts {
+
+    @*  <script src="~/js/employeedetails.js" asp-append-version="true"></script>
+ *@
+    <script>
+
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount: 50,
+            searchResultLimit: 50,
+            renderChoiceLimit: 50
+        });
+        $(document).ready(function () {
+
+
+
+            $('#EmployeeDetailsBtn').click(function () {
+                $('#updateEmployeeForm').show();
+                $('#projectDetailsContainer').hide();
+
+            });
+
+            $('#projectDetailsBtn').click(function () {
+                $('#updateEmployeeForm').hide();
+                $('#projectDetailsContainer').show();
+
+            });
+
+
+            var employeeProjectDetails = @Html.Raw(Json.Serialize(ViewBag.EmployeeProjectDetails));
+
+
+            console.log(employeeProjectDetails);
+
+
+            if (!Array.isArray(employeeProjectDetails)) {
+                console.error("Employee project details is not an array.");
+            }
+            console.log(employeeProjectDetails);
+
+
+            $("#grid2").kendoGrid({
+                dataSource: {
+                    data: employeeProjectDetails,
+                    pageSize: 10
+                },
+                height: 550,
+                sortable: true,
+                pageable: {
+                    refresh: true,
+                    pageSizes: [10, 25, 50, 100, "all"],
+                    buttonCount: 10
+                },
+                navigatable: true,
+                resizable: true,
+                reorderable: true,
+                filterable: true,
+                toolbar: [
+
+                    "search",
+                    "excel",
+                    "pdf"
+                ],
+                excel: {
+                    fileName: "EmployeeProject.xlsx",
+                    filterable: true,
+                    allPages: true
+                },
+                pdf: {
+                    fileName: "EmployeeProject.pdf",
+                    allPages: true,
+                    avoidLinks: true,
+                    margin: { top: "2cm", left: "1cm", right: "1cm", bottom: "1cm" },
+                    landscape: true,
+                    repeatHeaders: true,
+                    scale: 0.8
+                },
+                columnMenu: true,
+                columns: [
+                    { field: "projectName", title: "Project Name", width: 150 },
+                    { field: "employeeProjectSkill", title: "Employee Project Skill", width: 150 },
+                    { field: "startDate", title: "Start Date", width: 150, format: "{0:yyyy-MM-dd}" },
+                    { field: "endDate", title: "End Date", width: 150, format: "{0:yyyy-MM-dd}" },
+                    { field: "isWorking", title: "Is Working", width: 150, template: "#= isWorking ? 'Yes' : 'No' #" }
+                ],
+                editable: false,
+                dataBound: function () {
+                    $(".k-input .k-input-inner").one("focus", function () {
+                        $(".k-header-column-menu").css("background-color", "red");
+                    });
+                },
+                selectable: 'row'
+
+            });
+
+        });
+    </script>
+
+
+}
