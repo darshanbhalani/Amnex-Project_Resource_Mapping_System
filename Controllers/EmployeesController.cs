@@ -1,5 +1,4 @@
-﻿using Amnex_Project_Resource_Mapping_System.Controllers.Amnex_Project_Resource_Mapping_System.Controllers;
-using Amnex_Project_Resource_Mapping_System.Models;
+﻿using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using System.Text;
@@ -9,189 +8,173 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
     public class EmployeesController : Controller
     {
         private readonly NpgsqlConnection _connection;
-        private IConfiguration _configuration;
 
-        public EmployeesController(NpgsqlConnection connection,IConfiguration configuration)
+        public EmployeesController(NpgsqlConnection connection)
         {
-            _configuration = configuration;
             _connection = connection;
             _connection.Open();
         }
-
 
         [HttpPost]
         public IActionResult AddEmployee(Employee empObj)
         {
             string password = generateRandomPassword();
-            string query = "SELECT * FROM public.insertemployee(@in_employeename, @in_employeeusername, @in_departmentid, @in_skillsid, @in_employeeloginroleid, @in_email, @in_password, @in_createdby, @in_createdtime)";
+            string query = "SELECT public.addemployee(@in_employeename, @in_employeedepartmentid, @in_employeeemail, @in_employeedesignationid, @in_password, @in_employeeloginroleid, @in_skillsid, @in_createdby)";
 
             using (NpgsqlCommand command = new NpgsqlCommand(query, _connection))
             {
                 command.Parameters.AddWithValue("@in_employeename", empObj.EmployeeName);
-                command.Parameters.AddWithValue("@in_employeeusername", empObj.EmployeeUserName);
-                command.Parameters.AddWithValue("@in_departmentid", empObj.DepartmentId);
-                command.Parameters.AddWithValue("@in_skillsid", empObj.SkillsId);
-                command.Parameters.AddWithValue("@in_employeeloginroleid", empObj.LoginRoleId);
-                command.Parameters.AddWithValue("@in_email", empObj.Email);
+                command.Parameters.AddWithValue("@in_employeedepartmentid", empObj.DepartmentId);
+                command.Parameters.AddWithValue("@in_employeeemail", empObj.Email);
+                command.Parameters.AddWithValue("@in_employeedesignationid", empObj.DesignationId);
                 command.Parameters.AddWithValue("@in_password", password);
-                command.Parameters.AddWithValue("@in_createdby", Convert.ToInt32(HttpContext.Session.GetString("userId")!)); 
-                command.Parameters.AddWithValue("@in_createdtime", DateTime.Now); 
-                command.Parameters.AddWithValue("@in_modifyby", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                command.Parameters.AddWithValue("@in_modifytime", DateTime.Now);
-                command.ExecuteNonQuery();
-            }
-            Employee employee = new Employee { 
-                EmployeeName = empObj.EmployeeName,
-                EmployeeUserName = empObj.EmployeeUserName,
-                Password = password,
-                Email = empObj.Email,
-            };
-            AccountController.SendCredentials(employee,_configuration);
-            return Json(new { success = true });
-        }
+                command.Parameters.AddWithValue("@in_employeeloginroleid", empObj.LoginRoleId);
+                command.Parameters.AddWithValue("@in_skillsid", empObj.SkillsId.Split(',').Select(int.Parse).ToArray()); // Split the string into an array
+                command.Parameters.AddWithValue("@in_createdby", 1); // Assuming CreatedById is the correct property
 
+                var result = command.ExecuteScalar();
+                string aipl = result != null ? result.ToString() : null;
 
-        [HttpPost]
-        public IActionResult GetEmployeeById(int employeeId)
-        {
-            try
-            {
-                using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM public.getemployeeprofile(@employeeId)", _connection))
+                if (!string.IsNullOrEmpty(aipl))
                 {
-                    command.Parameters.AddWithValue("@employeeId", employeeId);
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    // Handle error
+                    return Json(new { success = false, message = "Failed to add employee." });
+                }
+            }
+        }
+        [HttpGet]
+        public ActionResult EmployeeDetails(int employeeId)
+        {
+            Employee employeeDetails;
 
-                    using (NpgsqlDataReader reader = command.ExecuteReader())
+            using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM public.getemployeedetails(@employeeId)", _connection))
+            {
+                command.Parameters.AddWithValue("@employeeId", employeeId);
+
+                using (NpgsqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
                     {
-                        if (reader.Read())
+                        employeeDetails = new Employee
                         {
-                            Employee employee = new Employee
-                            {
-                                EmployeeId = Convert.ToInt32(reader["employeeid"]),
-                                EmployeeName = reader["employeename"].ToString()!,
-                                EmployeeUserName = reader["employeeusername"].ToString()!,
-                                DepartmentId = Convert.ToInt32(reader["departmentid"]),
-                                SkillsId = reader["skillsid"].ToString()!,
-                                LoginRoleId = Convert.ToInt32(reader["loginroleid"]),
-                                IsAllocated = Convert.ToBoolean(reader["isallocated"]),
-                                Email = reader["email"].ToString()!,
-                            };
-
-                            return Json(new { success = true, employee = employee });
-                        }
-                        else
-                        {
-
-                            return Json(new { success = false, message = "Employee not found." });
-                        }
+                            EmployeeId = employeeId,
+                            EmployeeName = reader["employeename"].ToString()!,
+                            EmployeeAipl = reader["employeeaipl"].ToString()!,
+                            DepartmentName = reader["employeedepartmentname"].ToString()!,
+                            Email = reader["employeeemail"].ToString()!,
+                            DesignationName = reader["employeedesignation"].ToString()!,
+                            SkillsName = reader["employeeskills"].ToString()!,
+                            LoginRole = reader["employeeloginrole"].ToString()!,
+                            TotalCompletedProjects = Convert.ToInt32(reader["totalcompletedprojects"])
+                        };
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Employee not found." });
                     }
                 }
             }
-            catch (Exception ex)
-            {
 
-                return Json(new { success = false, message = "An error occurred while fetching employee data." });
-            }
+            ViewBag.EmployeeProjectDetails = EmployeesController.getEmployeeProjectDetailsList(_connection, employeeId);
+
+            return View(employeeDetails);
         }
-
 
         [HttpPost]
-        public IActionResult UpdateEmployee(Employee empUpdateObj)
+        public IActionResult UpdateEmployee(Employee employeeObj)
         {
-            string query = "SELECT public.updateemployee(@EmployeeId, @EmployeeName, @DepartmentId, @Email, @SkillsId, @LoginRoleId, @ModifyBy, @ModifyTime)";
+            // Check if employee details are updateable
+            string checkQuery = "SELECT public.isemployeedetailsupdateable(@EmployeeId, @DesignationId, @DepartmentId)";
+            bool isUpdateable = false;
 
-            using (NpgsqlCommand command = new NpgsqlCommand(query, _connection))
+            using (NpgsqlCommand checkCommand = new NpgsqlCommand(checkQuery, _connection))
             {
-                command.Parameters.AddWithValue("@EmployeeId", empUpdateObj.EmployeeId);
-                command.Parameters.AddWithValue("@EmployeeName", empUpdateObj.EmployeeName);
-                command.Parameters.AddWithValue("@DepartmentId", empUpdateObj.DepartmentId);
-                command.Parameters.AddWithValue("@Email", empUpdateObj.Email);
-                command.Parameters.AddWithValue("@SkillsId", empUpdateObj.SkillsId);
-                command.Parameters.AddWithValue("@LoginRoleId", empUpdateObj.LoginRoleId);
-                command.Parameters.AddWithValue("@ModifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!)); 
-                command.Parameters.AddWithValue("@ModifyTime", DateTime.Now);
+                checkCommand.Parameters.AddWithValue("@EmployeeId", employeeObj.EmployeeId);
+                checkCommand.Parameters.AddWithValue("@DesignationId", employeeObj.DesignationId);
+                checkCommand.Parameters.AddWithValue("@DepartmentId", employeeObj.DepartmentId);
 
-                command.ExecuteNonQuery();
+                // Execute scalar to get the result
+                isUpdateable = (bool)checkCommand.ExecuteScalar();
             }
 
-            return Json(new { success = true });
+            if (isUpdateable)
+            {
+                // Update employee details
+                string updateQuery = "SELECT public.updateemployeedetails(@EmployeeId, @EmployeeName, @DepartmentId, @Email, @DesignationId, @LoginRoleId, @SkillsId, @ModifyBy)";
+
+                using (NpgsqlCommand updateCommand = new NpgsqlCommand(updateQuery, _connection))
+                {
+                    updateCommand.Parameters.AddWithValue("@EmployeeId", employeeObj.EmployeeId);
+                    updateCommand.Parameters.AddWithValue("@EmployeeName", employeeObj.EmployeeName);
+                    updateCommand.Parameters.AddWithValue("@DepartmentId", employeeObj.DepartmentId);
+                    updateCommand.Parameters.AddWithValue("@Email", employeeObj.Email);
+                    updateCommand.Parameters.AddWithValue("@DesignationId", employeeObj.DesignationId);
+                    updateCommand.Parameters.AddWithValue("@LoginRoleId", employeeObj.LoginRoleId);
+                    updateCommand.Parameters.AddWithValue("@SkillsId", employeeObj.SkillsId.Split(',').Select(int.Parse).ToArray());
+                    updateCommand.Parameters.AddWithValue("@ModifyBy", 1);
+
+                    updateCommand.ExecuteNonQuery();
+                }
+
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Employee details cannot be updated." });
+            }
         }
+
 
 
         public IActionResult DeleteEmployee(Employee employee)
         {
-            bool isDeletable = false;
             try
             {
-                using (NpgsqlCommand command = new NpgsqlCommand("SELECT public.checkisemployeedeleteable(@employeeId)", _connection))
-                {
-                    command.Parameters.AddWithValue("@employeeId", employee.EmployeeId);
-                    isDeletable = (bool)command.ExecuteScalar()!;
-                }
+                bool isDeletable = IsEmployeeDeletable(employee.EmployeeId);
 
                 if (isDeletable == false)
                 {
-                    return Json(new { success = false, message = "Employee could not be deleted because it is assigned to project." });
+                    return Json(new { success = false, message = "Note: Employee is not deletable." });
                 }
-                else
+
+                // Proceed with the delete operation
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT public.deleteemployee(:employeeId, :modifyBy);", _connection))
                 {
-                    using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT public.deleteemployee(:employeeId,:modifyBy,:modifyTime );", _connection))
-                    {
-                        cmd.Parameters.AddWithValue("employeeId", employee.EmployeeId);
-                        cmd.Parameters.AddWithValue("modifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                        cmd.Parameters.AddWithValue("modifyTime", DateTime.Now);
-                        cmd.ExecuteNonQuery();
-                    }
-                    return Json(new { success = true });
+                    cmd.Parameters.AddWithValue("employeeId", employee.EmployeeId);
+                    cmd.Parameters.AddWithValue("modifyBy", Convert.ToInt32(HttpContext.Session.GetString("userId")));
+                    cmd.ExecuteNonQuery();
                 }
+
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
-            }
-        }
-
-
-        [HttpPost]
-        public IActionResult GetEmployeeRecords(int employeeId)
-        {
-            try
-            {
-                using (NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM public.fatchemployeerecord(@employeeId)", _connection))
-                {
-                    command.Parameters.AddWithValue("@employeeId", employeeId);
-
-                    List<EmployeeRecord> employeesRecord = new List<EmployeeRecord>();
-
-                    using (NpgsqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            EmployeeRecord employeeRecord = new EmployeeRecord
-                            {
-                                ProjectName = reader.IsDBNull(0) ? "Not Found" : reader.GetString(0),
-                                ProjectRoleName = reader.IsDBNull(1) ? "Not Found" : reader.GetString(1),
-                                StartDate = reader.IsDBNull(2) ? DateTime.Now.Date : reader.GetDateTime(2),
-                                EndDate = reader.IsDBNull(3) ? DateTime.Now.Date : reader.GetDateTime(3),
-                                SkillsName = reader.IsDBNull(4) ? "Not Found" : reader.GetString(4),
-                                Rating = reader.IsDBNull(5) ? 0 : reader.GetInt32(5),
-                                IsWorking = reader.IsDBNull(6) ? false : reader.GetBoolean(6)
-                            };
-
-                            employeesRecord.Add(employeeRecord);
-                        }
-                            return Json(new { success = true, data = employeesRecord });
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-
+                // Log the error
                 Console.WriteLine("Error: " + ex.Message);
 
-                return Json(new { success = false, message = "An error occurred while fetching employee data." });
+                return Json(new { success = false, message = "An error occurred while deleting the employee." });
             }
         }
+
+        public bool IsEmployeeDeletable(int employeeId)
+        {
+            using (NpgsqlCommand command = new NpgsqlCommand("SELECT public.isemployeedeletable(@employeeId)", _connection))
+            {
+                command.Parameters.AddWithValue("@employeeId", employeeId);
+                bool isDeletable = (bool)command.ExecuteScalar();
+                return isDeletable;
+            }
+        }
+
+
+
+
+
+
 
         private string generateRandomPassword()
         {
@@ -205,13 +188,35 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             return passwordBuilder.ToString();
         }
 
+        public static List<Skill> getEmployeeSkillsList(NpgsqlConnection _connection)
+        {
+            List<Skill> employeeSkill = new List<Skill>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallskills();", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Skill employeeSkillObj = new Skill
+                        {
+                            Skillid = Convert.ToInt32(reader[0]),
+                            Skillname = Convert.ToString(reader[1])!
+                        };
+                        employeeSkill.Add(employeeSkillObj);
+
+                    }
+
+                }
+            }
+            return employeeSkill;
+        }
 
         internal static List<Employee> getEmployeesList(NpgsqlConnection _connection)
         {
             List<Employee> employees = new List<Employee>();
             try
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayemployees()", _connection))
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallemployees()", _connection))
                 {
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -219,17 +224,15 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                         {
                             Employee employee = new Employee
                             {
-                                EmployeeId = Convert.ToInt32(reader["employee_id"]),
-                                EmployeeName = Convert.ToString(reader["employee_name"])!,
-                                DepartmentId = Convert.ToInt32(reader["department_id"]),
-                                SkillsId = Convert.ToString(reader["skills_id"])!,
-                                LoginRoleId = Convert.ToInt32(reader["login_role_id"]),
-                                IsAllocated = Convert.ToBoolean(reader["is_allocated"]),
-                                Email = Convert.ToString(reader["email"])!,
-                                CreatedbyName = Convert.ToString(reader["created_by"])!,
-                                CreatedTime = Convert.ToDateTime(reader["created_time"]),
-                                ModifybyName = Convert.ToString(reader["modify_by"])!,
-                                ModifyTime = Convert.ToDateTime(reader["modify_time"])
+                                EmployeeId = Convert.ToInt32(reader["employeeid"]),
+                                EmployeeAipl = Convert.ToString(reader["employeeaipl"])!,
+                                EmployeeName = Convert.ToString(reader["employeename"])!,
+                                Email = Convert.ToString(reader["employeeemail"])!,
+                                IsAllocated = Convert.ToBoolean(reader["isallocated"]),
+                                DepartmentName = Convert.ToString(reader["employeedepartmentname"])!,
+                                DesignationName = Convert.ToString(reader["employeedesignationname"])!,
+                                SkillsId = Convert.ToString(reader["employeeskills"])!,
+                                LoginRole = Convert.ToString(reader["employeesloginrolename"])!
                             };
 
                             employees.Add(employee);
@@ -240,9 +243,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
+                // Handle exception appropriately, e.g., log or throw
             }
             return employees;
         }
+
 
 
         internal static List<Department> getEmployeeDepartmentList(NpgsqlConnection _connection)
@@ -268,5 +273,86 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             return employeeDepartment;
         }
 
+        internal static List<EmployeeRecord> getEmployeeProjectDetailsList(NpgsqlConnection _connection, long employeeId)
+        {
+            List<EmployeeRecord> employeesRecord = new List<EmployeeRecord>();
+            try
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.getemployeeprojects(@employeeId)", _connection))
+                {
+                    cmd.Parameters.AddWithValue("@employeeId", employeeId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            EmployeeRecord empRecord = new EmployeeRecord
+                            {
+                                ProjectName = reader["projectname"].ToString(),
+                                EmployeeProjectSkill = reader["employeeprojectskill"].ToString(),
+                                StartDate = Convert.ToDateTime(reader["masterstartdate"]),
+                                EndDate = Convert.ToDateTime(reader["masterenddate"]),
+                                IsWorking = Convert.ToBoolean(reader["masterisworking"])
+                            };
+
+                            employeesRecord.Add(empRecord);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                // Handle exception appropriately, e.g., log or throw
+            }
+            return employeesRecord;
+        }
+
+
+        internal static List<Designation> getEmployeeDesignationList(NpgsqlConnection _connection)
+        {
+            List<Designation> employeeDesignation = new List<Designation>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.getalldesignations();", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Designation employeeDesignationObj = new Designation
+                        {
+                            DesignationId = Convert.ToInt32(reader[0]),
+                            DesignationName = Convert.ToString(reader[1])!
+                        };
+                        employeeDesignation.Add(employeeDesignationObj);
+
+                    }
+
+                }
+            }
+            return employeeDesignation;
+        }
+
+        internal static List<LoginRole> getEmployeeLoginRoleList(NpgsqlConnection _connection)
+        {
+            List<LoginRole> employeeLoginRole = new List<LoginRole>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.getallloginroles();", _connection))
+            {
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        LoginRole employeeLoginRoleObj = new LoginRole
+                        {
+                            LoginRoleId = Convert.ToInt32(reader[0]),
+                            LoginRoleName = Convert.ToString(reader[1])!
+                        };
+                        employeeLoginRole.Add(employeeLoginRoleObj);
+
+                    }
+
+                }
+            }
+            return employeeLoginRole;
+        }
     }
 }

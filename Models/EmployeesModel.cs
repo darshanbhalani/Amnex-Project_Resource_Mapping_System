@@ -5,6 +5,8 @@
         public List<Employee> Employees { get; set; }
         public List<Skill> EmployeeSkills { get; set; }
         public List<Department> EmployeeDepartments { get; set; }
+        public List<Designation> EmployeeDesignations { get; set; }
+        public List<LoginRole> EmployeeLoginRoles { get; set; }
         public int AllocatedEmployees { get; set; }
         public int UnallocatedEmployees { get; set; }
     }

@@ -9,6 +9,7 @@
         public string SkillsName { get; set; }
         public int Rating { get; set; }
         public bool IsWorking { get; set; }
+        public string EmployeeProjectSkill { get; set; }
 
     }
 }

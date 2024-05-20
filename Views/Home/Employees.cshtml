@@ -1,55 +1,41 @@
-﻿@model EmployeesModel;
-@{
-    ViewData["Title"] = "Employees";
+﻿Conversation opened. 1 unread message.
+
+Skip to content
+Using Gmail with screen readers
+Enable desktop notifications for Gmail.
+   OK  No, thanks
+1 of 192
+(no subject)
+Inbox
+
+Kishan Soni
+Attachments
+17:40 (0 minutes ago)
+to me
+
+
+One attachment
+  • Scanned by Gmail
+@model Amnex_Project_Resource_Mapping_System.Models.EmployeesModel;
+@* {
+    ViewData["Title"] = "employeesModel";
 }
+ *@
+
+
 
 
 @section style {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
 
 
-    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+    <link rel="stylesheet" href="~/kendo/css/kendo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/kendo/css/kendo.default-v2.min.css" asp-append-version="true" />
 
 
-    <style>
 
-        #assign .dt-column-order {
-            display: none;
-        }
 
-        .box {
-            min-height: 140px;
-            height: 20vh;
-            max-height: 200px;
-            max-width: 100%;
-            width: 100%;
-            min-width: 250px;
-        }
 
-        .box {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-            .box i {
-                color: #009cff;
-            }
-
-            .box:hover, .box:hover h4, .box:hover i {
-                background-color: #009cff !important;
-                color: aliceblue !important;
-            }
-
-        .flex-center {
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            text-align: center;
-        }
-
-        #example td {
-            color: black;
-        }
-    </style>
 }
 
 <h3 class=" pt-2 ">Employees</h3>
@@ -85,82 +71,30 @@
 
     </div>
 </div>
-<table id="example" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-        <tr class="bg-dark" data-id="Employee Id">
-            <th class="text-white">Employee ID</th>
-            <th class="text-white">Employee Name</th>
-            <th class="text-white">Department</th>
-            <th class="text-white">Role</th>
 
+<div id="grid1"></div>
 
-            <th class="text-white assign" style="text-align:center">Actions</th>
-
-        </tr>
-    </thead>
-    <tbody id="dataRows">
-        @foreach (var emp in Model.Employees)
-        {
-            <tr class="row123" data-id="@emp.EmployeeId">
-                <td id="emplpyeeId">@emp.EmployeeId</td>
-                <td>@emp.EmployeeName</td>
-                <td>
-                    @*  @emp.DepartmentId *@
-
-                    @foreach (var y in Model.EmployeeDepartments)
-                    {
-                        if (y.DepartmentId == @emp.DepartmentId)
-                        {
-
-                            @y.DepartmentName
-
-                        }
-                    }
-                </td>
-
-                <td>
-
-                    @if (emp.LoginRoleId == 0)
-                    {
-                        <text>Admin</text>
-                    }
-                    else
-                    {
-                        <text>User</text>
-                    }
-                </td>
-                <td class="center-icon" style="text-align:center">
-                    <i class="fa fa-edit fa-lg updatebtn me-5" style="cursor:pointer;" data-toggle="modal" data-target="#updateModal" aria-hidden="true"></i>
-                    <i class="fa fa-trash fa-lg deletebtn" style="cursor:pointer;" data-toggle="modal" data-target="#deleteModal" aria-hidden="true"></i>
-                </td>
-
-                @*  <td class="updatebtn center-icon" data-toggle="modal" data-target="#updateModal" style="text-align:center"><i class="fa fa-edit fa-lg edit-icon" style="cursor:pointer;" aria-hidden="true"></i></td>
-            <td class="deletebtn center-icon" data-toggle="modal" data-target="#deleteModal" style="text-align:center"><i class="fa fa-trash fa-lg delete-icon" style="cursor:pointer;" aria-hidden="true"></i></td> *@
-            </tr>
-        }
-    </tbody>
-
-</table>
 
 
 
 @*  Delete modal code  *@
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="deleteEmployeeModal" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="updateModalLabel">Confirm Deletion</h5>
+                <h5 class="modal-title" id="deleteEmployeeModalLabel">Confirm Deletion</h5>
                 <button type="button" class="btn-delete-close btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete this item?</p>
                 <input type="text" id="confirmInput" class="form-control" placeholder="Type 'CONFIRM' to proceed">
             </div>
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="text-danger" id="deleteModalError" style="text-align: center;">asdugweovbvb clwbvu</div>
-            </div>
+            @*  <div class="text-danger " id="deleteModalError" style="text-align: left;"></div> *@
             <div class="modal-footer">
+                <div class="text-danger pe-5" id="deleteModalError" style="text-align: left;"></div>
+
                 <button type="button" class="btn btn-secondary" id="deleteButton" disabled>Delete</button>
             </div>
         </div>
@@ -168,18 +102,18 @@
 </div>
 
 
-@* Employee-Action-modal *@
+@* Employee-Add-modal *@
 <div class="modal fade" id="employeeActionModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addEmployeeModalLabel">Add a New Employee</h5>
+                <h5 class="modal-title" id="actionEmployeeModalLabel">Add a New Employee</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
                     <form id="addEmployeeForm">
-                        <input type="text" class="form-control" id="employeeId" hidden>
+
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label for="employeeName">Employee Name</label>
@@ -187,18 +121,12 @@
                                 <div class="text-danger error-message" id="employeeNameError"></div>
                             </div>
                             <div class="col-6">
-                                <label for="employeeUserName">Employee UserName</label>
-                                <input type="text" class="form-control" id="employeeUserName" placeholder="Enter Employee UserName">
-                                <div class="text-danger error-message" id="employeeUserNameError"></div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-12">
                                 <label for="employeeEmailId">Employee EmailId</label>
                                 <input type="text" class="form-control" id="employeeEmailId" placeholder="Enter Employee EmailId">
                                 <div class="text-danger error-message" id="employeeEmailIdError"></div>
                             </div>
                         </div>
+
                         <div class="row mb-3">
                             <div class="col-6">
                                 <label for="department">Department</label>
@@ -216,8 +144,10 @@
                                 <label for="employeeLoginRole">UserRole</label>
                                 <select class="form-control" id="employeeLoginRole" style="background-color: transparent;">
                                     <option value="">Select Role</option>
-                                    <option value="0">Admin</option>
-                                    <option value="1">User</option>
+                                    @foreach (var item in Model.EmployeeLoginRoles)
+                                    {
+                                        <option value="@item.LoginRoleId">@item.LoginRoleName</option>
+                                    }
                                 </select>
                                 <div class="text-danger error-message" id="employeeLoginRoleError"></div>
 
@@ -225,20 +155,36 @@
                         </div>
 
                         <div class="row mb-3">
-                            <div class="col">
-                                <label for="skills">Skills</label>
-                                <div class="col-md-6">
-                                    <select id="choices-multiple-remove-button" placeholder="Select skill" multiple>
+                            <div class="col-6">
+                                <label for="designation">Designation</label>
+                                <select class="form-control" id="designation" style="background-color: transparent;">
+                                    <option value="">Select Designation</option>
+                                    @foreach (var item in Model.EmployeeDesignations)
+                                    {
 
-                                        @foreach (var item in Model.EmployeeSkills)
-                                        {
-                                            <option value="@item.Skillid">@item.Skillname</option>
-                                        }
-                                    </select>
-                                </div>
+                                        <option value="@item.DesignationId">@item.DesignationName</option>
+                                    }
+                                </select>
+                                <div class="text-danger error-message" id="designationError"></div>
+
+                            </div>
+                            <div class="col-6">
+
+
+                                <label for="skills">Skills</label>
+                                <select id="choices-multiple-remove-button" placeholder="Select skill" multiple>
+
+                                    @foreach (var item in Model.EmployeeSkills)
+                                    {
+                                        <option value="@item.Skillid">@item.Skillname</option>
+                                    }
+                                </select>
+
                                 <div class="text-danger error-message" id="skillsError"></div>
 
                             </div>
+
+
                         </div>
 
                     </form>
@@ -254,473 +200,30 @@
 </div>
 
 
-<!-- Add a modal for displaying employee details -->
-<div class="modal fade" id="employeeDetailsModal" tabindex="-1" role="dialog" aria-labelledby="employeeDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="employeeDetailsModalLabel">Employee Details</h5>
-                <button type="button" class="btn-EmployeeDetails-close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
 
-                <table id="employeeDetailsTable" class="table table-striped table-bordered" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Project Name</th>
-                            <th>Project Role</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Skills</th>
-                            <th>Rating</th>
-                            <th>Is Working</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
 
-            </div>
-            <div class="modal-footer">
-                @*  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> *@
-            </div>
-        </div>
-    </div>
-</div>
+
 
 
 
 
 
 @section scripts {
-    <script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="~/kendo/js/kendo.all.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+    <script>var employeesModel = @Html.Raw(ViewData["employeesModel"]);</script>
+    <script src="~/custom-scripts/Home/Employee.js" asp-append-version="true"></script>
 
-        $(document).ready(function () {
 
-            // DataTable initialization
-            new DataTable('#example');
 
-            
 
-
-
-            $('.assign').click(function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                return false;
-            });
-
-            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-                removeItemButton: true,
-                maxItemCount: 50,
-                searchResultLimit: 50,
-                renderChoiceLimit: 50
-            });
-
-
-            var AddButton = $('<button>', {
-                class: 'btn btn-dark custom-btn addEmployeebtn',
-                text: 'Add ',
-                style: 'margin:0; width:auto;'
-            });
-
-            // Filter button
-            var FilterButton = $('<button>', {
-                class: 'btn btn-danger custom-btn filterEmployeebtn',
-                text: 'Filter',
-                style: 'margin-left:1rem;'
-            });
-
-            $('#example tbody').on('draw.dt', function () {
-                $('#example tbody tr').each(function () {
-                    $(this).find('td:last-child').css('text-align', 'center');
-                });
-            });
-
-            document.getElementById('dt-search-0').placeholder = 'Search something';
-            $('label[for="dt-search-0"]').remove();
-            $('#dt-search-0').parent().parent().removeClass('ms-auto');
-            $('#dt-search-0').css({ 'width': '30rem', 'border': '1px solid black' });
-
-            $('.dt-search').parent().parent().addClass('d-flex flex-row-reverse');
-            $('#dt-length-0').parent().parent().removeClass('me-auto');
-            $('.dt-search').prepend(AddButton);
-            $('.dt-search').parent().css({ 'padding': '0' });
-            $('.dt-length').append(FilterButton);
-            $('.dt-length').parent().css({ 'padding': '0' });
-
-            // Handle delete button click event
-            $(".deletebtn").click(function (e) {
-                e.preventDefault();
-                var row = $(this).closest('tr');
-                var employeeId = row.find('td:eq(0)').text().trim();
-
-                $('#deleteModalError').empty();
-                $('#confirmInput').val('');
-
-                // Open delete confirmation modal
-                $("#deleteModal").modal('show');
-
-                $('#confirmInput').on('input', function () {
-                    var confirmInput = $('#confirmInput').val();
-                    var deleteButton = $('#deleteButton');
-
-                    if (confirmInput === 'CONFIRM') {
-                        deleteButton.prop('disabled', false).removeClass('btn-secondary').addClass('btn-danger');
-                    } else {
-                        deleteButton.prop('disabled', true).removeClass('btn-danger').addClass('btn-secondary');
-                    }
-                });
-
-                $('#deleteButton').click(function () {
-                    var confirmValue = $('#confirmInput').val().trim().toUpperCase();
-                    if (confirmValue === "CONFIRM") {
-                        var data = { EmployeeId: parseInt(employeeId) };
-
-                        $.ajax({
-                            type: 'POST',
-                            url: "/Employees/DeleteEmployee",
-                            data: data,
-                            success: function (result) {
-                                if (result.success) {
-
-                                    $("#deleteModal").modal('hide');
-
-
-                                    location.reload();
-
-
-                                    showSnackbar("true", "Employee deleted successfully.");
-                                } else {
-
-                                    $('#deleteModalError').text(result.message).css('text-align', 'left');
-                                }
-                            },
-                            error: function (errorMessage) {
-
-                                $('#deleteModalError').text("Error deleting employee.").css('text-align', 'center');
-                            }
-                        });
-                    }
-                });
-            });
-
-            $('.btn-delete-close ').click(function () {
-
-                $('#deleteModalError').empty();
-                $('#confirmInput').val('');
-            });
-
-            $('#deleteModal').on('hidden.bs.modal', function () {
-                $('#deleteModalError').empty();
-                $('#confirmInput').val('');
-            });
-
-
-
-            // Show filter modal on button click
-            $(document).on("click", ".filterEmployeebtn", function () {
-                $("#filterEmployeeModal").modal('show');
-            });
-
-
-
-
-
-            // Employee Details Modal :------
-
-            $('#example tbody').on('click', 'tr', function () {
-                new DataTable('#employeeDetailsTable');
-                var employeeId = $(this).data('id');
-                if ($(event.target).hasClass('deletebtn')) {
-                    return;
-                }
-                if ($(event.target).hasClass('updatebtn')) {
-                    return;
-                }
-
-                $.ajax({
-                    url: '/Employees/GetEmployeeRecords',
-                    type: 'POST',
-                    data: { employeeId: parseInt(employeeId) },
-                    success: function (result) {
-                        $('#employeeDetailsTable tbody').empty();
-
-                        AddButton.hide();
-                        FilterButton.hide();
-                        $('#dt-search-1').css({ 'width': '30rem', 'border': '1px solid black' });
-                        $('#dt-length-1').css({ 'margin-left': '1rem' });
-
-                        if (result.success) {
-                            $.each(result.data, function (index, employeeDetails) {
-                                var tableRow = '<tr>' +
-                                    '<td>' + employeeDetails.projectName + '</td>' +
-                                    '<td>' + employeeDetails.projectRoleName + '</td>' +
-                                    '<td>' + new Date(employeeDetails.startDate).toLocaleDateString() + '</td>' +
-                                    '<td>' + new Date(employeeDetails.endDate).toLocaleDateString() + '</td>' +
-                                    '<td>' + employeeDetails.skillsName + '</td>' +
-                                    '<td>' + employeeDetails.rating + '</td>' +
-                                    '<td>' + employeeDetails.isWorking + '</td>' +
-                                    '</tr>';
-
-                                $('#employeeDetailsTable tbody').append(tableRow);
-                            });
-                            $('#employeeDetailsModal').modal('show');
-                        } else {
-                            alert(result.message);
-                        }
-                    },
-                    error: function () {
-                        alert('Error fetching employee details.');
-                    }
-                });
-
-            });
-
-            $('.btn-EmployeeDetails-close').click(function () {
-                $('.addEmployeebtn, .filterEmployeebtn').show();
-            });
-            $('#employeeDetailsModal').on('hidden.bs.modal', function () {
-                $('.addEmployeebtn, .filterEmployeebtn').show();
-            });
-
-
-
-            // Add Modal Jquery
-
-            $(document).on("click", ".addEmployeebtn", function () {
-                $("#addEmployeeBtn").show();
-                $("#updateEmployeeBtn").hide();
-                $("#addEmployeeModalLabel").text('Add a New Employee ');
-                $('#employeeUserName').prop('readonly', false);
-                $("#employeeActionModal").modal('show');
-            });
-
-
-            $('#addEmployeeBtn').click(function (e) {
-                e.preventDefault();
-                $('#errorMessages').empty();
-                var errorMessageHtml = "";
-
-
-                var employeeName = $('#employeeName').val().trim();
-                var employeeUserName = $('#employeeUserName').val().trim();
-                var employeeEmailId = $('#employeeEmailId').val().trim();
-                var department = $('#department').val();
-                var userRole = $('#employeeLoginRole').val();
-                var selectedSkills = $('#choices-multiple-remove-button').val();
-
-                if (employeeName === "") {
-                    $('#employeeNameError').text("Please enter employee name.");
-                }
-
-                if (employeeUserName === "") {
-                    $('#employeeUserNameError').text("Please enter employee username.");
-                }
-
-                if (employeeEmailId === "") {
-                    $('#employeeEmailIdError').text("Please enter employee email.");
-                }
-
-
-                if (department === "") {
-                    $('#departmentError').text("Please select department.");
-                }
-
-                if (userRole === "") {
-                    $('#employeeLoginRoleError').text("Please select user role.");
-                }
-
-
-                if (selectedSkills === null || selectedSkills.length === 0) {
-                    $('#skillsError').text("Please select at least one skill.");
-                }
-
-
-                if ($('.error-message').text() !== "") {
-                    $('#errorMessages').text("").css('text-align', 'center');
-                    return;
-                }
-
-
-                // Construct employee object
-                var employeeObj = {
-                    EmployeeName: employeeName,
-                    EmployeeUserName: employeeUserName,
-                    Email: employeeEmailId,
-                    DepartmentId: department,
-                    LoginRoleId: userRole,
-                    SkillsId: selectedSkills.join(',')
-                };
-                loading();
-
-                // Send AJAX request to add employee
-                $.ajax({
-                    type: "POST",
-                    url: "/Employees/AddEmployee",
-                    data: employeeObj,
-                    success: function (result) {
-                        location.reload();
-                        showSnackbar("true", "Add New Employee successfuly.");
-                    },
-                    error: function (errormessage) {
-                        loading();
-                        showSnackbar("false", errormessage.responseText);
-                    }
-                });
-            });
-
-            $('.btn-close').click(function () {
-                $('#addEmployeeForm').trigger("reset");
-                $('.error-message').empty();
-            });
-            $('#employeeActionModal').on('hidden.bs.modal', function () {
-                $('#addEmployeeForm').trigger("reset");
-                $('.error-message').empty();
-            });
-
-
-
-            // Update Modal Jquery :--
-
-            $(document).on("click", ".updatebtn", function (e) {
-                loading();
-                e.preventDefault();
-                $("#addEmployeeModalLabel").text('Update Employee Details')
-                var row = $(this).closest('tr');
-                console.log("Row:", row);
-                var employeeId = row.find('td:eq(0)').text().trim();
-                console.log("Employee ID:", employeeId);
-
-
-                $.ajax({
-                    url: '/Employees/GetEmployeeById',
-                    type: 'POST',
-                    data: { EmployeeId: employeeId },
-                    success: function (result) {
-                        loading();
-                        $('#employeeId').val(result.employee.employeeId);
-                        $('#employeeName').val(result.employee.employeeName);
-                        $('#employeeUserName').val(result.employee.employeeUserName);
-                        $('#employeeEmailId').val(result.employee.email);
-                        $('#department').val(result.employee.departmentId);
-                        $('#employeeLoginRole').val(result.employee.loginRoleId);
-                        var skills = result.employee.skillsId;
-                        if (skills) {
-                            var skillIds = skills.split(',');
-                            skillIds.forEach(function (skillId) {
-                                multipleCancelButton.setChoiceByValue(skillId);
-                            });
-                        } else {
-                            showSnackbar("false", "Unable to Update Details.")
-                        }
-                        $("#addEmployeeBtn").hide();
-                        $("#updateEmployeeBtn").show();
-                        $('#employeeId').prop('readonly', true);
-                        $('#employeeUserName').prop('readonly', true);
-
-                        $('#employeeActionModal').modal('show');
-                    },
-                    error: function (err) {
-                        loading();
-                        showSnackbar("false", "Something went wrong.");
-                    }
-                });
-            });
-
-
-            $('#updateEmployeeBtn').click(function (e) {
-                e.preventDefault();
-                $('#updateErrorMessages').empty();
-
-                var errorMessage = "";
-
-
-                e.preventDefault();
-                $('#errorMessages').empty();
-
-
-
-
-
-                var errorMessageHtml = "";
-
-                var employeeId = $('#employeeId').val().trim();
-                var employeeName = $('#employeeName').val().trim();
-                var employeeUserName = $('#employeeUserName').val().trim();
-                var employeeEmailId = $('#employeeEmailId').val().trim();
-                var department = $('#department').val();
-                var userRole = $('#employeeLoginRole').val();
-                var selectedSkills = $('#choices-multiple-remove-button').val();
-
-                if (employeeName === "") {
-                    $('#employeeNameError').text("Please enter employee name.");
-                }
-
-                if (employeeUserName === "") {
-                    $('#employeeUserNameError').text("Please enter employee username.");
-                }
-
-                if (employeeEmailId === "") {
-                    $('#employeeEmailIdError').text("Please enter employee email.");
-                }
-
-
-
-                if (department === "") {
-                    $('#departmentError').text("Please select department.");
-                }
-
-                if (userRole === "") {
-                    $('#employeeLoginRoleError').text("Please select user role.");
-                }
-
-
-                if (selectedSkills === null || selectedSkills.length === 0) {
-                    $('#skillsError').text("Please select at least one skill.");
-                }
-
-
-                if ($('.error-message').text() !== "") {
-                    $('#errorMessages').text("").css('text-align', 'center');
-                    return;
-                }
-
-
-                // Construct employee object
-                var employeeObj = {
-                    EmployeeId: employeeId,
-                    EmployeeName: employeeName,
-                    EmployeeUserName: employeeUserName,
-                    Email: employeeEmailId,
-                    DepartmentId: department,
-                    LoginRoleId: userRole,
-                    SkillsId: selectedSkills.join(',')
-                };
-
-                loading();
-                $.ajax({
-                    type: "POST",
-                    url: "/Employees/UpdateEmployee",
-                    data: employeeObj,
-                    success: function (result) {
-                        location.reload();
-                        showSnackbar("true", "Update Employee Details successfuly.");
-                    },
-                    error: function (errormessage) {
-                        loading();
-                        showSnackbar("false", "Something went wrong.")
-                    }
-                });
-            });
-
-            $('.btn-close-update').click(function () {
-
-                $('#updateModalForm').trigger("reset");
-                $('#updateErrorMessages').empty();
-            });
-        });
-    </script>
 }
+
+
+
+
+
+
 

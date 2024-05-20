@@ -1,5 +1,6 @@
 using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using Npgsql;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -256,31 +257,49 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
         public IActionResult Employees()
         {
-            int allocated = 0;
-            int unallocated = 0;
-            using (var cmd = new NpgsqlCommand("select * from count_allocated_unallocated_employees()", _connection))
+
+
+            EmployeesModel employeesModel = new EmployeesModel()
+            {
+                Employees = EmployeesController.getEmployeesList(_connection),
+                EmployeeDepartments = EmployeesController.getEmployeeDepartmentList(_connection),
+                EmployeeDesignations = EmployeesController.getEmployeeDesignationList(_connection),
+                EmployeeLoginRoles = EmployeesController.getEmployeeLoginRoleList(_connection),
+                EmployeeSkills = getEmployeeSkillsList(_connection),
+            };
+
+            // Assign serialized employeesModel to ViewData using an indexer
+            ViewData["employeesModel"] = JsonSerializer.Serialize(employeesModel);
+
+            return View(employeesModel);
+        }
+
+
+
+
+        public List<Skill> getEmployeeSkillsList(NpgsqlConnection _connection)
+        {
+            List<Skill> employeeSkill = new List<Skill>();
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallskills();", _connection))
             {
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        allocated = reader.GetInt32(0);
-                        unallocated = reader.GetInt32(1);
+                        Skill employeeSkillObj = new Skill
+                        {
+                            Skillid = Convert.ToInt32(reader[0]),
+                            Skillname = Convert.ToString(reader[1])!
+                        };
+                        employeeSkill.Add(employeeSkillObj);
+
                     }
+
                 }
             }
-
-            EmployeesModel employeesModel = new EmployeesModel()
-            {
-                Employees = EmployeesController.getEmployeesList(_connection),
-                EmployeeDepartments = getEmployeeDepartmentList(_connection),
-                EmployeeSkills = getEmployeeSkillsList(_connection),
-                AllocatedEmployees = allocated,
-                UnallocatedEmployees = unallocated
-            };
-
-            return View(employeesModel);
+            return employeeSkill;
         }
+
 
 
         public IActionResult ProjectEmployeeMapping()
@@ -378,30 +397,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
             }
             return employeeDepartment;
-        }
-
-
-        private static List<Skill> getEmployeeSkillsList(NpgsqlConnection _connection)
-        {
-            List<Skill> employeeSkill = new List<Skill>();
-            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.displayallskills();", _connection))
-            {
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Skill employeeSkillObj = new Skill
-                        {
-                            Skillid = Convert.ToInt32(reader[0]),
-                            Skillname = Convert.ToString(reader[1])!
-                        };
-                        employeeSkill.Add(employeeSkillObj);
-
-                    }
-
-                }
-            }
-            return employeeSkill;
         }
 
 
