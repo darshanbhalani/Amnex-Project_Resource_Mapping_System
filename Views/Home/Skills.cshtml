@@ -1,17 +1,14 @@
-﻿ ﻿@{
+﻿@{
     ViewData["Title"] = "Skills Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
-
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-@*  <link rel="stylesheet" href="~/css/skills.css" /> *@
-<link rel="stylesheet" href="/kendo/css/kendo.css" />
+<link rel="stylesheet" href="~/css/skills.css" />
+<link rel="stylesheet" href="~/css/kendo.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<div class="col-md-12">
-    <div id="grid"></div>
-</div>
-
+<div id="grid"></div>
 
 <!-- Modal for adding skills -->
 <div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillsModalLabel" aria-hidden="true">
@@ -84,457 +81,44 @@
     </div>
 </div>
 
-<div class="col-md-12" style="display:none;" id="skill_details">
+<!--modal for employee skills-->
+<div class="modal fade" id="empSkillModal" tabindex="-1" role="dialog" aria-labelledby="empSkillsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="empSkillsModalLabel">Employee Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
-    <div class="accordion-header" style="text-align:left; ">
-        <button class="link-button" id="employeeDetailsBtn">Employee details</button>
-        <button class="link-button" id="projectDetailsBtn">Projects details</button>
-    </div>
-    <div id="mainContent">
-        <div id="projgrid" style="display:none;"></div>
-        <div id="empgrid"></div>
-    </div>
-    <br />
-    <div class="footer" style="text-align:right; margin-bottom:2rem; position: sticky;">
-        <button class="btn btn-success k-grid-edit">Edit skill</button>
-        <button class="btn btn-danger k-grid-delete">Delete skill</button>
+            </div>
+            <div class="modal-body">
+                <div id="empgrid"></div>
+            </div>
+        </div>
     </div>
 </div>
 
+<!--modal for project skills-->
+<div class="modal fade" id="projectSkillModal" tabindex="-1" role="dialog" aria-labelledby="projectSkillsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="projectSkillsModalLabel">Project Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
+            </div>
+            <div class="modal-body">
+                <div id="projgrid"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 @section scripts {
-
-    <script src="https://kendo.cdn.telerik.com/2022.1.301/js/kendo.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-
     <script>
-        
-            var Skills = @Html.Raw(ViewData["SkillsData"]);
-            displayskills();
-            function displayProjectSkill(dataItem) {
-                $.ajax({
-                    url: '/Skills/GetProjectDetails',
-                    type: 'GET',
-                    data: { skillId: dataItem.Skillid },
-                    success: function (response) {
-                        var projectData = response.data;
-                        $('#projgrid').kendoGrid({
-                            dataSource: {
-                                data: projectData,
-                                pageSize: 10
-                            },
-                            dataBound: function (e) {
-                                $('#projgrid th').css('background-color', 'rgb(47 68 98)');
-                                $('#projgrid th').css('color', 'white');
-                                $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
-                                $('.k-grid-edit').attr("data-skillid", dataItem.Skillid);
-                                $('.k-grid-delete').attr("data-skillid", dataItem.Skillid);
-                                if (e.sender.dataSource.view().length === 0) {
-                                    this.element.find(".k-grid-header").hide();
-                                } else {
-                                    this.element.find(".k-grid-header").show();
-                                    var skillName = dataItem.Skillname;
-                                    this.element.find(".k-grid-header").find("th:first").text("Projects working on skill : " + skillName);
-                                }
-                            },
-                            columns: [
-                                { field: "projectName", title: "", width: "50%" }
-                            ],
-                            sortable: true,
-                            pageable: true,
-                            toolbar: [
-                                {
-                                    name: "search",
-                                    template: "<button class='k-button searchButton'>Search</button>",
-                                    className: "custom-toolbar-button"
-                                },
-                                {
-                                    name: "pdf",
-                                    text: "Export to PDF",
-                                    className: "k-grid-pdf"
-                                }
-                            ],
-                            pdf: {
-                                fileName: "Projects_in_skills.pdf",
-                                allPages: true,
-                                avoidLinks: true,
-                                paperSize: "A4",
-                                margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
-                                fontSize: 12,
-                            },
-
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
-            function displayEmployeeSkill(dataItem) {
-                $.ajax({
-                    url: '/Skills/GetEmployeeDetails',
-                    type: 'GET',
-                    data: { skillId: dataItem.Skillid },
-                    success: function (response) {
-                        var employeeData = response.data;
-                        $('#empgrid').kendoGrid({
-                            dataSource: {
-                                data: employeeData,
-                                pageSize: 10
-                            },
-                            dataBound: function (e) {
-                                $('#empgrid th').css('background-color', 'rgb(47 68 98)');
-                                $('#empgrid th').css('color', 'white');
-                                $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
-                                $('.k-grid-edit').attr("data-skillid", dataItem.Skillid);
-                                $('.k-grid-edit').attr("data-skillname", dataItem.Skillname);
-                                $('.k-grid-delete').attr("data-skillid", dataItem.Skillid);
-                                $('.k-grid-delete').attr("data-skillname", dataItem.Skillname);
-                                if (e.sender.dataSource.view().length === 0) {
-                                    // If there are no records, hide the grid header
-                                    this.element.find(".k-grid-header").hide();
-                                } else {
-                                    // If there are records, show the grid header and set the title
-                                    this.element.find(".k-grid-header").show();
-                                    var skillName = dataItem.Skillname;
-                                    this.element.find(".k-grid-header").find("th:first").text("Employees having skill : " + skillName);
-                                }
-                            },
-                            columns: [
-                                { field: "employeeName", title: "", width: "50%" }
-                            ],
-                            sortable: true,
-                            pageable: true,
-                            toolbar: [
-                                {
-                                    name: "search",
-                                    template: "<button class='k-button searchButton'>Search</button>",
-                                    className: "custom-toolbar-button"
-                                },
-                                {
-                                    name: "pdf",
-                                    text: "Export to PDF",
-                                    className: "k-grid-pdf"
-                                }
-                            ],
-                            pdf: {
-                                fileName: "Employees_in_skills.pdf",
-                                allPages: true,
-                                avoidLinks: true,
-                                paperSize: "A4",
-                                margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
-                                fontSize: 12,
-                            },
-
-                        });
-
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
-            function displayskills() {
-                $('#grid').kendoGrid({
-                    dataSource: Skills,
-                    columns: [
-                        {
-                            field: "Skillname",
-                            title: "Skill's Name",
-                            width: "50%",
-                            editable: false,
-                            attributes: {
-                                "class": "custom-column"
-                            },
-                            sortable: true
-                        }
-                    ],
-                    sortable: true,
-                    editable: false,
-                    navigatable: true,
-                    pageable: {
-                        refresh: true,
-                        pageSizes: [10, 25, 50, 100],
-                        buttonCount: 5,
-                        pageSize: 10
-                    },
-                    toolbar: [
-                        {
-                            name: "create",
-                            template: "<button class='k-button addSkillButton' style='background-color:rgb(47 68 98);'>Add Skill</button>",
-                            className: "custom-toolbar-button"
-                        },
-                        {
-                            name: "search",
-                            template: "<button class='k-button searchButton'>Search</button>",
-                            className: "custom-toolbar-button"
-                        },
-                        {
-                            name: "pdf",
-                            text: "Export to PDF",
-                            className: "k-grid-pdf"
-                        }
-                    ],
-                    pdf: {
-                        fileName: "Skills.pdf",
-                        allPages: true,
-                        avoidLinks: true,
-                        paperSize: "A4",
-                        margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
-                        fontSize: 12,
-                        exportPDF: function (e) {
-                            e.sender.thead.find("th").each(function () {
-
-                                if ($(this).text().trim() === "Actions") {
-                                    $(this).css("display", "none");
-                                }
-                            });
-                        }
-                    },
-                    dataBound: function () {
-                        $('#grid th').css('background-color', 'rgb(47 68 98)');
-                        $('#grid th').css('color', 'white');
-                        $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
-                        var grid = this;
-
-                        $('#grid tbody tr').each(function () {
-                            var rowData = grid.dataItem(this);
-                            if (rowData) {
-                                $(this).attr("data-skillid", rowData.Skillid);
-                            }
-
-                        });
-
-                    },
-                    selectable: "row",
-                    change: function (e) {
-                        var selectedRows = this.select();
-                        $('#grid').hide();
-
-                        selectedRows.each(function () {
-                            var dataItem = $('#grid').data("kendoGrid").dataItem(this);
-                            if (dataItem) {
-                                $('#skillname').text(dataItem.Skillname);
-
-                                displayEmployeeSkill(dataItem);
-                                displayProjectSkill(dataItem);
-                            }
-                            $('#skill_details').show();
-
-                        });
-
-                    },
-
-                });
-            }
-            $("#projectDetailsBtn").click(function () {
-                $("#empgrid").hide();
-                $("#projgrid").show();
-            });
-
-            $("#employeeDetailsBtn").click(function () {
-                $("#empgrid").show();
-                $("#projgrid").hide();
-            });
-            $(document).on('click', '.addSkillButton', function () {
-                $('#addSkillModal').modal('show');
-            });
-
-            $('#skillName').off('input').on('input', function () {
-                var skillNameInput = $('#skillName').val();
-                console.log(skillNameInput);
-                var saveAddSkillButton = $('#saveAddSkillButton');
-                $('#addSkillModal').on('hidden.bs.modal', function () {
-                    $('#skillName').val('');
-                });
-                if (skillNameInput === '') {
-                    saveAddSkillButton.prop('disabled', true);
-                    console.log("inside if");
-                } else {
-                    saveAddSkillButton.prop('disabled', false);
-                    console.log("inside else");
-
-                }
-
-            });
-            $('#saveAddSkillButton').on('click', function () {
-                $('#addSkillModal').modal('hide');
-                var skillName = $('#skillName').val();
-                console.log(skillName);
-                checkAndSaveSkill(skillName);
-            });
-            function checkAndSaveSkill(skillName) {
-                var lowercaseSkillName = skillName.toLowerCase();
-                var grid = $('#grid').data('kendoGrid');
-                var dataSource = grid.dataSource;
-                console.log(lowercaseSkillName);
-                // Check if the skill already exists in the data source
-                var existingSkill = dataSource.data().some(function (item) {
-                    return item.Skillname.toLowerCase() === lowercaseSkillName;
-                });
-                console.log(existingSkill);
-                if (existingSkill) {
-                    showSnackbar('false', skillName + ' already exists');
-                    console.log("inside if 2");
-                    $('#skillName').val('');
-                    $('#addSkillModal').modal('hide');
-                    return;
-                }
-                else {
-                    saveSkill(skillName);
-                    console.log("inside else 2");
-                }
-
-            }
-
-            function saveSkill(skillName) {
-                var data = {
-                    skillname: skillName,
-                };
-                console.log(data);
-                loading();
-                $.ajax({
-                    type: 'POST',
-                    url: '/Skills/AddSkill',
-                    data: data,
-                    success: function (response) {
-                        loading();
-                        if (response.success) {
-                            showSnackbar('true', skillName + ' added successfully');
-                            // setTimeout(function () {
-                            //     showSnackbar('true', skillName + ' added successfully');
-                            // }, 2000);
-                            location.reload();
-                        } else {
-                            $('#addSkillModal').modal('hide');
-                            showSnackbar('false', response.message);
-
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        loading();
-                        console.error(error);
-                        showSnackbar('false', error);
-
-                    }
-                });
-            }
-
-            //Edit skills
-            $('#skill_details').on('click', '.k-grid-edit', function () {
-                var skillName = $(this).data('skillname');
-                var skillId = $(this).data('skillid');
-                $('#editSkillName').val(skillName);
-                $('#editSkillModal').modal('show');
-                $('#editSkillName').val(skillName).data('originalSkillName', skillName);
-                $('#editSkillModal').data('skillId', skillId);
-                $('#editSkillModal').on('hidden.bs.modal', function () {
-
-                });
-                $('#editSkillName').on('input', function () {
-                    var editedSkillName = $(this).val().trim();
-                    var originalSkillName = $(this).data('originalSkillName');
-
-                    if (editedSkillName !== originalSkillName) {
-                        $('#saveEditSkillButton').prop('disabled', false);
-
-                    } else {
-                        $('#saveEditSkillButton').prop('disabled', true);
-                    }
-                });
-            });
-
-            $('#saveEditSkillButton').on('click', function () {
-                var updatedSkillName = $('#editSkillName').val();
-                var skillId = $('#editSkillModal').data('skillId');
-                loading();
-                $.ajax({
-                    type: 'POST',
-                    url: '/Skills/UpdateSkill',
-                    data: { skillId: skillId, updatedSkillName: updatedSkillName },
-                    success: function (response) {
-                        loading();
-                        if (response.success) {
-                            showSnackbar('true', updatedSkillName + ' updated successfully');
-                            location.reload();
-                        } else {
-                            showSnackbar('false', response.error);
-
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        loading();
-                        console.error(error);
-                        showSnackbar('false', 'An error occurred while updating the skill. Please try again later.');
-
-                    }
-                });
-            });
-
-
-            //DELETE SKILL
-            $('#skill_details').on('click', '.k-grid-delete', function () {
-                var skillName = $(this).data('skillname');
-
-                var skillId = $(this).data('skillid');
-                console.log(skillId);
-                console.log(skillName);
-                $('#deleteSkillName').val(skillName);
-                $('#deleteSkillName').text(skillName);
-                $('#deleteSkillModal').data('skillId', skillId);
-                $('#deleteSkillModal').data('skillName', skillName);
-                $('#deleteSkillModal').modal('show');
-                $('#deleteSkillModal').on('hidden.bs.modal', function () {
-                    $('#confirmInput').val('');
-                    $('#confirmDeleteButton').prop('disabled', true);
-                });
-
-            });
-            $('#confirmInput').on('input', function () {
-                var confirmInputValue = $(this).val().trim();
-                var confirmButton = $('#confirmDeleteButton');
-                if (confirmInputValue === 'CONFIRM') {
-                    confirmButton.prop('disabled', false);
-                } else {
-                    confirmButton.prop('disabled', true);
-                }
-            });
-            $('#confirmDeleteButton').on('click', function () {
-                var skillIdToDelete = $('#deleteSkillModal').data('skillId');
-                console.log("skillIdToDelete" + skillIdToDelete);
-                var skillNameToDelete = $('#deleteSkillModal').data('skillName');
-                console.log("skillIdToDelete" + skillNameToDelete);
-
-                var confirmInputValue = $('#confirmInput').val().trim();
-                // Check if the input value matches the confirmation text
-                if (confirmInputValue !== 'CONFIRM') {
-                    return;
-                }
-                loading();
-                $.ajax({
-                    type: 'POST',
-                    url: '/Skills/DeleteSkill',
-                    data: { skillId: skillIdToDelete },
-                    success: function (response) {
-                        loading();
-                        if (response.success) {
-                            $('#deleteSkillModal').modal('hide');
-                            showSnackbar('true', skillNameToDelete + ' deleted successfully');
-                            location.reload();
-                        } else {
-                            showSnackbar('false', response.message);
-
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        loading();
-                        console.error(error);
-                        showSnackbar('false', 'An error occurred while deleting the skill. Please try again later.');
-
-                    }
-                });
-            });
-        
+        var Skills = @Html.Raw(ViewData["SkillsData"]);
     </script>
+    <script src="~/custom-scripts/Home/Skills.js"></script>
 }
-

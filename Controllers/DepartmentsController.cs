@@ -1,7 +1,9 @@
-﻿using Amnex_Project_Resource_Mapping_System.Models;
+﻿using Amnex_Project_Resource_Mapping_System.Controllers;
+using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Npgsql;
+using System.Data;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
@@ -14,11 +16,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             _connection = connection;
             _connection.Open();
         }
-
-        [HttpGet]
-        public IActionResult GetDepartments()
+        public IActionResult Departments()
         {
-            List<Department> departments = new List<Department>();
+            //List<Department> departments = GetDepartment();
+            //return View();
+            List<Department> departments = [];
 
             using (var cmd = new NpgsqlCommand("SELECT * FROM public.displayalldepartments()", _connection))
             {
@@ -34,32 +36,28 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     }
                 }
             }
-            var Json1 = JsonConvert.SerializeObject(departments);
-            return Json(Json1);
-        }
+            ViewData["DepartmentData"] = JsonConvert.SerializeObject(departments);
 
+            return View(departments);
+        }
 
         [HttpPost]
         public IActionResult AddDepartment(Department model)
         {
             try
             {
-                using (var cmd = new NpgsqlCommand("select public.insertdepartment(@in_department_name,@in_created_by,@in_modify_by,@in_create_time,@in_modify_time,@in_is_deleted)", _connection))
+                using (var cmd = new NpgsqlCommand("select public.adddepartment(@in_department_name,@in_created_by)", _connection))
                 {
                     cmd.Parameters.AddWithValue("in_department_name", model.DepartmentName);
-                    cmd.Parameters.AddWithValue("in_created_by", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                    cmd.Parameters.AddWithValue("in_modify_by", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                    cmd.Parameters.AddWithValue("in_create_time", DateTime.Now);
-                    cmd.Parameters.AddWithValue("in_modify_time", DateTime.Now);
-                    cmd.Parameters.AddWithValue("in_is_deleted", false);
+                    cmd.Parameters.AddWithValue("in_created_by", 1);
                     cmd.ExecuteNonQuery();
                 }
 
-                return Json(new { success = true });
+                return Json(new { success = true, department = model });
             }
             catch (NpgsqlException ex)
             {
-                if (ex.SqlState == "23505") 
+                if (ex.SqlState == "23505")
                 {
                     var fetchdeptid = checkId(model.DepartmentName);
                     var checkdata = checkDelete(model.DepartmentName);
@@ -75,29 +73,26 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
                 else
                 {
-                    Response.StatusCode = 500; 
+                    Response.StatusCode = 500;
                     return Json(new { success = false, error = ex.Message });
                 }
             }
         }
-        
-
         [HttpPut]
-        public IActionResult Editdepartment(Department model)
+        public IActionResult Editdepartment(Department dept)
         {
-            string uid = HttpContext.Session.GetString("userId")!;
+            //string uid = HttpContext.Session.GetString("userId")!;
 
             try
             {
 
-                var sql = "select public.updatedepartment(@in_department_id,@in_department_name,@in_modify_time,@in_modify_by)";
+                var sql = "select public.updatedepartment(@in_department_id,@in_department_name,@in_modify_by)";
 
                 using (var cmd = new NpgsqlCommand(sql, _connection))
                 {
-                    cmd.Parameters.AddWithValue("in_department_id", model.DepartmentId);
-                    cmd.Parameters.AddWithValue("in_department_name", model.DepartmentName);
-                    cmd.Parameters.AddWithValue("in_modify_by", Convert.ToInt32(uid));
-                    cmd.Parameters.AddWithValue("in_modify_time", DateTime.Now);
+                    cmd.Parameters.AddWithValue("in_department_id", dept.DepartmentId);
+                    cmd.Parameters.AddWithValue("in_department_name", dept.DepartmentName);
+                    cmd.Parameters.AddWithValue("in_modify_by", 1);
                     cmd.ExecuteNonQuery();
                 }
 
@@ -110,45 +105,29 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
-
-
         [HttpPost]
         public IActionResult Deletedepartment(Department model)
         {
             try
             {
-                bool isDeleteable;
-                using (var cmd1 = new NpgsqlCommand("SELECT public.checkisdepartmentdeleteable(@in_department_id)", _connection))
-                {
-                    cmd1.Parameters.AddWithValue("in_department_id", model.DepartmentId);
-                    isDeleteable = (bool)cmd1.ExecuteScalar()!;
-                }
-                if (isDeleteable)
-                {
-                    var sql = "SELECT public.deletedepartment(@in_department_id, @in_modify_time, @in_modify_by)";
-                    using (var cmd2 = new NpgsqlCommand(sql, _connection))
-                    {
-                        cmd2.Parameters.AddWithValue("in_department_id", model.DepartmentId);
-                        cmd2.Parameters.AddWithValue("in_modify_by", Convert.ToInt32(HttpContext.Session.GetString("userId")!));
-                        cmd2.Parameters.AddWithValue("in_modify_time", DateTime.Now);
-                        cmd2.ExecuteNonQuery();
-                    }
 
-                    return new JsonResult(new { success = true });
-                }
-                else
+                var sql = "SELECT public.deletedepartment(@in_department_id, @in_modify_by)";
+                using (var cmd2 = new NpgsqlCommand(sql, _connection))
                 {
-                    return new JsonResult(new { success = false, message = "Department coud not be deleted because it has running project or employees." });
+                    cmd2.Parameters.AddWithValue("in_department_id", model.DepartmentId);
+                    cmd2.Parameters.AddWithValue("in_modify_by", 1);
+                    cmd2.ExecuteNonQuery();
                 }
+
+                // Return success JSON response
+                return new JsonResult(new { success = true });
             }
             catch (Exception ex)
             {
-                return new JsonResult(new { success = false, message = ex.Message });
+                // Return error JSON response with exception details
+                return new JsonResult(new { success = false, error = ex.Message });
             }
-
         }
-
-
         public int checkId(string departmentname)
         {
             int departmentId = 0;
@@ -174,26 +153,22 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
 
         }
-
-
         public void changeIsDeleted(int DepartmentId)
         {
             string uid = HttpContext.Session.GetString("userId")!;
 
-            var sql = "update departments set modifyby = @modifyby,modifytime = @modifytime, isDeleted = false where departmentid = @departmentid";
+            var sql = "update departments set modifiedby = @modifiedby,modifiedtime = @modifiedtime, isDeleted = false where departmentid = @departmentid";
             using (var cmd = new NpgsqlCommand(sql, _connection))
             {
                 cmd.Parameters.AddWithValue("departmentid", DepartmentId);
-                cmd.Parameters.AddWithValue("modifyby", Convert.ToInt32(uid));
-                cmd.Parameters.AddWithValue("modifytime", DateTime.Now);
+                cmd.Parameters.AddWithValue("modifiedby", Convert.ToInt32(uid));
+                cmd.Parameters.AddWithValue("modifiedtime", DateTime.Now);
                 cmd.Parameters.AddWithValue("isDeleted", false);
                 cmd.ExecuteNonQuery();
             }
 
 
         }
-
-
         public bool checkDelete(string departmentname)
         {
             Console.WriteLine(departmentname);
@@ -206,8 +181,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 return count;
             }
         }
-
-
         internal static List<dynamic> getDepartmentList(NpgsqlConnection _connection)
         {
             List<dynamic> departments = [];
@@ -227,6 +200,135 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
             return departments;
         }
+        public IActionResult GetDetails(int departmentId)
+        {
+            Department department = new Department
+            {
+                DepartmentId = departmentId,
+            };
 
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM public.getdepartmentdetails(@departmentid)", _connection))
+            {
+                cmd.Parameters.AddWithValue("@departmentid", departmentId);
+
+                using (NpgsqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
+                    {
+                        department.DepartmentName = dr["departmentname"].ToString()!;
+                        department.totalprojects = Convert.ToInt32(dr["totalprojects"]);
+                        department.completedprojects = Convert.ToInt32(dr["completedprojects"])!;
+                        department.runningprojects = Convert.ToInt32(dr["runningprojects"])!;
+                        department.pendingprojects = Convert.ToInt32(dr["pendingprojects"])!;
+                        department.totalemployees = Convert.ToInt32(dr["totalemployees"])!;
+                        department.allocatedemployees = Convert.ToInt32(dr["allocatedemployees"])!;
+                        department.unallocatedemployees = Convert.ToInt32(dr["unallocatedemployees"])!;
+
+                        return View(department);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Department not found.");
+                        return View();
+                    }
+                }
+            }
+        }
+
+        public List<Employee> GetDepartmentEmployees(int departmentId)
+        {
+            var departmentEmployees = new List<Employee>();
+
+            using (var cmd = new NpgsqlCommand("SELECT * FROM public.getdepartmentemployees(@departmentId)", _connection))
+            {
+                Console.WriteLine(Convert.ToInt64(departmentId));
+                cmd.Parameters.AddWithValue("@departmentId", Convert.ToInt64(departmentId));
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var employee = new Employee
+                        {
+                            EmployeeAipl = reader.GetString(0),
+                            EmployeeName = reader.GetString(1),
+                            EmployeeDesignation = reader.GetString(2),
+                            EmployeeSkills = reader["employeeskills"] != DBNull.Value ? reader["employeeskills"].ToString() : string.Empty,
+                            IsAllocated = (bool)reader["isallocated"],
+                        };
+                        departmentEmployees.Add(employee);
+                    }
+                }
+            }
+
+            return departmentEmployees;
+        }
+
+        public List<Project> GetDepartmentProjects(int departmentId)
+        {
+            var departmentProject = new List<Project>();
+            using (var cmd = new NpgsqlCommand("SELECT * FROM public.getdepartmentprojects(@departmentId)", _connection))
+            {
+                Console.WriteLine(Convert.ToInt64(departmentId));
+                cmd.Parameters.AddWithValue("@departmentId", Convert.ToInt64(departmentId));
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var project = new Project
+                        {
+                            ProjectName = Convert.ToString(reader["projectname"])!,
+                            StartDate = Convert.IsDBNull(reader["projectstartdate"]) ? default : DateOnly.FromDateTime((DateTime)reader["projectstartdate"]),
+                            EndDate = Convert.IsDBNull(reader["projectenddate"]) ? default : DateOnly.FromDateTime((DateTime)reader["projectenddate"]),
+                            SkillName = reader["projectskills"] != DBNull.Value ? reader["projectskills"].ToString()! : "Not found",
+                            Status = reader["projectstatus"] != DBNull.Value ? reader["projectstatus"].ToString()! : "Not found",
+                        };
+                        departmentProject.Add(project);
+                    }
+                }
+            }
+
+            return departmentProject;
+        }
+
+        public IActionResult GetDepartmentname(int departmentId)
+        {
+            var departmentname = "";
+            using (var cmd = new NpgsqlCommand("SELECT * FROM public.departments where departmentid = @departmentId", _connection))
+            {
+                Console.WriteLine(Convert.ToInt64(departmentId));
+                cmd.Parameters.AddWithValue("@departmentId", Convert.ToInt64(departmentId));
+
+                using NpgsqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read()) // Check if there are rows returned
+                {
+                    departmentname = reader.GetString(1); // Index 0 for the first column
+                }
+            }
+
+            return Json(new { departmentname = departmentname });
+        }
+
+
+        [HttpGet]
+
+        public IActionResult deptProjects(int departmentId)
+        {
+            ViewData["DepartmentId"] = departmentId;
+            var departmentEmployees = GetDepartmentProjects(departmentId);
+
+            return View(departmentEmployees);
+        }
+        [HttpGet]
+        public IActionResult deptEmployees(int departmentId)
+        {
+            ViewData["DepartmentId2"] = departmentId;
+            Console.WriteLine("In controller " + departmentId);
+            var departmentEmployees = GetDepartmentEmployees(departmentId);
+
+
+            return View(departmentEmployees);
+        }
     }
 }

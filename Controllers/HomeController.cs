@@ -333,7 +333,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         public IActionResult Skills()
         {
             List<Skill> skills = new List<Skill>();
-            using (var cmd = new NpgsqlCommand("SELECT skillid, skillname FROM public.skills WHERE isdeleted = false order by skillid", _connection))
+            using (var cmd = new NpgsqlCommand("SELECT s.skillid, s.skillname FROM skills s WHERE isdeleted=false ORDER BY s.skillid;", _connection))
             {
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -347,6 +347,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     }
                 }
             }
+            ViewData["SkillsData"] = Newtonsoft.Json.JsonConvert.SerializeObject(skills);
             return View(skills);
         }
 
