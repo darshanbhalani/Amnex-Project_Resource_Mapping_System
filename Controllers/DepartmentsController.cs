@@ -17,14 +17,9 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         }
         public IActionResult Departments()
         {
-            List<Department> departments = GetDepartment();
-            ViewData["DepartmentData"] = JsonConvert.SerializeObject(departments);
-            return View();
-        }
-        [HttpGet]
-        public List<Department> GetDepartment()
-        {
-            List<Department> departments = new List<Department>();
+            //List<Department> departments = GetDepartment();
+            //return View();
+            List<Department> departments = [];
 
             using (var cmd = new NpgsqlCommand("SELECT * FROM public.displayalldepartments()", _connection))
             {
@@ -40,8 +35,11 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     }
                 }
             }
-            return departments;
+            ViewData["DepartmentData"] = JsonConvert.SerializeObject(departments);
+
+            return View(departments);
         }
+
         [HttpPost]
         public IActionResult AddDepartment(Department model)
         {
@@ -217,13 +215,13 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     if (dr.Read())
                     {
                         department.DepartmentName = dr["departmentname"].ToString()!;
-                        department.totalprojects = Convert.ToInt32(dr["totalprojects"]);
-                        department.completedprojects = Convert.ToInt32(dr["completedprojects"])!;
-                        department.runningprojects = Convert.ToInt32(dr["runningprojects"])!;
-                        department.pendingprojects = Convert.ToInt32(dr["pendingprojects"])!;
-                        department.totalemployees = Convert.ToInt32(dr["totalemployees"])!;
-                        department.allocatedemployees = Convert.ToInt32(dr["allocatedemployees"])!;
-                        department.unallocatedemployees = Convert.ToInt32(dr["unallocatedemployees"])!;
+                        department.TotalProjects = Convert.ToInt32(dr["totalprojects"]);
+                        department.CompletedProjects = Convert.ToInt32(dr["completedprojects"])!;
+                        department.RunningProjects = Convert.ToInt32(dr["runningprojects"])!;
+                        department.PendingProjects = Convert.ToInt32(dr["pendingprojects"])!;
+                        department.TotalEmployees = Convert.ToInt32(dr["totalemployees"])!;
+                        department.AllocatedEmployees = Convert.ToInt32(dr["allocatedemployees"])!;
+                        department.UnallocatedEmployees = Convert.ToInt32(dr["unallocatedemployees"])!;
 
                         return View(department);
                     }

@@ -8,7 +8,7 @@
 
         columns: [
             {
-                field: "DepartmentName", title: "Name", width: 500, editable: false
+                field: "departmentName", title: "Name", width: 500, editable: false
             //    template: '<a href="javascript:void(0)" class="department-link">#= DepartmentName #</a>'
             },
             {
@@ -46,11 +46,11 @@
 
         $('#departmentModal').modal('show');
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        $('#department').val(dataItem.DepartmentName);
+        $('#department').val(dataItem.departmentName);
         $("#department").on("input", function () {
 
             var newDepartment = $(this).val();
-            if (newDepartment !== dataItem.DepartmentName) {
+            if (newDepartment !== dataItem.departmentName) {
                 $("#EditChangesBtn").removeAttr("disabled");
                 $("#EditChangesBtn").addClass('btn-success');
             } else {
@@ -61,7 +61,7 @@
         $(document).on("click", "#EditChangesBtn", function () {
             var editeddepartmentName = $("#department").val();
             var data = {
-                DepartmentId: dataItem.DepartmentId,
+                DepartmentId: dataItem.departmentId,
                 DepartmentName: editeddepartmentName,
             };
             $.ajax({
@@ -83,7 +83,7 @@
     function openDeleteModal(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        $("#departmentNamePlaceholder").text(dataItem.DepartmentName);
+        $("#departmentNamePlaceholder").text(dataItem.departmentName);
         $('#departmentModalLabel').text('Delete Department');
 
         $("#deleteDepartmentconfirm").val('');
@@ -107,7 +107,7 @@
                 $("#deleteBtn").addClass('btn-danger');
                 $("#deleteBtn").click(function () {
                     var data = {
-                        DepartmentId: dataItem.DepartmentId,
+                        DepartmentId: dataItem.departmentId,
                     };
                     $.ajax({
                         type: "POST",
@@ -145,7 +145,7 @@
         $('#departmentlabel').removeClass('k-hidden');
         $('#deletedeptlabel').addClass('k-hidden');
         $('#departmentModalLabel').text('Add Department');
-        $('#department').removeAttr('placeholder');
+        $('#depart ment').removeAttr('placeholder');
 
         $('#department').attr('placeholder', 'Enter Department');
         $('#department').val('');
@@ -187,11 +187,11 @@
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         console.log(dataItem);
-        var departmentName = dataItem.DepartmentId;
-        console.log(departmentName);
+        var departmentName = dataItem.departmentId;
+        console.log("ID"+departmentName);
         var data = {
-            DepartmentId: dataItem.DepartmentId
+            DepartmentId: dataItem.departmentId
         }
-        window.location.href = "/Departments/GetDetails?departmentId=" + dataItem.DepartmentId;
+        window.location.href = "/Departments/GetDetails?departmentId=" + dataItem.departmentId;
     }
 });

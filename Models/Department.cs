@@ -9,11 +9,11 @@ public class Department
     public int ModifyBy { get; set; }
     public DateTime ModifyTime { get; set; }
     public Boolean IsDeleted { get; set; }
-    public int totalprojects { get; set; }
-    public int pendingprojects { get; set; }
-    public int runningprojects { get; set; }
-    public int completedprojects { get; set; }
-    public int totalemployees { get; set; }
-    public int allocatedemployees { get; set; }
-    public int unallocatedemployees { get; set; }
+    public int TotalProjects { get; set; }
+    public int PendingProjects { get; set; }
+    public int RunningProjects { get; set; }
+    public int CompletedProjects { get; set; }
+    public int TotalEmployees { get; set; }
+    public int AllocatedEmployees { get; set; }
+    public int UnallocatedEmployees { get; set; }
 }
