@@ -81,8 +81,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
         [HttpPut]
         public IActionResult Editdepartment(Department dept)
         {
-            //string uid = HttpContext.Session.GetString("userId")!;
-
             try
             {
 
@@ -101,7 +99,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             }
             catch (Exception ex)
             {
-                // Handle exception
                 return Json(new { success = false, error = ex.Message });
             }
         }
@@ -119,12 +116,10 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     cmd2.ExecuteNonQuery();
                 }
 
-                // Return success JSON response
                 return new JsonResult(new { success = true });
             }
             catch (Exception ex)
             {
-                // Return error JSON response with exception details
                 return new JsonResult(new { success = false, error = ex.Message });
             }
         }
@@ -301,9 +296,9 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 cmd.Parameters.AddWithValue("@departmentId", Convert.ToInt64(departmentId));
 
                 using NpgsqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read()) // Check if there are rows returned
+                if (reader.Read()) 
                 {
-                    departmentname = reader.GetString(1); // Index 0 for the first column
+                    departmentname = reader.GetString(1); 
                 }
             }
 
