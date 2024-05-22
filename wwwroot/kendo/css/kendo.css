@@ -1,4 +1,4 @@
-﻿.k-grid .k-command-cell {
+﻿/*.k-grid .k-command-cell {
     text-align: center;
 }
 
@@ -72,4 +72,112 @@ type=submit]:not(:disabled), button:not(:disabled) {
 
 .btn-primary.active {
     background-color: #ff0000 !important;
+}
+
+.k-searchbox {
+    width: 50% !important;
+}*/
+
+
+body {
+}
+
+﻿.k-grid .k-command-cell {
+    text-align: center;
+}
+
+.k-filterable > .k-cell-inner .k-link {
+    justify-content: center;
+    padding-right: 0;
+    background-color: #4a4e69 !important;
+}
+
+.k-grid-header .k-header {
+    color: white;
+    text-align: center;
+    background-color: #4a4e69 !important;
+}
+
+.k-i-filter::before {
+    color: white;
+}
+
+.k-grid-toolbar .k-button {
+    background-color: #4a4e69;
+    color: white;
+    width: 12% !important;
+    height: 40px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    border-width: 1px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    position: relative;
+    overflow: hidden;
+    background-clip: padding-box;
+}
+
+
+.k-pager-numbers .k-link.k-state-selected {
+    color: #ccd0ec;
+    background-color: #4a4e69;
+}
+
+.k-grid .k-grid-filter, .k-grid .k-header-column-menu, .k-grid .k-hierarchy-cell .k-icon {
+    color: white;
+}
+
+
+.k-pager-numbers .k-link.k-state-selected {
+    color: #9fa8e4 !important;
+    background-color: #4a4e69 !important;
+}
+
+
+.k-grid td.k-state-selected, .k-grid tr.k-state-selected > td {
+    background-color: #9fa8e4 !important;
+}
+
+.k-column-title {
+    color: white;
+}
+
+type=submit]:not(:disabled), button:not(:disabled) {
+    background-color: #9FA8E1;
+}
+
+.k-grid-header .k-i-sort-asc-sm, .k-grid-header .k-i-sort-desc-sm, .k-grid-header .k-sort-order {
+    color: #9FA8E1 !important;
+}
+
+#backbtn, #deptprojects, #deptemployees, #detailsbtn {
+    background-color: #4a4e69;
+}
+
+.btn-primary.active {
+    background-color: #009CFF !important;
+}
+﻿
+.k-grid .k-grid-filter, .k-grid .k-header-column-menu, .k-grid .k-hierarchy-cell .k-icon {
+    color: white;
+}
+﻿.btn-primary {
+    background-color: #4a4e69;
+    border-color: #4a4e69;
+}
+
+.btn-primary :hover {
+    background-color: #4a4e69;
+}
+.k-searchbox {
+    width: 50% !important;
+}
+
+k-button:hover {
+    background-color: #4a4e69 !important;
 }

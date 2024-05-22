@@ -4,9 +4,8 @@
     {
         public int ProjectId { get; set; }
         public List<int> EmployeesId { get; set; }
-        public List<int> ProjectRoleId { get; set; }
+        public string[][] AssignedSkillsOfEmployee { get; set; }
         public List<DateOnly?> StartDate { get; set; }
         public List<DateOnly?> EndDate { get; set; }
-        public List<string> EmpSkills { get; set; }
     }
 }

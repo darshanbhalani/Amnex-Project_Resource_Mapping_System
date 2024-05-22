@@ -36,7 +36,6 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     }
                 }
             }
-            ViewData["DepartmentData"] = JsonConvert.SerializeObject(departments);
 
             return View(departments);
         }

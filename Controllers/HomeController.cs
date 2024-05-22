@@ -2,6 +2,9 @@ using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Npgsql;
+using Newtonsoft.Json;
+using System.Text.Json.Nodes;
+using NuGet.Packaging.Signing;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
@@ -131,25 +134,25 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 }
             }
 
-            //using (var command = new NpgsqlCommand($"SELECT * FROM getLogCountsLast7Days();", _connection))
-            //{
-            //    using (var reader = command.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            date.Add(reader.GetDateTime(0).ToString().Split(" ")[0]);
-            //            insert.Add(reader.GetInt32(1));
-            //            update.Add(reader.GetInt32(2));
-            //            delete.Add(reader.GetInt32(3));
-            //        }
-            //        inserts.Label = date;
-            //        inserts.Data = insert;
-            //        updates.Label = date;
-            //        updates.Data = update;
-            //        deletes.Label = date;
-            //        deletes.Data = delete;
-            //    }
-            //}
+            using (var command = new NpgsqlCommand($"SELECT * FROM countlogs();", _connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        date.Add(reader.GetDateTime(0).ToString().Split(" ")[0]);
+                        insert.Add(reader.GetInt32(1));
+                        update.Add(reader.GetInt32(2));
+                        delete.Add(reader.GetInt32(3));
+                    }
+                    inserts.Label = date;
+                    inserts.Data = insert;
+                    updates.Label = date;
+                    updates.Data = update;
+                    deletes.Label = date;
+                    deletes.Data = delete;
+                }
+            }
 
             using (var command = new NpgsqlCommand($"SELECT * FROM GetDepartmentProjectStatus();", _connection))
             {
@@ -269,7 +272,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
             };
 
             // Assign serialized employeesModel to ViewData using an indexer
-            ViewData["employeesModel"] = JsonSerializer.Serialize(employeesModel);
+            ViewData["employeesModel"] = System.Text.Json.JsonSerializer.Serialize(employeesModel);
 
             return View(employeesModel);
         }
@@ -304,7 +307,30 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
 
         public IActionResult ProjectEmployeeMapping()
         {
-            return View();
+
+            List<ProjectDetails> projects = new List<ProjectDetails>();
+
+            using (var command = new NpgsqlCommand("select * from displayprojectsformapping();", _connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        projects.Add(new ProjectDetails
+                        {
+                            ProjectId = reader.GetInt32(0),
+                            ProjectName = reader.GetString(1),
+                            ProjectDepartment = reader.GetString(2),
+                            ProjectSkills = reader.GetString(3),
+                            NumberOfEmployees = reader.GetInt32(6),
+                            StartDate = reader.GetDateTime(4).Date,
+                            EndDate = reader.GetDateTime(5).Date
+                        });
+                    }
+                }
+            }
+
+            return View(projects);
         }
 
 
@@ -361,14 +387,20 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 {
                     while (reader.Read())
                     {
+                        Console.WriteLine(reader.GetString(0));
+                        Console.WriteLine(reader.GetString(1));
+                        Console.WriteLine(reader.GetString(2));
+                        Console.WriteLine(reader.GetDateTime(3));
+                        //Console.WriteLine(reader.IsDBNull(4) ? "Not Found" : reader.GetString(4));
+                        //Console.WriteLine(reader.IsDBNull(5) ? "Not Found" : reader.GetString(5));
+                        Console.WriteLine("------------------------------------");
                         logs.Add(new Log
                         {
-                            EntityName = reader.IsDBNull(1) ? "Not Found":reader.GetString(1),
-                            EntityType = reader.IsDBNull(2) ? "Not Found" : reader.GetString(2),
-                            Description = reader.IsDBNull(3) ? "Not Found" : reader.GetString(3),
-                            Action = reader.IsDBNull(4) ? "Not Found" : reader.GetString(4),
-                            CreateTime = reader.GetDateTime(5),
-                            LogBy = reader.IsDBNull(6) ? "Not Found" : reader.GetString(6),
+                            Action = reader.IsDBNull(0) ? "Not Found" : reader.GetString(0),
+                            Description = reader.IsDBNull(1) ? "Not Found" : reader.GetString(1),
+                            TableName = reader.IsDBNull(2) ? "Not Found" : reader.GetString(2),
+                            CreatedTime = (reader.IsDBNull(3) ? DateTime.MinValue : reader.GetDateTime(3)).ToString("yyyy-MM-dd HH:mm:ss"),
+                            NewValue = JsonConvert.DeserializeObject<Dictionary<string,dynamic>>(reader.IsDBNull(5) ? "{}" : reader.GetString(5))
                         });
                     }
                 }
