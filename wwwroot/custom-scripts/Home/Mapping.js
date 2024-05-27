@@ -597,11 +597,12 @@ $(() => {
 
                 if ($(this).is(':checked')) {
                     if (startDateCell.find('input').length === 0) {
-                        startDateCell.html(`<input type="date" class="form-control startDate" value="${projectStartDate}" min="${today}">`);
+                        startDateCell.html(`<input type="date" class="form-control startDate" value="${today}" min="${today}">`);
                     }
                     if (endDateCell.find('input').length === 0) {
                         endDateCell.html(`<input type="date" class="form-control endDate" value="${projectEndDate}">`);
                     }
+                    //-----------------added-----------------------
                     let startDateInput = startDateCell.find('input');
                     let endDateInput = endDateCell.find('input');
 
@@ -613,9 +614,8 @@ $(() => {
                     // Set initial min value for the end date
                     let startDateValue = startDateInput.val();
                     endDateInput.attr('min', startDateValue);
-                }
-
-                else {
+                    //----------------------------------------
+                } else {
                     if (startDateCell.find('input').length > 0) {
                         startDateCell.html(projectStartDate);
                     }

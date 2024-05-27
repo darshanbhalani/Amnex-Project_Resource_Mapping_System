@@ -271,8 +271,8 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 EmployeeSkills = getEmployeeSkillsList(_connection),
             };
 
-            // Assign serialized employeesModel to ViewData using an indexer
-            ViewData["employeesModel"] = System.Text.Json.JsonSerializer.Serialize(employeesModel);
+          
+           
 
             return View(employeesModel);
         }

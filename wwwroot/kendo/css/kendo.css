@@ -142,7 +142,9 @@ body {
 .k-grid td.k-state-selected, .k-grid tr.k-state-selected > td {
     background-color: #9fa8e4 !important;
 }
-
+.k-grid-action-column .k-grid-command-cell {
+    text-align: center;
+}
 .k-column-title {
     color: white;
 }
@@ -155,12 +157,16 @@ type=submit]:not(:disabled), button:not(:disabled) {
     color: #9FA8E1 !important;
 }
 
-#backbtn, #deptprojects, #deptemployees, #detailsbtn {
+#backbtn, #deptprojects, #deptemployees, #detailsbtn ,#projectDetailsBtn, #employeeDetailsBtn {
     background-color: #4a4e69;
 }
 
 .btn-primary.active {
     background-color: #009CFF !important;
+}
+
+.k-grid-action-column .k-grid-command-cell {
+    text-align: center;
 }
 ﻿
 .k-grid .k-grid-filter, .k-grid .k-header-column-menu, .k-grid .k-hierarchy-cell .k-icon {

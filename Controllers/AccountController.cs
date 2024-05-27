@@ -307,7 +307,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                     mailMessage.To.Add(employee.Email);
                     mailMessage.Subject = "PRMS Account Credentials";
                     mailMessage.IsBodyHtml = true;
-                    mailMessage.Body = $"<h3>Hello {employee.EmployeeName},</h3></br><p>Your PRMS account is created. your UserName is \"<b>{employee.EmployeeUserName}</b>\" and Password is \"<b>{employee.Password}</b>\".";
+                    mailMessage.Body = $"<h3>Hello {employee.EmployeeName},</h3></br><p>Your PRMS account is created. your UserName is \"<b>{employee.EmployeeAipl}</b>\" and Password is \"<b>{employee.Password}</b>\".";
                     smtpClient.Send(mailMessage);
 
                 }
