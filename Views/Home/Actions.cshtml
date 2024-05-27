@@ -1,7 +1,8 @@
 ﻿@model List<Log>;
 
 <h3>Actions</h3>
-<table id="example" class="table table-striped table-bordered" style="width:100%">
+<div id="grid"></div>
+@* <table id="example" class="table table-striped table-bordered" style="width:100%">
     <thead>
         <tr class="bg-dark">
             <th class="text-white">Recent Actions</th>
@@ -86,26 +87,47 @@
             }
         }
     </tbody>
-</table>
+</table> *@
 
 
 @section Scripts {
+
     <script>
-        var addButtonAppend = false;
+        console.log("hello");
+
+        var actions = @Html.Raw(Json.Serialize(Model));
         $(document).ready(function () {
-            $('#example').DataTable({
-                "order": []
+            $('#grid').kendoGrid({
+                dataSource: {
+                    data: actions,
+                    pageSize: 10,
+                },
+
+                columns: [
+                    {
+                        field: "description", title: "Action"
+                    },
+                    {
+                        field: "createdTime", title: "Time", width:300
+                    }
+                ],
+                editable: false,
+                navigatable: true,
+                selectable: "row",
+                sortable: true,
+                pageable: true,
+                pageable: {
+                    refresh: true,
+                    pageSizes: [10, 25, 50, 100, "all"],
+                    buttonCount: 10
+                },
+                filterable: true,
+                toolbar: [
+                    "search",
+                    "excel",
+                    "pdf",
+                ],
             });
-            $('#dt-search-0').css({ 'width': '30rem' });
-            $('#dt-search-0').css({ 'margin': '0px' });
-            $('#dt-search-0').addClass('flex-row-reverse');
-            document.getElementById('dt-search-0').placeholder = 'Search Action';
-            $('.dt-search label').remove();
-            $('.dt-search button').addClass('btn btn-dark');
-            $('#dt-search-0').parent().addClass('d-flex flex-row-reverse');
-            $('#dt-search-0').parent().parent().parent().addClass('d-flex flex-row-reverse');
-            $('#dt-length-0').parent().parent().removeClass('me-auto');
-            $('#dt-search-0').parent().parent().removeClass('ms-auto');
         });
     </script>
 }

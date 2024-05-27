@@ -1,19 +1,25 @@
 ﻿using Amnex_Project_Resource_Mapping_System.Models;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
+using Amnex_Project_Resource_Mapping_System.Controllers.Amnex_Project_Resource_Mapping_System.Controllers;
 
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     public class EmployeesController : Controller
     {
         private readonly NpgsqlConnection _connection;
+        private IConfiguration _configuration;
 
-        public EmployeesController(NpgsqlConnection connection)
+        public EmployeesController(NpgsqlConnection connection, IConfiguration configuration)
         {
+            _configuration = configuration;
             _connection = connection;
             _connection.Open();
         }
+
 
         [HttpPost]
         public IActionResult AddEmployee(Employee empObj)
@@ -30,22 +36,24 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 command.Parameters.AddWithValue("@in_password", password);
                 command.Parameters.AddWithValue("@in_employeeloginroleid", empObj.LoginRoleId);
                 command.Parameters.AddWithValue("@in_skillsid", empObj.SkillsId.Split(',').Select(int.Parse).ToArray()); // Split the string into an array
-                command.Parameters.AddWithValue("@in_createdby", 1); // Assuming CreatedById is the correct property
+                command.Parameters.AddWithValue("@in_createdby", 1); 
 
                 var result = command.ExecuteScalar();
-                string aipl = result != null ? result.ToString() : null;
 
-                if (!string.IsNullOrEmpty(aipl))
+                if (result != null && result != DBNull.Value)
                 {
-                    return Json(new { success = true });
+                    string aipl = result.ToString()!;
+                    empObj.EmployeeAipl = aipl;
+                    AccountController.SendCredentials(empObj, _configuration);
+                    return Json(new { success = true, message = "Employee Added" });
                 }
                 else
                 {
-                    // Handle error
                     return Json(new { success = false, message = "Failed to add employee." });
                 }
             }
         }
+
         [HttpGet]
         public ActionResult EmployeeDetails(int employeeId)
         {
@@ -109,10 +117,10 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 using (NpgsqlCommand updateCommand = new NpgsqlCommand(updateQuery, _connection))
                 {
                     updateCommand.Parameters.AddWithValue("@EmployeeId", employeeObj.EmployeeId);
-                    updateCommand.Parameters.AddWithValue("@EmployeeName", employeeObj.EmployeeName);
-                    updateCommand.Parameters.AddWithValue("@DepartmentId", employeeObj.DepartmentId);
-                    updateCommand.Parameters.AddWithValue("@Email", employeeObj.Email);
-                    updateCommand.Parameters.AddWithValue("@DesignationId", employeeObj.DesignationId);
+                    updateCommand.Parameters.AddWithValue("@EmployeeName", employeeObj.EmployeeName != null ? (object)employeeObj.EmployeeName : DBNull.Value);
+                    updateCommand.Parameters.AddWithValue("@DepartmentId", employeeObj.DepartmentId != null ? (object)employeeObj.DepartmentId : DBNull.Value);
+                    updateCommand.Parameters.AddWithValue("@Email", employeeObj.Email != null ? (object)employeeObj.Email : DBNull.Value);
+                    updateCommand.Parameters.AddWithValue("@DesignationId", employeeObj.DesignationId != null ? (object)employeeObj.DesignationId : DBNull.Value);
                     updateCommand.Parameters.AddWithValue("@LoginRoleId", employeeObj.LoginRoleId);
                     updateCommand.Parameters.AddWithValue("@SkillsId", employeeObj.SkillsId.Split(',').Select(int.Parse).ToArray());
                     updateCommand.Parameters.AddWithValue("@ModifyBy", 1);
@@ -290,8 +298,8 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                             {
                                 ProjectName = reader["projectname"].ToString(),
                                 EmployeeProjectSkill = reader["employeeprojectskill"].ToString(),
-                                StartDate = Convert.ToDateTime(reader["masterstartdate"]),
-                                EndDate = Convert.ToDateTime(reader["masterenddate"]),
+                                StartDate = ((DateTime)reader["masterstartdate"]).Date,
+                                EndDate = ((DateTime)reader["masterenddate"]).Date,
                                 IsWorking = Convert.ToBoolean(reader["masterisworking"])
                             };
 

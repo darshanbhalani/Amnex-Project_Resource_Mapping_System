@@ -9,7 +9,6 @@ $(document).ready(function () {
         columns: [
             {
                 field: "departmentName", title: "Name", width: 500, editable: false
-                //    template: '<a href="javascript:void(0)" class="department-link">#= DepartmentName #</a>'
             },
             {
                 command: [
@@ -30,6 +29,7 @@ $(document).ready(function () {
         toolbar: [
             { template: '<button class="k-button k-primary" id="AddDepartment">Add Department</button>' },
             "search",
+            "excel",
             "pdf",
         ],
     });
@@ -46,11 +46,12 @@ $(document).ready(function () {
 
         $('#departmentModal').modal('show');
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        $('#department').val(dataItem.DepartmentName);
+        $('#department').val(dataItem.departmentName);
+        console.log(dataItem.departmentId);
         $("#department").on("input", function () {
 
             var newDepartment = $(this).val();
-            if (newDepartment !== dataItem.DepartmentName) {
+            if (newDepartment !== dataItem.departmentName) {
                 $("#EditChangesBtn").removeAttr("disabled");
                 $("#EditChangesBtn").addClass('btn-success');
             } else {
@@ -61,7 +62,7 @@ $(document).ready(function () {
         $(document).on("click", "#EditChangesBtn", function () {
             var editeddepartmentName = $("#department").val();
             var data = {
-                DepartmentId: dataItem.DepartmentId,
+                DepartmentId: dataItem.departmentId,
                 DepartmentName: editeddepartmentName,
             };
             $.ajax({
@@ -83,7 +84,7 @@ $(document).ready(function () {
     function openDeleteModal(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        $("#departmentNamePlaceholder").text(dataItem.DepartmentName);
+        $("#departmentNamePlaceholder").text(dataItem.departmentName);
         $('#departmentModalLabel').text('Delete Department');
 
         $("#deleteDepartmentconfirm").val('');
@@ -107,7 +108,7 @@ $(document).ready(function () {
                 $("#deleteBtn").addClass('btn-danger');
                 $("#deleteBtn").click(function () {
                     var data = {
-                        DepartmentId: dataItem.DepartmentId,
+                        DepartmentId: dataItem.departmentId,
                     };
                     $.ajax({
                         type: "POST",

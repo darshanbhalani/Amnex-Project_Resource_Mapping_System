@@ -1,5 +1,4 @@
-﻿
-@model Amnex_Project_Resource_Mapping_System.Models.EmployeesModel;
+﻿@model Amnex_Project_Resource_Mapping_System.Models.EmployeesModel;
 @* {
     ViewData["Title"] = "employeesModel";
 }
@@ -15,39 +14,25 @@
 
 }
 
-<h3 class=" pt-2 ">Employees</h3>
-<div class="container-fluid px-4 pb-2">
-    <div class="row g-4 d-flex justify-content-center align-items-center">
-        <div class="col-sm-6 col-xl-4 px-4">
-            <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
-                <i class="fa fa-chart-line fa-3x"></i>
-                <div class="ms-3">
-                    <p class="mb-2">Total Employees</p>
-                    <h4 class="mb-0">@(Model.UnallocatedEmployees + Model.AllocatedEmployees)</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-4 px-4">
-            <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
-                <i class="fa fa-chart-bar fa-3x"></i>
-                <div class="ms-3">
-                    <p class="mb-2">Allocated Employees</p>
-                    <h4 class="mb-0">@(Model.AllocatedEmployees)</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-4 px-4">
-            <div class="bg-light rounded d-flex align-items-center justify-content-evenly p-4 box">
-                <i class="fa fa-chart-area fa-3x"></i>
-                <div class="ms-3">
-                    <p class="mb-2">Unallocated Employees</p>
-                    <h4 class="mb-0">@(Model.UnallocatedEmployees)</h4>
-                </div>
-            </div>
-        </div>
 
-    </div>
+<div class="nav-info d-flex align-items-center mt-3 mb-4">
+    <a class="nav-link me-1 " asp-action="Dashboard" asp-controller="Home">
+        <span class="k-icon k-i-home" style="font-size: 1.5rem;"></span> <!-- Kendo UI home icon -->
+    </a>
+    <span class="k-icon k-i-arrow-chevron-right me-1 " style="font-size: 1.5rem;"></span> <!-- Kendo UI forward icon -->
+    <a>
+
+        <span class="me-1" style="font-size: 1.5rem;">Employees</span>
+    </a>
 </div>
+
+
+
+
+
+
+
+
 
 <div id="grid1"></div>
 
@@ -84,7 +69,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="actionEmployeeModalLabel">Add a New Employee</h5>
+                <h5 class="modal-title" id="actionEmployeeModalLabel"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -190,16 +175,12 @@
     <script src="~/kendo/js/kendo.all.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
-    <script>var employeesModel = @Html.Raw(ViewData["employeesModel"]);</script>
+    <script>
+        var employeesModel = @Html.Raw(Json.Serialize(Model));
+        console.log(employeesModel);
+    </script>
     <script src="~/custom-scripts/home/employee.js" asp-append-version="true"></script>
 
 
 
 }
-
-
-
-
-
-
-

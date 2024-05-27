@@ -7,32 +7,38 @@
     <link rel="stylesheet" href="~/kendo/css/kendo.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/kendo/css/kendo.default-v2.min.css" asp-append-version="true" />
 
-
-
-
-
 }
 
 
 @{
     ViewData["Title"] = "EmployeeDetails";
-    var employees = ViewBag.Employees as List<Employee>;
-    var employeeDepartments = ViewBag.EmployeeDepartments as List<Department>;
-    var employeeDesignations = ViewBag.EmployeeDesignations as List<Designation>;
-    var employeeLoginRoles = ViewBag.EmployeeLoginRoles as List<LoginRole>;
-    var employeeSkills = ViewBag.EmployeeSkills as List<Skill>;
+
     var employeeProjectDetails = ViewBag.EmployeeProjectDetails as List<EmployeeRecord>;
 }
 
 
 <!-- Use the data as needed in your HTML markup -->
 
+<div class="nav-info d-flex align-items-center mt-3 mb-4">
+    <a class="nav-link me-1 " asp-action="Dashboard" asp-controller="Home">
+        <span class="k-icon k-i-home" style="font-size: 1.5rem;"></span> <!-- Kendo UI home icon -->
+    </a>
+    <span class="k-icon k-i-arrow-chevron-right me-1 " style="font-size: 1.5rem;"></span> <!-- Kendo UI forward icon -->
+    <a asp-controller="Home" asp-action="Employees">
 
+        <span class="me-1" style="font-size: 1.5rem;">Employees</span>
+    </a>
+    <span class="k-icon k-i-arrow-chevron-right me-1 " style="font-size: 1.5rem;"></span>
+    <a ">
+
+        <span class="me-1" style="font-size: 1.5rem;">Employees Details</span>
+    </a>
+</div>
 <body>
     <div class="container-fluid">
         <div class="row mt-3 mb-5">
             <div class="col-md-12">
-                <button id="EmployeeDetailsBtn" class="btn btn-primary  btn-block">Employee Details</button>
+                <button id="employeeDetailsBtn" class="btn btn-primary btn-block active">Employee Details</button>
                 <button id="projectDetailsBtn" class="btn btn-primary  btn-block">Project Details</button>
             </div>
         </div>
@@ -97,13 +103,10 @@
                     <div class="form-group">
                         <label for="skills">Skills:</label>
                         <select id="choices-multiple-remove-button" multiple disabled>
-                            @foreach (var skill in Model.SkillsName.Split(','))
-                            {
+    @foreach (var skill in Model.SkillsName.Split(','))
+    {
                                 <option value="@skill" selected> @skill.</option>
-                            }
-
-
-
+    }
                         </select>
 
                     </div>
@@ -143,51 +146,36 @@
 
 
 
-@section Scripts {
+    @section Scripts {
 
-    @*  <script src="~/js/employeedetails.js" asp-append-version="true"></script>
- *@
     <script>
-
-
         var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
             removeItemButton: true,
             maxItemCount: 50,
             searchResultLimit: 50,
             renderChoiceLimit: 50
         });
+        var employeeProjectDetails = @Html.Raw(Json.Serialize(ViewBag.EmployeeProjectDetails));
         $(document).ready(function () {
+            var employeeProjectsDetails = employeeProjectDetails;
 
-
-
-            $('#EmployeeDetailsBtn').click(function () {
+            $('#employeeDetailsBtn').click(function () {
                 $('#updateEmployeeForm').show();
+                $('#employeeDetailsBtn').addClass("active");
+                $('#projectDetailsBtn').removeClass("active");
                 $('#projectDetailsContainer').hide();
-
             });
 
             $('#projectDetailsBtn').click(function () {
+                $('#employeeDetailsBtn').removeClass("active");
+                $('#projectDetailsBtn').addClass("active");
                 $('#updateEmployeeForm').hide();
                 $('#projectDetailsContainer').show();
-
             });
-
-
-            var employeeProjectDetails = @Html.Raw(Json.Serialize(ViewBag.EmployeeProjectDetails));
-
-
-            console.log(employeeProjectDetails);
-
-
-            if (!Array.isArray(employeeProjectDetails)) {
-                console.error("Employee project details is not an array.");
-            }
-            console.log(employeeProjectDetails);
-
 
             $("#grid2").kendoGrid({
                 dataSource: {
-                    data: employeeProjectDetails,
+                    data: employeeProjectsDetails,
                     pageSize: 10
                 },
                 height: 550,
@@ -201,12 +189,7 @@
                 resizable: true,
                 reorderable: true,
                 filterable: true,
-                toolbar: [
-
-                    "search",
-                    "excel",
-                    "pdf"
-                ],
+                toolbar: ["search", "excel", "pdf"],
                 excel: {
                     fileName: "EmployeeProject.xlsx",
                     filterable: true,
@@ -225,8 +208,20 @@
                 columns: [
                     { field: "projectName", title: "Project Name", width: 150 },
                     { field: "employeeProjectSkill", title: "Employee Project Skill", width: 150 },
-                    { field: "startDate", title: "Start Date", width: 150, format: "{0:yyyy-MM-dd}" },
-                    { field: "endDate", title: "End Date", width: 150, format: "{0:yyyy-MM-dd}" },
+                    {
+                        field: "startDate", title: "Start Date", width: 150, template: function (dataItem) {
+                            var date = new Date(dataItem.startDate);
+                            var formattedDate = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+                            return formattedDate;
+                        }
+                    },
+                    {
+                        field: "endDate", title: "End Date", width: 150, template: function (dataItem) {
+                            var date = new Date(dataItem.endDate);
+                            var formattedDate = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+                            return formattedDate;
+                        }
+                    },
                     { field: "isWorking", title: "Is Working", width: 150, template: "#= isWorking ? 'Yes' : 'No' #" }
                 ],
                 editable: false,
@@ -236,11 +231,13 @@
                     });
                 },
                 selectable: 'row'
-
             });
-
         });
+
     </script>
 
+        @*  <script src="~/custom-scripts/employee/employeedetails.js" asp-append-version="true"></script> *@
 
-}
+
+
+    }

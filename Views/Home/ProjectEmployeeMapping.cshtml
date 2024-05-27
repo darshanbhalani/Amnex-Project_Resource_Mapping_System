@@ -1,177 +1,114 @@
-﻿<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+﻿@model List<ProjectDetails>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
 <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 <style>
+    /*  .k-header {
+            background-color: black !important;
+        } */
+
+    /* Ensure the dropdown is displayed in front */
+    .choices {
+        z-index: 1050;
+        position: relative;
+    }
+
+    .choices__list--dropdown {
+        z-index: 1060;
+        position: absolute;
+    }
+
+    .k-grid td {
+        overflow: visible;
+    }
+    /*-----------------*/
+
     .cursor {
         cursor: pointer;
     }
 
-    #assign .dt-column-order {
-        display: none;
-    }
+    /* .logo-middle {
+            text-align: center !important;
+        } */
 
-    #remove .dt-column-order {
-        display: none;
-    }
-
-    #add .dt-column-order {
-        display: none;
-    }
-
-    .logo-middle {
-        text-align: center !important;
-    }
-
-    .page-link {
-        color: black;
-    }
-
-    .page-item.active .page-link {
-        background-color: black;
-        border: 1px solid black;
-    }
-
-    #dataTable1 th {
-        text-align: center;
-    }
-
-    #dataTable1 td {
-        text-align: center;
-    }
-
-    #dataTable3 th {
-        text-align: center;
-    }
-
-    #dataTable3 td {
-        text-align: center;
-    }
-
-    #mainTable th {
-        text-align: center;
-    }
-
-    #mainTable td {
-        text-align: center;
-    }
 </style>
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" />
 
 
 
 <h3>Project-Employee mapping section</h3>
 
 @* grid to display data *@
-<table id="dataTable1" class="table table-striped table-bordered tcenter" style="width:100%">
-    <thead>
-        <tr class="bg-dark">
-            <th class="text-white">Project Id</th>
-            <th class="text-white">Project Name</th>
-            <th class="text-white">Department</th>
-            <th class="text-white">Project Skills</th>
-            <th class="text-white">Employees</th>
-            <th class="text-white">Start date</th>
-            <th class="text-white">End date</th>
-            <th class="text-white">Status</th>
-            <th class="text-white" id="assign" style="text-align:center">Assign</th>
-        </tr>
-    </thead>
-    <tbody id="dataRows">
-        <!--Populate Data Here-->
-    </tbody>
-</table>
+<div id="displayMainDataGrid"></div>
+
 
 <!-- Extra large main modal -->
 <div class="modal fade bd-example-modal-xl" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="mainModalLabel">Details</h5>
+                <h5 class="modal-title" id="mainModalLabel">@* Details *@</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
                     <span id="xlModalErrorMsg" style="color:red"></span>
-                    <div class="row">
-                        <!-- 1st row: Project and Start Date -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="projectName">Project Name:</label>
-                                <input type="text" class="form-control" id="projectName" readonly>
+                    <div class="xlbuttons">
+                        <button class="btn btn-primary detailsButton">Details</button>
+                        <button class="btn btn-danger employeesButton">Employees</button>
+                    </div>
+                    <div id="projectDetails">
+                        <div class="row">
+                            <!-- 1st row: Project Name and Start Date -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="projectName">Project Name:</label>
+                                    <input type="text" class="form-control" id="projectName" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="startDate1">Start Date:</label>
+                                    <input type="date" class="form-control" id="startDate1" readonly>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="startDate1">Start Date:</label>
-                                <input type="date" class="form-control" id="startDate1" readonly>
+                        <div class="row">
+                            <!-- 2nd row: Department and End Date -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="department">Department:</label>
+                                    <input type="text" class="form-control" id="department" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="endDate1">End Date:</label>
+                                    <input type="date" class="form-control" id="endDate1" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- 3rd row: Project Skills and Number of Employees -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="skills">Project Skills:</label>
+                                    <input type="text" class="form-control" id="skills" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="employees">Number of Employees:</label>
+                                    <input type="text" class="form-control" id="employees" readonly>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <!-- 2nd row: Project Id and End Date -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="pid">Project Id:</label>
-                                <input type="text" class="form-control" id="pid" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="endDate1">End Date:</label>
-                                <input type="date" class="form-control" id="endDate1" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!-- 3rd row: Department and Project Status -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="department">Department:</label>
-                                <input type="text" class="form-control" id="department" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="status">Project Status:</label>
-                                <input type="text" class="form-control" id="status" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!-- 4th row: Project Skills and Number of Employees -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="skills">Project Skills:</label>
-                                <input type="text" class="form-control" id="skills" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="employees">Number of Employees:</label>
-                                <input type="text" class="form-control" id="employees" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!-- 5th row: Employees data -->
+                    <div class="row xlEmployeesData">
+                        <!-- 4th row: Employees data -->
                         <h5>Employees Data</h5>
                         <!-- Grid to show employees data -->
-                        <table id="mainTable" class="table table-striped table-bordered dataTable2 tcenter" style="width:100%">
-                            <thead class="bg-dark">
-                                <tr>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Id</th>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Name</th>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Skills</th>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Role</th>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Start Date</th>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">End Date</th>
-                                    <th style="position: sticky; top: 0; background-color: #fff; z-index: 1; text-align:center" id="remove">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Populate data dynamically here -->
+                        <div id="displayAlloctedEmployeesGrid"></div>
 
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -185,7 +122,7 @@
 
 <!-- Confirm Delete Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
@@ -202,129 +139,25 @@
     </div>
 </div>
 
-<!-- Filter Modal -->
-<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filterModalLabel">Filter Options</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- First row: Dropdown for department -->
-                <div class="form-group">
-                    <label for="departmentSelect">Department:</label>
-                    <select class="form-control" id="departmentSelect">
-                        <option value="">Select Department</option>
-                        <option value="dept1">Mobility</option>
-                        <option value="dept2">Integrated</option>
-                        <option value="dept3">Agriculture</option>
-                        <option value="dept4">Research and Development</option>
-                    </select>
-                </div>
-                <!-- Second row: Dropdown for status -->
-                <div class="form-group">
-                    <label for="statusSelect">Status:</label>
-                    <select class="form-control" id="statusSelect">
-                        <option value="">Select Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <!-- Third row: Date inputs for start and end date -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="startDate2">Start Date:</label>
-                            <input type="date" class="form-control" id="startDate2">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="endDate2">End Date:</label>
-                            <input type="date" class="form-control" id="endDate2">
-                        </div>
-                    </div>
-                </div>
-                <!-- Fourth row: Dropdown for skills -->
-                <div class="form-group">
-                    <label for="skillSelect">Skills:</label>
-                    <select id="choices-multiple-remove-button" class="form-select" placeholder="Select skills" multiple>
-                        <option value="HTML">HTML</option>
-                        <option value="Jquery">Jquery</option>
-                        <option value="CSS">CSS</option>
-                        <option value="Bootstrap 3">Bootstrap 3</option>
-                        <option value="Bootstrap 4">Bootstrap 4</option>
-                        <option value="Java">Java</option>
-                        <option value="Javascript">Javascript</option>
-                        <option value="Angular">Angular</option>
-                        <option value="Python">Python</option>
-                        <option value="Hybris">Hybris</option>
-                        <option value="SQL">SQL</option>
-                        <option value="NOSQL">NOSQL</option>
-                        <option value="NodeJS">NodeJS</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger applyBtn" data-dismiss="modal">Apply</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Assign Employee Modal -->
 <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Employee to project</h1>
+                <h1 class="modal-title fs-5" id="assignEmployeeHeader"> </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row justify-content-center my-4">
-                    <!-- Show employees data -->
                     <div class="col-md-12">
+                        <span id="validationMsg" style="color:red"></span>
                         <h5>Choose Employees</h5>
-                        <div class="table-responsive" id="dataTable3" style="max-height: 70vh; overflow-y: auto;">
-                            <table id="empModal" class="table table-striped table-bordered dataTable3 tcenter" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Employee Id</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Name</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Skills</th>
-                                        @* <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Company Role</th> *@
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Rating</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Project Role</th>
-                                        @* <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Department</th> *@
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">Start Date</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;">End Date</th>
-                                        <th style="position: sticky; top: 0; background-color: #fff; z-index: 1;" id="add">Add</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Populate data dynamically here -->
-                                    @*  <tr>
-                                    <td>1</td>
-                                    <td>Karan</td>
-                                    <td>C#, React, Javascript</td>
-                                    <td>Developer</td>
-                                    <td>Tester</td>
-                                    <td>Integrated</td>
-                                    <td>8/10</td>
-                                    <td>19-03-21</td>
-                                    <td>31-05-25</td>
-                                    <td><input type="checkbox" class="form-check-input addEmp cursor" id="addEmp1"></td>
-                                    </tr> *@
+                        <div id="displayNotAllocatedEmployeesGrid"></div>
 
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="d-flex justify-content-center">
-                <div id="validationMsg" class="text-danger"></div>
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div><span style="color:red">Note: You can save changes only after assigning atleast one employee</span></div>
@@ -338,627 +171,10 @@
 </div>
 
 
-<!-- Add Employee Filter Modal -->
-<div class="modal fade" id="addEmployeeFilter" tabindex="-1" aria-labelledby="addEmployeeFilterLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addEmployeeFilterLabel">Filter Options</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="filterForm">
-                    <div class="mb-3">
-                        <label for="departmentSelect" class="form-label">Department:</label>
-                        <select class="form-select" id="departmentSelect">
-                            <option value="">Select Department</option>
-                            <option value="dept1">Mobility</option>
-                            <option value="dept2">Integrated</option>
-                            <option value="dept3">Agriculture</option>
-                            <option value="dept4">Research and Development</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="skillSelect">Skills:</label>
-                        <select id="choices-multiple-remove-button" placeholder="Select skills" multiple>
-                            <option value="HTML">HTML</option>
-                            <option value="Jquery">Jquery</option>
-                            <option value="CSS">CSS</option>
-                            <option value="Bootstrap 3">Bootstrap 3</option>
-                            <option value="Bootstrap 4">Bootstrap 4</option>
-                            <option value="Java">Java</option>
-                            <option value="Javascript">Javascript</option>
-                            <option value="Angular">Angular</option>
-                            <option value="Python">Python</option>
-                            <option value="Hybris">Hybris</option>
-                            <option value="SQL">SQL</option>
-                            <option value="NOSQL">NOSQL</option>
-                            <option value="NodeJS">NodeJS</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="statusSelect" class="form-label">Status:</label>
-                        <select class="form-select" id="statusSelect">
-                            <option value="">Select Employee Project Status</option>
-                            <option value="allocated">Allocated</option>
-                            <option value="not_allocated">Not Allocated</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ratingSelect" class="form-label">Rating:</label>
-                        <select class="form-select" id="ratingSelect">
-                            <option value="">Select Rating</option>
-                            <option value="1">1 and more</option>
-                            <option value="2">2 and more</option>
-                            <option value="3">3 and more</option>
-                            <option value="4">4 and more</option>
-                            <option value="5">5 and more</option>
-                            <option value="6">6 and more</option>
-                            <option value="7">7 and more</option>
-                            <option value="8">8 and more</option>
-                            <option value="9">9 and more</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="mb-3">
-                                <label for="startDate3" class="form-label">Start Date:</label>
-                                <input type="date" class="form-control" id="startDate3">
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="mb-3">
-                                <label for="endDate3" class="form-label">End Date:</label>
-                                <input type="date" class="form-control" id="endDate3">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="applyFilterBtn">Apply</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 @section scripts {
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
     <script>
-        $(document).ready(function () {
-            new DataTable('#dataTable1');
-            new DataTable('.dataTable2');
-            new DataTable('.dataTable3');
-
-            // Display Main data
-            function displaydata(Data) {
-                var table = $('#dataTable1').DataTable();
-                table.clear();//.draw();
-                $.each(Data, function (index, data) {
-                    table.row.add([
-                        data.projectId,
-                        data.projectName,
-                        data.projectDepartment,
-                        data.projectSkills,
-                        data.numberOfEmployees,
-                        new Date(data.startDate).toLocaleDateString(),
-                        new Date(data.endDate).toLocaleDateString(),
-                        data.projectStatus,
-                        '<i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>'
-                    ]).draw();
-                });
-                $('.fa-user-plus').parent().addClass('logo-middle mapEmp cursor');
-                $('.page-link').click(() => {
-                    $('.fa-user-plus').parent().addClass('logo-middle mapEmp cursor');
-                })
-            }
-
-            function getData() {
-                $.ajax({
-                    url: '/Mapping/GetProjectEmployeeMapping',
-                    type: 'POST',
-                    success: function (data) {
-                        displaydata(data.data);
-                    }
-                });
-            }
-            getData();
-            $('#dt-length-0').on('change', function () {
-                $('.fa-user-plus').parent().addClass('logo-middle mapEmp cursor');
-            });
-            // Data table ni last columns mate
-            $('#assign').click(function (event) {
-                event.preventDefault(); // Prevent default action
-                event.stopPropagation(); // Prevent the event from propagating
-                return false; // Ensure no other handlers are executed
-            });
-            $('#remove').click(function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                return false;
-            });
-            $('#add').click(function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                return false;
-            });
-            let projectId;
-            let skills;
-            // Event listener for row click to open modal
-            $('#dataRows').on('click', 'tr', function (event) {
-                if ($(event.target).closest('.mapEmp').length) {
-                    return;
-                }
-                // $('#xlModalErrorMsg').text().clear();
-                // Get data from the clicked row
-                projectId = $(this).find('td:eq(0)').text();
-                let projectName = $(this).find('td:eq(1)').text();
-                let department = $(this).find('td:eq(2)').text();
-                skills = $(this).find('td:eq(3)').text();
-                let employees = $(this).find('td:eq(4)').text();
-                let startDate = formatDate($(this).find('td:eq(5)').text());
-                let endDate = formatDate($(this).find('td:eq(6)').text());
-                let status = $(this).find('td:eq(7)').text();
-
-                // Populate modal fields with the fetched data
-                $('#pid').val(projectId);
-                $('#projectName').val(projectName);
-                $('#department').val(department);
-                $('#skills').val(skills);
-                $('#employees').val(employees);
-                $('#startDate1').val(startDate);
-                $('#endDate1').val(endDate);
-                $('#status').val(status);
-                // Show the modal
-                $('#mainModal').modal('show').on('shown.bs.modal', function () {
-                    $('#xlModalErrorMsg').text('');
-
-                    $.ajax({
-                        url: '/Mapping/demoGetAllocatedEmployeesData',
-                        type: 'POST',
-                        data: { ProjectId: projectId, skills: skills },
-                        dataType: 'json',
-                        success: function (data) {
-                            populateEmployeeData(data.data);
-                        },
-                        error: function (error) {
-                            console.log('Error fetching data:', error);
-                        }
-                    });
-                });
-
-            });
-            let ctr = 0;
-
-            // Display remove modal data
-            function populateEmployeeData(data) {
-                var table = $('#mainTable').DataTable();
-                // alert(JSON.stringify(data));
-                table.clear().draw();
-                var originalStartDates = {}; // Object to store original start dates
-                var originalEndDates = {};   // Object to store original end dates
-                $.each(data, function (index, employee) {
-                    // alert(employee.employeeStartDate);
-                    // var EmployeeStartDate = new Date(employee.employeeStartDate).toISOString().split('T')[0]; // Extract only date part
-                    // var EmployeeEndDate = new Date(employee.employeeEndDate).toISOString().split('T')[0];
-                    var EmployeeStartDate = employee.employeeStartDate.split('T')[0]; // Extract only date part
-                    var EmployeeEndDate = employee.employeeEndDate.split('T')[0]; // Extract only date part
-                    // var EmployeeStartDate = new Date(employee.employeeStartDate).toLocaleDateString(); // Extract only date part
-                    // var EmployeeEndDate = new Date(employee.employeeEndDate).toLocaleDateString(); // Extract only date part
-                    // alert(EmployeeStartDate);
-                    // Store original start date and end date for each employee
-                    originalStartDates[employee.workingEmployeeId] = EmployeeStartDate;
-                    originalEndDates[employee.workingEmployeeId] = EmployeeEndDate;
-                    table.row.add([
-                        employee.workingEmployeeId,
-                        employee.employeename,
-                        employee.employeeSkills,
-                        employee.employeeRole,
-                        '<input type="date" class="form-control start_date" value="' + EmployeeStartDate + '">',
-                        '<input type="date" class="form-control end_date" value="' + EmployeeEndDate + '">',
-                        '<i class="fa fa-minus-square fa-lg down cursor" style="color:red" aria-hidden="true"></i>'
-                    ]).draw();
-                });
-                $('#mainTable').on('change', '.start_date, .end_date', function () {
-                    var row = $(this).closest('tr');
-                    var workingEmployeeId = row.find('td:eq(0)').text();
-                    var originalStartDate = new Date(originalStartDates[workingEmployeeId]);
-                    var originalEndDate = new Date(originalEndDates[workingEmployeeId]);
-                    var currentStartDate = new Date(row.find('.start_date').val());
-                    var currentEndDate = new Date(row.find('.end_date').val());
-
-                    if (currentStartDate !== originalStartDate || currentEndDate !== originalEndDate) {
-                        $('#mainModalApply').prop('disabled', false);
-                    } else {
-                        $('#mainModalApply').prop('disabled', true);
-                    }
-
-                });
-
-                $('#mainModalApply').click(() => {
-                    var startDate = new Date($('.start_date').val());
-                    var endDate = new Date($('.end_date').val());
-
-                    if (endDate < startDate) {
-                        $('#xlModalErrorMsg').text('**End date should not be before start date');
-                        return false;
-                    } else {
-                        // let ctr = 0;
-                        // alert('In update date function ' + ctr);
-                        ctr++;
-                        // Proceed with your logic here if the end date is valid
-                        var updatedData = [];
-                        $('#mainTable tbody tr').each(function () {
-                            var row = $(this);
-                            var workingEmployeeId = row.find('td:eq(0)').text();
-                            var EmployeeStartDate = formatDateimp(row.find('.start_date').val());
-                            var EmployeeEndDate = formatDateimp(row.find('.end_date').val());
-                            var originalStartDate = originalStartDates[workingEmployeeId];
-                            var originalEndDate = originalEndDates[workingEmployeeId];
-
-                            // Check if the dates are different from the original ones
-                            if (EmployeeStartDate !== originalStartDate || EmployeeEndDate !== originalEndDate) {
-                                updatedData.push({
-                                    workingEmployeeId: workingEmployeeId,
-                                    EmployeeStartDate: EmployeeStartDate,
-                                    EmployeeEndDate: EmployeeEndDate
-                                });
-                            }
-
-                            // console.log(updatedData);
-                        });
-                        console.log(updatedData);
-                        // // Send updated data to the server
-                        $.ajax({
-                            url: '/Mapping/UpdateAllocatedEmployeesData',
-                            type: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify(updatedData),
-                            success: function (response) {
-                                // $('#mainModal').modal('hide')
-                                location.reload();
-                                // populateEmployeeData(updatedData);
-                            },
-                            error: function (error) {
-                                console.log('Error updating data:', error);
-                                alert('An error occurred while updating data. Please try again.');
-                            }
-                        });
-                    }
-                });
-                $('#mainModalApply').prop('disabled', true);
-            }
-
-            $("#mainModalClose").click(() => {
-                $('#mainModal').modal('hide');
-            })
-            $("#filterBtn").click(() => {
-                $('#filterModal').modal('show');
-            })
-            $(".applyBtn").click(() => {
-                $('#filterModal').modal('hide');
-            })
-            function formatDateimp(dateString) {
-                var date = new Date(dateString);
-                var year = date.getFullYear();
-                var month = ('0' + (date.getMonth() + 1)).slice(-2);
-                var day = ('0' + date.getDate()).slice(-2);
-                return year + '-' + month + '-' + day;
-            }
-
-            // Event listener for click events on icons within the "Remove" column
-            $('#mainTable').on('click', '.fa-minus-square', function () {
-                let $row = $(this).closest('tr');
-                let employeeId = $row.find('td:eq(0)').text();
-                let employeeName = $row.find('td:eq(1)').text();
-                let message = `Are you sure you want to remove <b>${employeeName}</b> having employeeid <b>${employeeId}</b> from the project?`;
-                $('#employeeDetails').html(message);
-
-                $('#confirmationModal').modal('show');
-
-                // Store reference to $(this) in a variable
-                let $button = $(this);
-
-                $('#confirmDeletion').click(() => {
-                    $.ajax({
-                        url: '/Mapping/RemoveFromProject',
-                        type: 'POST',
-                        data: { employeeId: employeeId, projectId: projectId },
-                        success: function (result) {
-                            $('#confirmationModal').modal('hide');
-                            // Remove the closest row to the button element
-                            $button.closest('tr').remove();
-                            // Fetch updated data and update the table
-                            $.ajax({
-                                url: '/Mapping/demoGetAllocatedEmployeesData',
-                                type: 'POST',
-                                data: { ProjectId: projectId },
-                                dataType: 'json',
-                                success: function (data) {
-                                    // Update the table with new data
-                                    location.reload();
-                                    getData();
-                                    populateEmployeeData(data.data);
-                                },
-                                error: function (error) {
-                                    console.log('Error fetching data:', error);
-                                }
-                            });
-                        },
-                        error: function (error) {
-                            console.error('Error removing employee from project:', error);
-                        }
-                    });
-                });
-            });
-
-            $(".close-confirmation").click(() => {
-                $('#confirmationModal').modal('hide');
-            })
-
-            let projectStartDate;
-            let projectEndDate;
-            // Event listener for click events on icons within the "Assign" column
-            $('#dataTable1').on('click', '.mapEmp', function () {
-                $('#validationMsg').text('');
-                let $row = $(this).closest('tr');
-                let projectId = $row.find('td:eq(0)').text();
-                let departmentName = $row.find('td:eq(2)').text();
-                projectStartDate = $row.find('td:eq(5)').text();
-                projectEndDate = $row.find('td:eq(6)').text();
-                // alert(projectStartDate + "========" + projectEndDate);
-                $.ajax({
-                    url: '/Mapping/FetchNotAllocatedEmployees',
-                    type: 'POST',
-                    data: { departmentName: departmentName },
-                    success: function (data) {
-                        displayNotAllocatedData(data.data);
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Error: ' + error);
-                    }
-                });
-
-                $('#mapModal').modal('show');
-                $('#savechange').prop('disabled', true);
-                $('#savechange').click(() => {
-                    saveChangesToDatabase(projectId);
-                });
-
-            });
-            function saveChangesToDatabase(projectId) {
-                let data = {
-                    ProjectId: parseInt(projectId),
-                    EmployeesId: [],
-                    ProjectRoleId: [],
-                    StartDate: [],
-                    EndDate: [],
-                    EmpSkills: []
-                };
-                let allDatesValid = true;
-
-                $('#empModal tbody tr:has(td:eq(7) input[type="checkbox"]:checked)').each(function () {
-                    let row = $(this);
-                    let employeeId = parseInt(row.find('td:eq(0)').text());
-                    let projectRole = parseInt(row.find('td:eq(4) select').val());
-                    let startDate = row.find('td:eq(5) input').val();
-                    let endDate = row.find('td:eq(6) input').val();
-                    let startDateObj = new Date(startDate);
-                    let endDateObj = new Date(endDate);
-                    let empSkills = row.find('td:eq(2)').text();
-                    // alert(employeeSkills);
-                    // alert(projectStartDate + "=======" + startDate + "+++++++++++++++" + startDateObj.toLocaleDateString());
-                    // alert(projectEndDate + "=======" + endDate + "+++++++++++++++" + endDateObj);
-                    if (endDateObj < startDateObj) {            // karan
-                        $('#validationMsg').text('End date should not be before start date');     // karan
-                        allDatesValid = false;          // karan
-                        return;                   // karan
-                    } 
-                    // else if (startDateObj.toLocaleDateString() < projectStartDate || endDateObj.toLocaleDateString() > projectEndDate) {
-                    //     $('#validationMsg').text('Employee dates must be within the project range');
-                    //     allDatesValid = false;
-                    //     return;
-                    // } 
-                    else {                            // karan
-                        data.EmployeesId.push(employeeId);
-                        data.ProjectRoleId.push(projectRole);
-                        data.StartDate.push(startDate);
-                        data.EndDate.push(endDate);
-                        data.EmpSkills.push(empSkills);
-                    }
-                });
-                if (allDatesValid) {
-                    $.ajax({
-                        url: '/Mapping/DemoAssignEmployees',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: function (response) {
-                            $('#mapModal').modal('hide');
-                            location.reload();
-                        },
-                        error: function (xhr, status, error) {
-                            console.error('Error saving data:', error);
-                        }
-                    });
-                }
-            }
-
-            function displayNotAllocatedData(Data) {
-                var table = $('#empModal').DataTable();
-                table.clear().draw();
-                $.each(Data, function (index, data) {
-                    table.row.add([
-
-                        data.employeeId,
-                        data.notAllocatedEmployeeName,
-                        data.notAllocatedEmployeeSkills,
-                        data.employeeRating,
-                        'not assigned',
-                        'not assigned',
-                        'not assigned',
-                        '<input type="checkbox" class="form-check-input addEmp cursor" id="addEmp' + data.employeeId + '">'
-                    ]).draw();
-                });
-
-                // Target only checkboxes within the table with ID 'empModal'
-                $('#empModal .addEmp').change(function () {
-                    updateSaveButton();
-                    sortCheckedRowsEmpModal();
-                    updateProjectRolesToDropdown();
-                    updateDateFields();
-                });
-
-                function sortCheckedRowsEmpModal() {
-                    let rows = $('#empModal tbody tr').get();
-                    rows.sort(function (a, b) {
-                        let keyA = $(a).find('.addEmp').is(':checked') ? 0 : 1;
-                        let keyB = $(b).find('.addEmp').is(':checked') ? 0 : 1;
-                        return keyA - keyB;
-                    });
-                    $.each(rows, function (index, row) {
-                        $('#empModal tbody').append(row);
-                    });
-                }
-
-                function updateProjectRolesToDropdown() {
-                    $('#empModal .addEmp').each(function () {
-                        let row = $(this).closest('tr');
-                        let projectRoleCell = row.find('td').eq(4);
-
-                        if ($(this).is(':checked')) {
-                            if (projectRoleCell.find('select').length === 0) {
-                                $.ajax({
-                                    url: '/Mapping/getProjectRoles',
-                                    type: 'POST',
-                                    success: function (response) {
-                                        let dropdown = $('<select class="form-control"></select>');
-
-                                        response.data.forEach(function (item) {
-                                            if (item.projectRoleName) {
-                                                dropdown.append($('<option></option>').attr("value", item.projectRoleId).text(item.projectRoleName));
-                                            }
-                                        });
-
-                                        projectRoleCell.empty().append(dropdown);
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error('Error fetching project roles:', error);
-                                    }
-                                });
-                            }
-                        } else {
-                            // Handle the unchecked state if needed
-                            if (projectRoleCell.find('select').length > 0) {
-                                projectRoleCell.empty().text('not assigned');
-                            }
-                        }
-                    });
-                }
-
-                function updateDateFields() {
-                    let projectStartDate = "not assigned";
-                    let projectEndDate = "not assigned";
-
-                    $('#empModal .addEmp').each(function () {
-                        let row = $(this).closest('tr');
-                        let startDateCell = row.find('td').eq(5);
-                        let endDateCell = row.find('td').eq(6);
-
-                        if ($(this).is(':checked')) {
-                            if (startDateCell.find('input').length === 0) {
-                                startDateCell.html(`<input type="date" class="form-control startDate" value="${projectStartDate}">`);
-                            }
-                            if (endDateCell.find('input').length === 0) {
-                                endDateCell.html(`<input type="date" class="form-control endDate" value="${projectEndDate}">`);
-                            }
-                        } else {
-                            if (startDateCell.find('input').length > 0) {
-                                startDateCell.html(projectStartDate);
-                            }
-                            if (endDateCell.find('input').length > 0) {
-                                endDateCell.html(projectEndDate);
-                            }
-                        }
-                    });
-                }
-
-            }
-            function updateSaveButton() {
-                let anyChecked = $('#empModal .addEmp:checked').length > 0;
-                $('#savechange').prop('disabled', !anyChecked);
-            }
-
-
-            let multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-                removeItemButton: true,
-                // maxItemCount: 5,
-                // searchResultLimit: 5,
-                // renderChoiceLimit: 5
-            });
-
-            $('#filterBtnEmp').click(() => {
-                $('#addEmployeeFilter').modal('show');
-            })
-
-            // Datatable1
-            document.getElementById('dt-search-0').placeholder = 'Search something...';
-            $('label[for="dt-search-0"]').remove();
-            $('#dt-search-0').parent().parent().removeClass('ms-auto');
-            $('#dt-search-0').css({
-                'width': '30rem', 'border': '2px solid #dee2e6'
-            });
-            // Datatable2
-            document.getElementById('dt-search-1').placeholder = 'Search something...';
-            $('label[for="dt-search-1"]').remove();
-            $('#dt-search-1').parent().parent().removeClass('ms-auto');
-            $('#dt-search-1').css({ 'width': '30rem', 'border': '2px solid #dee2e6' });
-            // Datatable3
-            document.getElementById('dt-search-2').placeholder = 'Search something...';
-            $('label[for="dt-search-2"]').remove();
-            $('#dt-search-2').parent().parent().removeClass('ms-auto');
-            $('#dt-search-2').css({ 'width': '30rem', 'border': '2px solid #dee2e6' });
-
-            //1st filter button
-            let firstButton = $('<button>', {
-                class: 'btn btn-danger ms-1',
-                text: 'Filter',
-            });
-            $('#dt-search-0').parent('.dt-search').append(firstButton);
-            firstButton.click(() => {
-                $('#filterModal').modal('show');
-            });
-
-            //2nd and 3rd filter button
-            let secondButton = $('<button>', {
-                class: 'btn btn-danger ms-1',
-                text: 'Filter',
-            });
-            $('#dt-search-1').parent('.dt-search').append(secondButton);
-            secondButton.click(() => {
-                $('#addEmployeeFilter').modal('show');
-            });
-
-            let thirdButton = $('<button>', {
-                class: 'btn btn-danger ms-1',
-                text: 'Filter',
-            });
-            $('#dt-search-2').parent('.dt-search').append(thirdButton);
-            thirdButton.click(() => {
-                $('#addEmployeeFilter').modal('show');
-            });
-
-            function formatDate(dateString) {
-                let parts = dateString.split('/');
-                return parts[2] + '-' + parts[1] + '-' + parts[0];
-            }
-            updateSaveButton();
-
-        });
+        var projectsData = @Html.Raw(Json.Serialize(Model));
+        console.warn("1"+projectsData);
     </script>
+    <script src="~/custom-scripts/home/mapping.js"></script>
 }

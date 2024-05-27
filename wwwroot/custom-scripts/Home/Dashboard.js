@@ -122,13 +122,13 @@ $(function () {
     };
 
     var predefinedColors = [
-        "#80FFFF", "#FFC080", "#C080FF", "#80C0FF", "#C0FF80",
         "#00FF80", "#FF0080", "#FF8000", "#0080FF", "#8000FF",
         "#FF8080", "#80FF80", "#8080FF", "#FFFF80", "#FF80FF",
-        "#80FFFF", "#FFC080", "#C080FF", "#80C0FF", "#C0FF80",
-        "#80FFC0", "#FF80C0", "#FFC080", "#80C0FF", "#C080FF",
         "#FF8080", "#80FF80", "#8080FF", "#FFFF80", "#FF80FF",
         "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF",
+        "#80FFFF", "#FFC080", "#C080FF", "#80C0FF", "#C0FF80",
+        "#80FFFF", "#FFC080", "#C080FF", "#80C0FF", "#C0FF80",
+        "#80FFC0", "#FF80C0", "#FFC080", "#80C0FF", "#C080FF",
         "#00FFFF", "#FF8000", "#8000FF", "#0080FF", "#80FF00",
         "#80FFC0", "#FF80C0", "#FFC080", "#80C0FF", "#C080FF",
         "#FF8080", "#80FF80", "#8080FF", "#FFFF80", "#FF80FF"
