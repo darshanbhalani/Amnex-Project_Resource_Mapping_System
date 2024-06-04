@@ -1,159 +1,76 @@
-var skillsDataSource = new kendo.data.DataSource({
-    data: Skills,
-    schema: {
-        model: {
-            id: "Skillid"
-        }
-    },
-    pageSize: 10
-});
+function displaySkill(dataItem) {
+    $.ajax({
+        url: '/Skills/GetSkillsDetails',
+        type: 'GET',
+        data: { skillId: dataItem.skillid },
+        success: function (response) {
+            var skillData = response.data;
+            $('#skillsgrid').kendoGrid({
+                dataSource: {
+                    data: skillData,
+                    pageSize: 10
+                },
+                dataBound: function (e) {
+                    $('#skillsgrid th').css('background-color', 'rgb(47 68 98)');
+                    $('#skillsgrid th').css('color', 'white');
+                    $('#skillsgrid .k-grid-content td').css('text-align', 'center');
+                    $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
+                    $('.k-grid-edit').attr("data-skillid", dataItem.Skillid);
+                    $('.k-grid-delete').attr("data-skillid", dataItem.Skillid);
+                    $('.btn-employee-details').attr("data-skillid", dataItem.Skillid);
+                    $('.btn-project-details').attr("data-skillid", dataItem.Skillid);
 
-$('#grid').kendoGrid({
+                },
+                columns: [
+                    { field: "skillname", title: "Skill's Name", width: "20%" },
+                    { field: "employeecount", title: "Number of Employees", width: "20%" },
+                    { field: "projectcount", title: "Number of Projects", width: "20%" }
+                ],
+                sortable: true,
+                pageable: true,
+                toolbar: [
+                    {
+                        name: "search",
+                        template: "<button class='k-button searchButton'>Search</button>",
+                        className: "custom-toolbar-button"
+                    },
+                    {
+                        name: "excel",
+                        text: "Export to Excel",
+                        className: "k-grid-excel"
+                    },
+                    {
+                        name: "pdf",
+                        text: "Export to PDF",
+                        className: "k-grid-pdf"
+                    }
+                ],
+                pdf: {
+                    fileName: "skills_details.pdf",
+                    allPages: true,
+                    avoidLinks: true,
+                    paperSize: "A4",
+                    margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
+                    fontSize: 12,
+                },
+                excel: {
+                    fileName: "Skills_Details.xlsx",
+                    filterable: true
+                },
 
-    dataSource: skillsDataSource,
-    columns: [
-        {
-            field: "Skillname",
-            title: "Skill's Name",
-            width: "40%",
-            editable: false,
-            attributes: {
-                "class": "custom-column"
-            },
-            sortable: true
-        },
-        {
-            title: "Details",
-            width: "30%",
-            template: function (dataItem) {
-                return "<button class='btn btn-light btn-employee-details' data-skillid='" + dataItem.Skillid + "'>Employee Details</button> " +
-                    "<button class='btn btn-light btn-project-details' data-skillid='" + dataItem.Skillid + "'>Project Details</button>";
-            },
-            attributes: {
-                "class": "details"
-            },
-        },
-        {
-            title: "Actions",
-            width: "30%",
-            template: function (dataItem) {
-                return "<i class='fas fa-edit fa-2x k-grid-edit' data-skillid='" + dataItem.Skillid + "' data-skillname = '" + dataItem.Skillname + "'> | </i>" +
-                    "<i class='fas fa-trash fa-2x k-grid-delete' data-skillid='" + dataItem.Skillid + "' data-skillname = '" + dataItem.Skillname + "'></i>";
-            },
-            attributes: {
-                "class": "actions"
-            },
-        }
-    ],
-    sortable: true,
-    editable: false,
-    navigatable: true,
-    pageable: {
-        refresh: true,
-        pageSizes: [10, 25, 50, 100],
-        buttonCount: 5,
-        pageSize: 10
-    },
-    toolbar: [
-        {
-            name: "create",
-            template: "<button class='k-button addSkillButton' style='background-color:rgb(47 68 98);'>Add Skill</button>",
-            className: "custom-toolbar-button"
-        },
-        {
-            name: "search",
-            template: "<button class='k-button searchButton'>Search</button>",
-            className: "custom-toolbar-button"
-        },
-        {
-            name: "pdf",
-            text: "Export to PDF",
-            className: "k-grid-pdf"
-        }
-    ],
-    pdf: {
-        fileName: "Skills.pdf",
-        allPages: true,
-        avoidLinks: true,
-        paperSize: "A4",
-        margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
-        fontSize: 12,
-        exportPDF: function (e) {
-            e.sender.thead.find("th").each(function () {
-
-                if ($(this).text().trim() === "Actions") {
-                    $(this).css("display", "none");
-                }
             });
+        },
+        error: function (xhr, status, error) {
+            console.error(xhr.responseText);
         }
-    },
-    dataBound: function () {
-        $('#grid th').css('background-color', 'rgb(47 68 98)');
-        $('#grid th').css('color', 'white');
-        $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
-        $('.actions').css('text-align', 'center');
-        $('.details').css('text-align', 'center');
-        $('.btn-employee-details').off('click').on('click', function () {
-            var skillId = $(this).data('skillid');
-            console.log(skillId);
-            var dataItem = skillsDataSource.get(skillId);
-            if (dataItem) {
-                displayEmployeeSkill(dataItem);
-                $('#empSkillModal').modal('show');
-            }
-        });
-        $('.k-grid-edit').off('click').on('click', function () {
-            var skillId = $(this).data('skillid');
-            var skillName = $(this).data('skillname');
-            var dataItem = skillsDataSource.get(skillId);
-            console.log(skillName);
-            console.log(skillId);
-            if (dataItem) {
-                dataItem.skillId = skillId;
-                dataItem.skillName = skillName;
-                editSkill(dataItem);
-                $('#editSkillModal').modal('show');
-            }
-        });
-        $('.k-grid-delete').off('click').on('click', function () {
-            var skillId = $(this).data('skillid');
-            var skillName = $(this).data('skillname');
-            var dataItem = skillsDataSource.get(skillId);
-            if (dataItem) {
-                dataItem.skillId = skillId;
-                dataItem.skillName = skillName;
-                deleteSkill(dataItem);
-                $('#deleteSkillModal').modal('show');
-            }
-        });
-        $('.btn-project-details').off('click').on('click', function () {
-            var skillId = $(this).data('skillid');
-            var dataItem = skillsDataSource.get(skillId);
-            if (dataItem) {
-                displayProjectSkill(dataItem);
-                $('#projectSkillModal').modal('show');
-            }
-
-        });
-    },
-    selectable: "row",
-    change: function (e) {
-        var selectedRows = this.select();
-        selectedRows.each(function () {
-            var dataItem = $('#grid').data("kendoGrid").dataItem(this);
-            if (dataItem) {
-                $('#skillname').text(dataItem.Skillname);
-                $('#editSkillName').text(dataItem.Skillid);
-                displayEmployeeSkill(dataItem);
-            }
-        });
-    },
-});
+    });
+}
 function displayProjectSkill(dataItem) {
+
     $.ajax({
         url: '/Skills/GetProjectDetails',
         type: 'GET',
-        data: { skillId: dataItem.Skillid },
+        data: { skillId: dataItem.skillid },
         success: function (response) {
             var projectData = response.data;
             $('#projgrid').kendoGrid({
@@ -165,18 +82,13 @@ function displayProjectSkill(dataItem) {
                     $('#projgrid th').css('background-color', 'rgb(47 68 98)');
                     $('#projgrid th').css('color', 'white');
                     $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
-                    //$('.k-grid-edit').attr("data-skillid", dataItem.Skillid);
-                    //$('.k-grid-delete').attr("data-skillid", dataItem.Skillid);
-                    if (e.sender.dataSource.view().length === 0) {
-                        this.element.find(".k-grid-header").hide();
-                    } else {
-                        this.element.find(".k-grid-header").show();
-                        var skillName = dataItem.Skillname;
-                        this.element.find(".k-grid-header").find("th:first").text("Projects working on skill : " + skillName);
-                    }
                 },
                 columns: [
-                    { field: "projectName", title: "", width: "50%" }
+                    { field: "projectName", title: "", width: "50%" },
+                    { field: "startDate", title: "", width: "50%" },
+                    { field: "endDate", title: "", width: "50%" },
+                    { field: "departmentName", title: "", width: "50%" },
+                    { field: "status", title: "", width: "50%" },
                 ],
                 sortable: true,
                 pageable: true,
@@ -185,6 +97,11 @@ function displayProjectSkill(dataItem) {
                         name: "search",
                         template: "<button class='k-button searchButton'>Search</button>",
                         className: "custom-toolbar-button"
+                    },
+                    {
+                        name: "excel",
+                        text: "Export to Excel",
+                        className: "k-grid-excel"
                     },
                     {
                         name: "pdf",
@@ -200,6 +117,10 @@ function displayProjectSkill(dataItem) {
                     margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
                     fontSize: 12,
                 },
+                excel: {
+                    fileName: "Project_Details.xlsx",
+                    filterable: true
+                },
 
             });
         },
@@ -208,12 +129,11 @@ function displayProjectSkill(dataItem) {
         }
     });
 }
-
 function displayEmployeeSkill(dataItem) {
     $.ajax({
         url: '/Skills/GetEmployeeDetails',
         type: 'GET',
-        data: { skillId: dataItem.Skillid },
+        data: { skillId: dataItem.skillid },
         success: function (response) {
             var employeeData = response.data;
             $('#empgrid').kendoGrid({
@@ -225,16 +145,14 @@ function displayEmployeeSkill(dataItem) {
                     $('#empgrid th').css('background-color', 'rgb(47 68 98)');
                     $('#empgrid th').css('color', 'white');
                     $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
-                    if (e.sender.dataSource.view().length === 0) {
-                        this.element.find(".k-grid-header").hide();
-                    } else {
-                        this.element.find(".k-grid-header").show();
-                        var skillName = dataItem.Skillname;
-                        this.element.find(".k-grid-header").find("th:first").text("Employees having skill : " + skillName);
-                    }
+
                 },
                 columns: [
-                    { field: "employeeName", title: "Employee's Name", width: "50%" }
+                    { field: "employeeAipl", title: "Employee's Aipl", width: "25%" },
+                    { field: "employeeName", title: "Employee's Name", width: "25%" },
+                    { field: "employeeDesignation", title: "Employee's Designation", width: "25%" },
+                    { field: "departmentName", title: "Employee's Department", width: "25%" }
+                    /* { field: "isAllocated", title: "Employee's Allocation", width: "25%" },*/
                 ],
                 sortable: true,
                 pageable: true,
@@ -243,6 +161,11 @@ function displayEmployeeSkill(dataItem) {
                         name: "search",
                         template: "<button class='k-button searchButton'>Search</button>",
                         className: "custom-toolbar-button"
+                    },
+                    {
+                        name: "excel",
+                        text: "Export to Excel",
+                        className: "k-grid-excel"
                     },
                     {
                         name: "pdf",
@@ -258,6 +181,10 @@ function displayEmployeeSkill(dataItem) {
                     margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
                     fontSize: 12,
                 },
+                excel: {
+                    fileName: "Employee_details.xlsx",
+                    filterable: true
+                },
 
             });
 
@@ -269,7 +196,26 @@ function displayEmployeeSkill(dataItem) {
 }
 
 //Add skills
+
 $(document).on('click', '.addSkillButton', function () {
+    $('#addSkillModal').modal('show');
+    function checkAndSaveSkill(skillName) {
+        var lowercaseSkillName = skillName.toLowerCase();
+        var grid = $('#grid').data('kendoGrid');
+        var dataSource = grid.dataSource;
+        var existingSkill = dataSource.data().some(function (item) {
+            return item.skillname.toLowerCase() === lowercaseSkillName;
+        });
+
+        if (existingSkill) {
+            showSnackbar('false', skillName + ' already exists');
+            $('#skillName').val('');
+            $('#addSkillModal').modal('hide');
+            return;
+        }
+        saveSkill(skillName);
+
+    }
     function saveSkill(skillName) {
         var data = {
             skillname: skillName,
@@ -298,25 +244,6 @@ $(document).on('click', '.addSkillButton', function () {
             }
         });
     }
-    function checkAndSaveSkill(skillName) {
-        var lowercaseSkillName = skillName.toLowerCase();
-        var grid = $('#grid').data('kendoGrid');
-        var dataSource = grid.dataSource;
-        var existingSkill = dataSource.data().some(function (item) {
-            return item.Skillname.toLowerCase() === lowercaseSkillName;
-        });
-        if (existingSkill) {
-            showSnackbar('false', skillName + ' already exists');
-            $('#skillName').val('');
-            $('#addSkillModal').modal('hide');
-            return;
-        }
-        else {
-            saveSkill(skillName);
-        }
-    }
-
-    $('#addSkillModal').modal('show');
     $('#skillName').off('input').on('input', function () {
         var skillNameInput = $('#skillName').val();
         var saveAddSkillButton = $('#saveAddSkillButton');
@@ -332,7 +259,7 @@ $(document).on('click', '.addSkillButton', function () {
     });
     $('#saveAddSkillButton').on('click', function () {
         $('#addSkillModal').modal('hide');
-        var skillName = $('#skillName').val();
+        var skillName = $('#skillName').val().trim();
         checkAndSaveSkill(skillName);
     });
 });
@@ -433,3 +360,198 @@ function deleteSkill(dataItem) {
 
 
 }
+
+$(document).ready(function () {
+    var skillsDataSource = new kendo.data.DataSource({
+        data: Skills,
+        schema: {
+            model: {
+                id: "skillid"
+            }
+        },
+        pageSize: 10
+    });
+    $('#grid').kendoGrid({
+        dataSource: skillsDataSource,
+        columns: [
+            {
+                field: "skillname",
+                title: "Skill's Name",
+                width: "40%",
+                editable: false,
+                attributes: {
+                    "class": "custom-column"
+                },
+                sortable: true
+            },
+            {
+                command: [
+                    {
+                        name: "info",
+                        text: "",
+                        iconClass: "k-icon k-i-information k-grid-info"
+                    },
+                    {
+                        name: "edit",
+                        text: "",
+                        iconClass: "k-icon k-i-edit k-grid-edit"
+                    },
+                    {
+                        name: "destroy",
+                        text: "",
+                        iconClass: "k-icon k-i-delete k-grid-delete "
+                    }
+                ],
+                title: "Actions",
+                width: "10%"
+            }
+        ],
+        sortable: true,
+        editable: false,
+        navigatable: true,
+        pageable: {
+            refresh: true,
+            pageSizes: [10, 25, 50, 100],
+            buttonCount: 5,
+            pageSize: 10
+        },
+        toolbar: [
+            {
+                name: "create",
+                template: "<button class='k-button addSkillButton' style='background-color:rgb(47 68 98);'>Add Skill</button>",
+                className: "custom-toolbar-button"
+            },
+            {
+                name: "search",
+                template: "<button class='k-button searchButton'>Search</button>",
+                className: "custom-toolbar-button"
+            },
+            {
+                name: "excel",
+                text: "Export to Excel",
+                className: "k-grid-excel"
+            },
+            {
+                name: "pdf",
+                text: "Export to PDF",
+                className: "k-grid-pdf"
+            }
+        ],
+        pdf: {
+            fileName: "Skills.pdf",
+            allPages: true,
+            avoidLinks: true,
+            paperSize: "A4",
+            margin: { top: "2cm", right: "1cm", bottom: "1cm", left: "1cm" },
+            fontSize: 12,
+            exportPDF: function (e) {
+                e.sender.thead.find("th").each(function () {
+
+                    if ($(this).text().trim() === "Actions") {
+                        $(this).css("display", "none");
+                    }
+                });
+            }
+        },
+        excel: {
+            fileName: "Skills.xlsx",
+            filterable: true
+        },
+        dataBound: function () {
+            $('#grid th').css('background-color', 'rgb(47 68 98)');
+            $('#grid th').css('color', 'white');
+            $('.k-grid-pdf').css('background-color', 'rgb(47 68 98)');
+            $('.actions').css('text-align', 'center');
+            $('.details').css('text-align', 'center');
+            var grid = this;
+            grid.tbody.find(".k-i-information").each(function () {
+                var dataItem = grid.dataItem($(this).closest("tr"));
+                $(this).attr("data-skillid", dataItem.skillid);
+                $(this).attr("data-skillname", dataItem.skillname);
+            });
+            grid.tbody.find(".k-i-edit").each(function () {
+                var dataItem = grid.dataItem($(this).closest("tr"));
+                $(this).attr("data-skillid", dataItem.skillid);
+                $(this).attr("data-skillname", dataItem.skillname);
+            });
+            grid.tbody.find(".k-i-delete").each(function () {
+                var dataItem = grid.dataItem($(this).closest("tr"));
+                $(this).attr("data-skillid", dataItem.skillid);
+                $(this).attr("data-skillname", dataItem.skillname);
+            });
+            $('.k-i-information').off('click').on('click', function () {
+                var skillId = $(this).attr('data-skillid');
+                var skillName = $(this).attr('data-skillname');
+                var dataItem = skillsDataSource.get(skillId);
+                if (dataItem) {
+                    dataItem.skillid = skillId;
+                    dataItem.Skillname = skillName;
+                    displaySkill(dataItem);
+                    displayEmployeeSkill(dataItem);
+                    displayProjectSkill(dataItem);
+                    $('#grid').hide();
+                    $('#details').show();
+                    $('#skillsgrid').show();
+                }
+            });
+            $('.k-i-edit').off('click').on('click', function () {
+                var skillId = $(this).attr('data-skillid');
+                var skillName = $(this).attr('data-skillname');
+                var dataItem = skillsDataSource.get(skillId);
+                if (dataItem) {
+                    dataItem.skillId = skillId;
+                    dataItem.skillName = skillName;
+                    editSkill(dataItem);
+                    $('#editSkillModal').modal('show');
+                }
+            });
+            $('.k-i-delete').off('click').on('click', function () {
+                var skillId = $(this).attr('data-skillid');
+                var skillName = $(this).attr('data-skillname');
+                var dataItem = skillsDataSource.get(skillId);
+                if (dataItem) {
+                    dataItem.skillId = skillId;
+                    dataItem.skillName = skillName;
+                    deleteSkill(dataItem);
+                    $('#deleteSkillModal').modal('show');
+                }
+            });
+
+        },
+        selectable: "row",
+    });
+
+    $('.btn-skill-details').off('click').on('click', function () {
+        $('.btn-employee-details').removeClass('active');
+        $('.btn-project-details').removeClass('active');
+        $('.btn-skill-details').addClass('active');
+        $('#grid').hide();
+        $('#details').show();
+        $('#empgrid').hide();
+        $('#projgrid').hide();
+        $('#skillsgrid').show();
+
+    });
+    $('.btn-employee-details').off('click').on('click', function () {
+        $('.btn-skill-details').removeClass('active');
+        $('.btn-project-details').removeClass('active');
+        $('.btn-employee-details').addClass('active');
+        $('#grid').hide();
+        $('#details').show();
+        $('#skillsgrid').hide();
+        $('#projgrid').hide();
+        $('#empgrid').show();
+
+    });
+    $('.btn-project-details').off('click').on('click', function () {
+        $('.btn-skill-details').removeClass('active');
+        $('.btn-employee-details').removeClass('active');
+        $('.btn-project-details').addClass('active');
+        $('#grid').hide();
+        $('#details').show();
+        $('#skillsgrid').hide();
+        $('#empgrid').hide();
+        $('#projgrid').show();
+    });
+
+});

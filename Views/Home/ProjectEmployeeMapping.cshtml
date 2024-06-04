@@ -2,11 +2,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
 <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 <style>
-    /*  .k-header {
-            background-color: black !important;
-        } */
-
-    /* Ensure the dropdown is displayed in front */
     .choices {
         z-index: 1050;
         position: relative;
@@ -20,15 +15,24 @@
     .k-grid td {
         overflow: visible;
     }
-    /*-----------------*/
 
     .cursor {
         cursor: pointer;
     }
 
-    /* .logo-middle {
-            text-align: center !important;
-        } */
+    .k-pager-wrap{
+        overflow:hidden !important;
+    }
+
+    /* #displayNotAllocatedEmployeesGrid .k-grid-content {
+        height: calc(28vh - 1.5em); 
+        overflow: auto; 
+    }
+
+    .k-pager-wrap {
+        text-align: center; 
+        clear: both; 
+    } */
 
 </style>
 
@@ -42,22 +46,21 @@
 
 <!-- Extra large main modal -->
 <div class="modal fade bd-example-modal-xl" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document" id="modalSize">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="mainModalLabel">@* Details *@</h5>
+                <h5 class="modal-title" id="mainModalLabel"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <span id="xlModalErrorMsg" style="color:red"></span>
+                    @* <span id="xlModalErrorMsg" style="color:red"></span> *@
                     <div class="xlbuttons">
-                        <button class="btn btn-primary detailsButton">Details</button>
-                        <button class="btn btn-danger employeesButton">Employees</button>
+                        <button class="btn detailsButton border-dark">Details</button>
+                        <button class="btn employeesButton border-dark">Employees</button>
                     </div>
                     <div id="projectDetails">
                         <div class="row">
-                            <!-- 1st row: Project Name and Start Date -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="projectName">Project Name:</label>
@@ -72,7 +75,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <!-- 2nd row: Department and End Date -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="department">Department:</label>
@@ -88,7 +90,6 @@
                         </div>
 
                         <div class="row">
-                            <!-- 3rd row: Project Skills and Number of Employees -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="skills">Project Skills:</label>
@@ -104,7 +105,6 @@
                         </div>
                     </div>
                     <div class="row xlEmployeesData">
-                        <!-- 4th row: Employees data -->
                         <h5>Employees Data</h5>
                         <!-- Grid to show employees data -->
                         <div id="displayAlloctedEmployeesGrid"></div>
@@ -112,9 +112,12 @@
                     </div>
                 </div>
             </div>
+            <div class="d-flex justify-content-center">
+                <span id="xlModalErrorMsg" style="color:red"></span>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" id="mainModalApply">Apply</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="mainModalClose">Close</button>
+                @* <button type="button" class="btn btn-secondary" data-dismiss="modal" id="mainModalClose">Close</button> *@
             </div>
         </div>
     </div>
@@ -132,7 +135,7 @@
                 <p id="employeeDetails"></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close-confirmation" data-dismiss="modal">Cancel</button>
+                @* <button type="button" class="btn btn-secondary close-confirmation" data-dismiss="modal">Cancel</button> *@
                 <button type="button" class="btn btn-danger" id="confirmDeletion">Confirm</button>
             </div>
         </div>
@@ -152,17 +155,20 @@
             <div class="modal-body">
                 <div class="row justify-content-center my-4">
                     <div class="col-md-12">
-                        <span id="validationMsg" style="color:red"></span>
+                        @* <span id="validationMsg" style="color:red"></span> *@
                         <h5>Choose Employees</h5>
                         <div id="displayNotAllocatedEmployeesGrid"></div>
 
                     </div>
                 </div>
             </div>
+            <div class="d-flex justify-content-center">
+                <span id="validationMsg" style="color:red"></span>
+            </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div><span style="color:red">Note: You can save changes only after assigning atleast one employee</span></div>
                 <div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    @* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> *@
                     <button type="button" id="savechange" class="btn btn-primary" disabled>Save changes</button>
                 </div>
             </div>

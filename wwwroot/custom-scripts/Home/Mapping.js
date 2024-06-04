@@ -1,5 +1,4 @@
 $(() => {
-    // Display main data
     $("#displayMainDataGrid").kendoGrid({
         dataSource: {
             data: projectsData,
@@ -49,11 +48,10 @@ $(() => {
             title: "Actions",
             width: 80,
             template: `
-                                <i class='fas fa-info-circle fa-lg projectInfo cursor m-2' title='Project Info'></i>
-                                <span style='font-size: 1.5em; vertical-align: middle;'>|</span>
-                                <i class='fas fa-user-plus fa-lg mapEmp cursor m-2' title='Assign Employee'></i>
-                            `,
-            //attributes: { style: "text-align: center;", class: "mapEmp cursor" }
+                <i class='fas fa-info-circle fa-lg projectInfo cursor m-2' title='Project Info'></i>
+                <span style='font-size: 1.5em; vertical-align: middle;'>|</span>
+                <i class='fas fa-user-plus fa-lg mapEmp cursor m-2' title='Assign Employee'></i>
+            `,
         }],
         dataBound: function () {
             $("#displayMainDataGrid tbody[role='rowgroup']").attr("id", "dataRows");
@@ -69,21 +67,24 @@ $(() => {
     });
 
 
-    // display allocated employees data
     let projectId;
     let skills;
-    // Event listener for row click to open modal
-    //$(document).on('click', '#dataRows', '.k-master-row', function (event) {
     $(document).on('click', '.projectInfo', function (event) {
         $('#mainModalApply').prop('disabled', true);
 
         $('.detailsButton').click();
+        $('.employeesButton').removeClass('border-dark');
         $('.xlEmployeesData').css({ display: 'none' });
+
         $('.detailsButton').click(() => {
+            $('.detailsButton').addClass('border-dark');
+            $('.employeesButton').removeClass('border-dark');
             $('.xlEmployeesData').css({ display: 'none' });
             $('#projectDetails').css({ display: 'block' });
         });
         $('.employeesButton').click(() => {
+            $('.employeesButton').addClass('border-dark');
+            $('.detailsButton').removeClass('border-dark');
             $('.xlEmployeesData').css({ display: 'block' });
             $('#projectDetails').css({ display: 'none' });
         });
@@ -101,7 +102,7 @@ $(() => {
         let projectStartDate = clickedRow.find('td:eq(3)').text();
         let projectEndDate = clickedRow.find('td:eq(4)').text();
         $('#mainModalLabel').text(`Details of "${projectName}"`);
-        // Populate modal fields with the fetched data
+
         $('#pid').val(projectId);
         $('#projectName').val(projectName);
         $('#department').val(department);
@@ -253,7 +254,6 @@ $(() => {
 
                 let today = new Date();
                 today.setHours(0, 0, 0, 0);
-                // Clear any previous error message
                 $('#xlModalErrorMsg').text('');
 
                 $('#displayAlloctedEmployeesGrid tbody tr').each(function () {
@@ -262,17 +262,17 @@ $(() => {
                     var endDate = resetTimeToMidnight(row.find('.end_date').val());
 
                     if (startDate < today) {
-                        $('#xlModalErrorMsg').text('**Start date should not be before today\'s date');
+                        $('#xlModalErrorMsg').text('Start date should not be before today\'s date');
                         allValid = false;
-                        return false; // Break out of the loop
+                        return false;
                     } else if (endDate < startDate) {
-                        $('#xlModalErrorMsg').text('**End date should not be before start date');
+                        $('#xlModalErrorMsg').text('End date should not be before start date');
                         allValid = false;
-                        return false; // Break out of the loop
+                        return false;
                     } else if (startDate < projectStartDateObj || endDate > projectEndDateObj) {
-                        $('#xlModalErrorMsg').text('**Employee dates must be within the project range');
+                        $('#xlModalErrorMsg').text('Employee dates must be within the project range');
                         allValid = false;
-                        return false; // Break out of the loop
+                        return false;
                     }
                 });
 
@@ -310,7 +310,6 @@ $(() => {
         }
     });
 
-    //Event listener for click events on icons within the "Remove" column
     $('#displayAlloctedEmployeesGrid').on('click', '.fa-minus-square', function () {
         let $row = $(this).closest('tr');
         let employeeId = parseInt($row.attr('data-employeeid'));
@@ -358,7 +357,6 @@ $(() => {
     var mainProjectStartDate;
     var mainProjectEndDate;
     let projectSkills
-    // Event listener for click events on icons within the "Assign" column
     $('#displayMainDataGrid').on('click', '.mapEmp', function (event) {
         $('#validationMsg').text('');
         let $row = $(event.target).closest('tr');
@@ -407,7 +405,7 @@ $(() => {
             let employeeId = parseInt(row.attr('data-employeeid'));
             let assignedSkillsOfEmployee = [];
             row.find('td:eq(2) select option:selected').each(function () {
-                assignedSkillsOfEmployee.push($(this).val()); // Push each selected skill to the array
+                assignedSkillsOfEmployee.push($(this).val());
             });
             let startDate = row.find('td:eq(4) input').val();
             let endDate = row.find('td:eq(5) input').val();
@@ -418,25 +416,25 @@ $(() => {
             var mainProjectStartDateObject = parseDate(mainProjectStartDate);
             var mainProjectEndDateObject = parseDate(mainProjectEndDate);
             if (assignedSkillsOfEmployee.length === 0) {
-                $('#validationMsg').text('**Please select at least one skill for each employee.');
+                $('#validationMsg').text('Please select at least one skill for each employee.');
                 allDatesValid = false;
-                return false; // Break out of the loop
+                return false;
             }
             else if (startDateObject < today) {
-                $('#validationMsg').text('**Start date should not be before today\'s date');
+                $('#validationMsg').text('Start date should not be before today\'s date');
                 allValid = false;
-                return false; // Break out of the loop
+                return false;
             } else if (endDateObject < startDateObject) {
-                $('#validationMsg').text('**End date should not be before start date');
+                $('#validationMsg').text('End date should not be before start date');
                 allDatesValid = false;
                 return;
             } else if (!startDate || !endDate) {
-                $('#validationMsg').text('**Both start date and end date are required.');
+                $('#validationMsg').text('Both start date and end date are required.');
                 allDatesValid = false;
                 return;
             }
             else if (startDateObject < mainProjectStartDateObject || endDateObject > mainProjectEndDateObject) {
-                $('#validationMsg').text('**Employee dates must be within the project range');
+                $('#validationMsg').text('Employee dates must be within the project range');
                 allDatesValid = false;
                 return;
             }
@@ -513,10 +511,10 @@ $(() => {
                     return '<input type="checkbox" class="form-check-input addEmp cursor" id="addEmp' + dataItem.EmployeeId + '">';
                 }
             }], dataBound: function () {
-                $("<style>")
-                    .prop("type", "text/css")
-                    .html(".k-grid-content tbody tr { height: 80px; }") // Adjust height as needed karan
-                    .appendTo("head");
+                //$("<style>")
+                //    .prop("type", "text/css")
+                //    .html(".k-grid-content tbody tr { height: 80px; }")
+                //    .appendTo("head");
                 var grid = this;
                 $('#displayNotAllocatedEmployeesGrid tbody tr').each(function () {
                     var rowData = grid.dataItem(this);
@@ -528,7 +526,6 @@ $(() => {
         });
 
 
-        // Target only checkboxes within the table with ID 'empModal'
         $('#displayNotAllocatedEmployeesGrid .addEmp').change(function () {
             updateSaveButton();
             sortCheckedRowsEmpModal();
@@ -554,7 +551,6 @@ $(() => {
                 let projectRoleCell = row.find('td').eq(2);
                 let employeeSkills = row.find('td').eq(2).text();
 
-                // Check if a dropdown already exists in the row
                 let dropdownExists = projectRoleCell.find('.multipleEmployeeSkill').length > 0;
                 if (!row.data('originalSkills')) {
                     row.data('originalSkills', employeeSkills);
@@ -562,7 +558,6 @@ $(() => {
 
                 if ($(this).is(':checked')) {
                     if (!dropdownExists) {
-                        // If no dropdown exists, create and append a new dropdown
                         let fetchedSkills = projectSkills.split(',').map(skill => skill.trim());
                         let dropdown = $('<select class="form-control multipleEmployeeSkill" placeholder="Select skills" multiple></select>');
 
@@ -577,7 +572,6 @@ $(() => {
                     }
                 } else {
                     if (projectRoleCell.find('select').length > 0) {
-                        // Restore the original skills from the data attribute
                         let originalSkills = row.data('originalSkills');
                         projectRoleCell.empty().text(originalSkills);
                     }
@@ -587,7 +581,6 @@ $(() => {
         function updateDateFields() {
             let projectStartDate = "not assigned";
             let projectEndDate = "not assigned";
-            // Get today's date in YYYY-MM-DD format
             let today = new Date().toISOString().split('T')[0];
 
             $('#displayNotAllocatedEmployeesGrid .addEmp').each(function () {
@@ -611,7 +604,6 @@ $(() => {
                         endDateInput.attr('min', startDateValue);
                     });
 
-                    // Set initial min value for the end date
                     let startDateValue = startDateInput.val();
                     endDateInput.attr('min', startDateValue);
                     //----------------------------------------
@@ -629,17 +621,14 @@ $(() => {
             let anyChecked = $('#displayNotAllocatedEmployeesGrid .addEmp:checked').length > 0;
             $('#savechange').prop('disabled', !anyChecked);
         }
-
     }
-
 });
 
 function formatDate(dateString) {
     let date = new Date(dateString);
     let day = date.getDate().toString().padStart(2, '0');
-    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based, so we add 1
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
     let year = date.getFullYear();
-    // Format the date as dd-mm-yyyy
     return day + '-' + month + '-' + year;
 }
 function formatDateToYYYYMMDD(dateString) {
@@ -662,7 +651,7 @@ function resetTimeToMidnight(dateString) {
     date.setHours(0);
     date.setMinutes(0);
     date.setSeconds(0);
-    date.setMilliseconds(0); 
+    date.setMilliseconds(0);
 
     return date;
 }
