@@ -7,6 +7,7 @@ using System.Net.Mail;
 using Newtonsoft.Json;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using System.Drawing;
 namespace Amnex_Project_Resource_Mapping_System.Controllers
 {
     namespace Amnex_Project_Resource_Mapping_System.Controllers
@@ -30,41 +31,52 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 HttpContext.Session.Clear();
                 return View();
             }
+
             [HttpPost]
             public async Task<IActionResult> Login(Login data, string recaptchaResponse)
             {
-                bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
-                //if (!isRecaptchaValid)
-                    if (!true)
-                    {
-                    ModelState.AddModelError(string.Empty, "reCAPTCHA validation failed.");
-                    return Json(new { success = false, message = "reCAPTCHA validation failed." });
-                }
-
-                using (var cmd = new NpgsqlCommand($"SELECT * FROM LOGIN('{data.UserName}', '{data.Password}');", _connection))
+                try
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    bool isRecaptchaValid = await ValidateRecaptcha(recaptchaResponse);
+                    if (!true || !isRecaptchaValid)
                     {
-                        if (reader.Read())
+                        ModelState.AddModelError(string.Empty, "reCAPTCHA validation failed.");
+                        return Json(new { success = false, message = "reCAPTCHA validation failed." });
+                    }
+
+                    using (var cmd = new NpgsqlCommand($"SELECT * FROM LOGIN('{data.UserName}', '{data.Password}');", _connection))
+                    {
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            if (reader.GetInt32(2) == 1)
+                            if (reader.Read())
                             {
-                                HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
-                                HttpContext.Session.SetString("userName", reader.GetString(1));
-                                return Json(new { success = true });
+                                if (reader.GetInt32(2) == 1)
+                                {
+                                    HttpContext.Session.SetString("userId", reader.GetInt32(0).ToString());
+                                    HttpContext.Session.SetString("userName", reader.GetString(1));
+                                    return Json(new { success = true });
+                                }
+                                else
+                                {
+                                    return Json(new { success = false, message = "Only admins are allowed to login this portal." });
+                                }
+
                             }
                             else
                             {
-                                return Json(new { success = false,message = "Only admins are allowed to login this portal." });
+                                ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                                return Json(new { success = false, message = "Invalid username or password." });
                             }
-
-                        }
-                        else
-                        {
-                            ModelState.AddModelError(string.Empty, "Invalid username or password.");
-                            return Json(new { success = false, message = "Invalid username or password." });
                         }
                     }
+                }
+                catch (NpgsqlException pex)
+                {
+                    return Json(new { success = false, message = pex.Message });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = ex.Message });
                 }
             }
 
@@ -92,6 +104,7 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 [JsonProperty("success")]
                 public bool Success { get; set; }
             }
+
 
             [HttpPost]
             public void Logout()
