@@ -106,51 +106,20 @@ namespace Amnex_Project_Resource_Mapping_System.Controllers
                 List<Skill> skills = new List<Skill>();
                 List<Department> departments = new List<Department>();
                 Employee employee = new Employee();
-                using (var command = new NpgsqlCommand($"select * from getemployeeprofile(1);", _connection))
+                using (var command = new NpgsqlCommand($"select * from getemployeedetails({HttpContext.Session.GetString("userId")!});", _connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            employee.EmployeeId = reader.GetInt32(0);
-                            employee.EmployeeName = reader.GetString(1);
-                            employee.EmployeeUserName = reader.GetString(2);
-                            employee.DepartmentId = reader.GetInt32(3);
-                            employee.DepartmentName = reader.GetString(4);
-                            employee.SkillsId = reader.GetString(5);
-                            employee.SkillsName = reader.GetString(6);
-                            employee.Email = reader.GetString(7);
-                            employee.LoginRoleId = reader.GetInt32(8);
-                            employee.EmployeeRating = reader.GetInt32(10);
-                        }
-                    }
-                }
-
-                using (var command = new NpgsqlCommand($"select skillid,skillname from skills where isdeleted=false", _connection))
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            skills.Add(new Skill
-                            {
-                                Skillid = reader.GetInt32(0),
-                                Skillname = reader.GetString(1),
-                            });
-                        }
-                    }
-                }
-                using (var command = new NpgsqlCommand($"select departmentid,departmentname from departments where isdeleted=false", _connection))
-                {
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            departments.Add(new Department
-                            {
-                                DepartmentId = reader.GetInt32(0),
-                                DepartmentName = reader.GetString(1),
-                            });
+                            employee.EmployeeId = Convert.ToInt32(HttpContext.Session.GetString("userId")!);
+                            employee.EmployeeName = reader["employeename"].ToString()!;
+                            employee.EmployeeAipl = reader["employeeaipl"].ToString()!;
+                            employee.DepartmentName = reader["employeedepartmentname"].ToString()!;
+                            employee.Email = reader["employeeemail"].ToString()!;
+                            employee.DesignationName = reader["employeedesignation"].ToString()!;
+                            employee.SkillsName = reader["employeeskills"].ToString()!;
+                            employee.LoginRole = reader["employeeloginrole"].ToString()!;
                         }
                     }
                 }

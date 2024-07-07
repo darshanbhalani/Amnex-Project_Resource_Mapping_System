@@ -44,8 +44,8 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="ProfileData.EmployeeUserName">Employee User Name</label>
-                <input type="text" class="form-control" asp-for="ProfileData.EmployeeUserName" disabled>
+                <label asp-for="ProfileData.EmployeeAipl">Employee User Name</label>
+                <input type="text" class="form-control" asp-for="ProfileData.EmployeeAipl" disabled>
             </div>
         </div>
     </div>
@@ -67,12 +67,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="ProfileData.DepartmentName">Department</label>
-                <select class="form-control" asp-for="ProfileData.DepartmentName" id="department" disabled>
-                    @foreach (var d in Model.Departments)
-                    {
-                        <option value=@d.DepartmentId selected=@(Model.ProfileData.DepartmentId == d.DepartmentId ? "selected":null)>@d.DepartmentName</option>
-                    }
-                </select>
+                <input type="text" class="form-control" asp-for="ProfileData.DepartmentName" id="department" disabled>
             </div>
         </div>
         <div class="col-md-6">

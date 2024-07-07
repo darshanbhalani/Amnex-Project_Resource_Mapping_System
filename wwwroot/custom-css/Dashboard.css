@@ -12,11 +12,11 @@
 }
 
     .box i {
-        color: #009cff;
+        color: #006989;
     }
 
     .box:hover, .box:hover h4, .box:hover i {
-        background-color: #009cff !important;
+        background-color: #006989 !important;
         color: aliceblue !important;
     }
 

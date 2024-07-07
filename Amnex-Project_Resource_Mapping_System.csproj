@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Project\" />
     <Folder Include="wwwroot\assets\videos\" />
   </ItemGroup>
 
